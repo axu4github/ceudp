@@ -27,7 +27,7 @@ urlpatterns = [
     # /dashboard/
     url(r"^dashboard/", include("dashboard.urls")),
     # /performance/
-    url(r"^performance/", include("performance.urls"), name="performance"),
+    url(r"^performance/", include("performance.urls", namespace="performance")),
     # /management/
-    url(r"^management/", include("management.urls"), name="management"),
+    url(r"^management/", include("management.urls", namespace="management")),
 ]
