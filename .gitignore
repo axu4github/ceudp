@@ -1,0 +1,8 @@
+# Python:
+*.py[cod]
+*.log
+db.sqlite3
+target
+*.class
+*.jar
+.DS_Store
