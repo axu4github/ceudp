@@ -16,18 +16,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url, include
-from django.contrib import admin
-from dashboard import views as dashboard_views
+from views import login
 
 urlpatterns = [
-    # /
-    url(r"^$", dashboard_views.index, name="index"),
-    # /admin/
-    url(r"^admin/", admin.site.urls),
-    # /dashboard/
-    url(r"^dashboard/", include("dashboard.urls")),
-    # /performance/
-    url(r"^performance/", include("performance.urls"), name="performance"),
-    # /management/
-    url(r"^management/", include("management.urls"), name="management"),
+    # /management/login/
+    url(r"^login/", login, name="login"),
 ]
