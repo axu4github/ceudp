@@ -133,3 +133,6 @@ STATICFILES_DIRS = [
 
 # 设置系统默认使用用户模型
 AUTH_USER_MODEL = "management.User"
+
+# 默认登陆地址
+LOGIN_URL = "/management/login"
