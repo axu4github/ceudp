@@ -4,6 +4,7 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
+from django.utils.translation import ugettext as _
 
 
 def login(request):
@@ -17,11 +18,11 @@ def login(request):
                     auth_login(request, user)  # 系统登陆
                     return HttpResponseRedirect(reverse("index"))
                 else:
-                    return render(request, "ceudp/login.html", {error_messages: ""})
+                    return render(request, "ceudp/login.html", {"error_messages": _("user has been disabled.")})
             else:
-                return render(request, "ceudp/login.html", {error_messages: ""})
+                return render(request, "ceudp/login.html", {"error_messages": _("username or password were incorrect.")})
         else:
-            return render(request, "ceudp/login.html", {error_messages: ""})
+            return render(request, "ceudp/login.html", {"error_messages": "none username or passoword."})
 
     return render(request, "ceudp/login.html")
 

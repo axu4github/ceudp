@@ -8,6 +8,10 @@
                 <a href="{% url 'index' %}"><b>中金</b> | 统一数据平台</a>
             </div>
             <div class="login-box-body">
+                {% if error_messages %}
+                    <p class="login-box-msg">{{ error_messages }}</p>
+                {% endif %}
+
                 <form action="{% url 'management:login' %}" method="post">
                     {% csrf_token %}
                     <div class="form-group has-feedback">
