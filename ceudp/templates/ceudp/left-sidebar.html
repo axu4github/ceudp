@@ -1,0 +1,87 @@
+{% load staticfiles %}
+
+<style type="text/css">
+    .sidebar-menu .treeview-menu>li>a {
+        font-size: 13px;
+    }
+</style>
+
+<aside class="main-sidebar">
+    <section class="sidebar">
+        <div class="user-panel">
+            <div class="pull-left image">
+                <img src="{% static 'dist/img/user2-160x160.jpg' %}" class="img-circle" alt="User Image">
+            </div>
+            <div class="pull-left info">
+                <p>Administrator</p>
+                <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+            </div>
+        </div>
+        <ul class="sidebar-menu">
+            <li class="header">主菜单 <small>[Main Navigation]</small></li>
+            <li class="treeview leaf" id="dashboard">
+                <a href="{% url 'dashboard:index' %}">
+                    <i class="fa fa-dashboard"></i> <span>仪表盘 <small>[Dashboards]</small></span>
+                </a>
+            </li>
+            <li class="treeview" id="source">
+                <a href="#">
+                    <i class="fa fa-database"></i> <span>数据源 <small>[Sources]</small></span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li class="leaf" id="tables"><a href="#"><i class="fa fa-table"></i>表 <small>[Tables]</small></a></li>
+                    <li class="leaf" id="views"><a href="#"><i class="fa fa-list-alt"></i>视图 <small>[Views]</small></a></li>
+                    <li class="leaf" id="flat_files"><a href="#"><i class="fa fa-copy"></i>文件 <small>[Flat Files]</small></a></li>
+                    <li class="leaf" id="streaming"><a href="#"><i class="fa fa-random"></i>流数据 <small>[Streaming]</small></a></li>
+                    <li class="leaf" id="third_party"><a href="#"><i class="fa fa-gg"></i>第三方接口 <small>[Third Party]</small></a></li>
+                </ul>
+            </li>
+            <li class="treeview" id="performance">
+                <a href="#">
+                    <i class="fa fa-area-chart"></i> <span>数据展示 <small>[Performance]</small></span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li class="leaf" id="visualization"><a href="#"><i class="fa fa-pie-chart"></i>可视化 <small>[Visualization]</small></a></li>
+                    <li class="leaf" id="sql_lab"><a href="#"><i class="fa fa-flask"></i>SQL Lab<small></small></a></li>
+                    <li class="leaf" id="filesystem">
+                        <a href="{% url 'performance:filesystem' %}">
+                            <i class="fa fa-folder-open"></i>文件系统 <small>[File System]</small>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="treeview" id="management">
+                <a href="#">
+                    <i class="fa fa-sliders"></i> <span>系统管理 <small>[Management]</small></span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li class="leaf" id="users"><a href="#"><i class="fa fa-user"></i>用户管理 <small>[Users]</small></a></li>
+                    <li class="leaf" id="groups"><a href="#"><i class="fa fa-group"></i>用户组管理 <small>[Groups]</small></a></li>
+                    <li class="leaf" id="permissions"><a href="#"><i class="fa fa-chain"></i>权限管理 <small>[Permissions]</small></a></li>
+                    <li class="leaf" id="sites"><a href="#"><i class="fa fa-gears"></i>站点管理 <small>[Sites]</small></a></li>
+                </ul>
+            </li>
+            <li class="treeview" id="security">
+                <a href="#">
+                    <i class="fa fa-shield"></i> <span>系统安全 <small>[Security]</small></span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li class="leaf" id="monitor"><a href="#"><i class="fa fa-desktop"></i>系统监控 <small>[Monitor]</small></a></li>
+                    <li class="leaf" id="audit_logger"><a href="#"><i class="fa fa-list-ol"></i>审计日志 <small>[Audit Logger]</small></a></li>
+                </ul>
+            </li>
+        </ul>
+    </section>
+</aside>

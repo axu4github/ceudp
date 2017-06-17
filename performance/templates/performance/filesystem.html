@@ -1,0 +1,198 @@
+{% extends "ceudp/base.html" %}
+{% load staticfiles %}
+
+{% block customize-script %}
+<script>
+    leaf_active("filesystem"); // 激活左侧菜单栏图标效果
+    
+    var ROOT = "/";
+    var table = null;
+    var current_dir = ROOT;
+    var search_type = "browse";
+    set_show_search_type(search_type);
+
+    $("#search_btn").click(function(){
+        on_click_search_btn($("#search_text").val());
+    });
+
+    $("#search_text").keyup(function(){
+        if(event.keyCode == 13){
+            on_click_search_btn($("#search_text").val());
+        }
+    });
+
+    $("#search_type").on("changed.bs.select", function(e){
+        search_type = $("#search_type").selectpicker('val');
+        set_show_search_type(search_type);
+    });
+
+    $('.selectpicker').selectpicker();
+
+    $(function(){
+        table = $('#example1').DataTable({
+            "language": {
+                "processing": '<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>',
+                "loadingRecords": "加载中...",
+                "info": "共 _TOTAL_ 条",
+                "infoEmpty": "共 0 条",
+                "zeroRecords": "无数据",
+                "emptyTable": "无数据",
+                "paginate": {
+                    "first": "第一页",
+                    "previous": "上一页",
+                    "next": "下一页",
+                    "last": "最后一页",
+                },
+            },
+            "info": true,
+            "paging": true,
+            "searching": false,
+            "autoWidth": false,
+            "processing": true,
+            "bLengthChange": false, // 是否启动可以改变单页数量
+            "iDisplayLength" : 20, // 设置单页显示数量
+            "order": [[ 4, "desc" ]], // 默认 按第4列（从0开始）倒序排列
+            "ajax": {
+                "url": "" + current_dir,
+                "method": "GET",
+                "timeout": 5000,
+                "dataSrc": function(response){
+                    var hdfs_path = response.request_set.hdfs_path;
+                    if (hdfs_path == null) {
+                        current_dir = ROOT;
+                    } else {
+                        current_dir = hdfs_path;
+                        $("#search_text").val(current_dir);
+                    }
+
+                    return response.response_set.docs;
+                },
+                "error": function(data){
+                    alert(data.responseJSON.message);
+                }
+            },
+            "columns": [
+                { 
+                    "data": "permission", "title": "权限",
+                    "render": function(permission, _, row){
+                        var permission_numbers = {'7':'rwx', '6' :'rw-', '5' : 'r-x', '4':'r--', '0': '---'}
+                        var permission_string = "";
+                        for (var i = 0; i < permission.length; i++) {
+                            permission_string += permission_numbers[permission[i]];
+                        }
+
+                        var type = "-";
+                        if (row.type == "DIRECTORY") {
+                            type = "d";
+                        }
+
+                        return type + permission_string;
+                    }
+                },
+                { "data": "owner", "title": "用户" },
+                { "data": "group", "title": "用户组" },
+                { 
+                    "data": "length", "title": "文件大小",
+                    "render": function(size){
+                        return filesize(size);
+                    }
+                },
+                { 
+                    "data": "modificationTime", "title": "修改时间", 
+                    "render": function(timestamp){
+                        var date = new Date(parseInt(timestamp));
+                        return date.toLocaleDateString() + " " + date.toLocaleTimeString();
+                    }
+                },
+                { 
+                    "data": "filename", "title": "文件名称",
+                    "render": function(hdfs_path, _, row){
+                        var result = null;
+                        if (row.type == "DIRECTORY") {
+                            result = '<a href="javascript:void(0);" onclick="on_click_search_btn(\'' + row.showPath + '\')">' + 
+                                        hdfs_path + 
+                                     '</a>';
+                        } else {
+                            var url = "" + "?hdfs_path=" + row.showPath + "&meta=False";
+                            if (search_type == "search") {
+                                hdfs_path = row.showPath
+                            }
+
+                            result = '<a href="' + url + '">' + hdfs_path + '</a>';
+                        }
+
+                        return result;
+                    }
+                },
+            ],
+        });
+    });
+
+    function on_click_search_btn(search_text){
+        var url = "";
+        if (search_type == "browse") {
+            url = "" + "?hdfs_path=" + search_text;
+        } else {
+            url = "" + "?contents=" + search_text;
+        }
+
+        console.info(url);
+        table.ajax.url(url);
+        table.ajax.reload();
+    }
+
+    function set_show_search_type(mode = "search"){
+        var names = {"search": "检索模式", "browse": "浏览模式"}
+        $("#show_search_type").html(names[mode]);
+    }
+
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+    <section class="content-header">
+        <h1>文件系统<small>Distributed File System</small></h1>
+        <ol class="breadcrumb">
+            <li><a href="{% url 'dashboard:index' %}"><i class="fa fa-dashboard"></i> 仪表盘 <small>[Dashboard]</small> </a></li>
+            <li><a href="#"><i class="fa fa-area-chart"></i>数据展示 <small>[Performance]</small></a></li>
+            <li class="active"><i class="fa fa-folder-open"></i> 文件系统 <small>[File System]</small></li>
+        </ol>
+    </section>
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">文件浏览器</h3> ( <small id="show_search_type"></small> )
+                    </div>
+                    <div class="box-body">
+                        <div class="input-group col-xs-12">
+                            <select id="search_type" class="selectpicker" data-width="55px" data-style="btn-default">
+                                <option data-content="<span class='glyphicon glyphicon-folder-open'></span>">browse</option>
+                                <option data-content="<span class='glyphicon glyphicon-search'></span>">search</option>
+                            </select>
+                            <input id="search_text" type="text" class="form-control" value="/" />
+                            <div class="input-group-btn">
+                                <button id="search_btn" type="button" class="btn btn-info btn-flat">运行</button>
+                            </div>
+                        </div>
+                        <table id="example1" class="table">
+                            <thead>
+                                <tr>
+                                    <th>Permission</th>
+                                    <th>Owner</th>
+                                    <th>Group</th>
+                                    <th>Size</th>
+                                    <th>Time</th>
+                                    <th>Filename</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
