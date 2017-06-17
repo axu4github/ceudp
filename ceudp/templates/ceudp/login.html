@@ -1,11 +1,31 @@
 {% extends "ceudp/base.html" %}
 {% load staticfiles %}
+{% block customize-styles %}
+    <style type="text/css">
+        body.login-page-body { 
+            background-image: url('http://wp.widewallpapers.net/4k/computers/servers/2560x1440/datacenter-servers-2560x1440-003.jpg');
+            background-color: #000000;
+            background-repeat:no-repeat; 
+            background-size:100% 100%;
+            -moz-background-size:100% 100%;
+        }
 
+        div.login-page-box {
+            width: 360px;
+            position: absolute;  
+            top: 50%; left: 50%;
+            margin: -10vw 0 0 0;
+            transform: translateX(-50%);
+        }
+
+
+    </style>
+{% endblock %}
 {% block body %} 
-    <body class="hold-transition login-page">
-        <div class="login-box">
+    <body class="login-page-body">
+        <div class="login-page-box">
             <div class="login-logo">
-                <a href="{% url 'index' %}"><b>中金</b> | 统一数据平台</a>
+                <a style="color: white;" href="{% url 'index' %}"><b>中金</b> | 统一数据平台</a>
             </div>
             <div class="login-box-body">
                 {% if error_messages %}

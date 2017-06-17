@@ -18,11 +18,16 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from dashboard import views as dashboard_views
+from management.views import login, logout
 from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
     # /
     url(r"^$", login_required(dashboard_views.index), name="index"),
+    # /login
+    url(r"^login/$", login, name="login"),
+    # /logout
+    url(r"^logout/$", logout, name="logout"),
     # /admin/
     url(r"^admin/", admin.site.urls),
     # /dashboard/
