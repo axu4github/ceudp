@@ -1,0 +1,122 @@
+{% extends "ceudp/base.html" %}
+{% load staticfiles %}
+
+{% block customize-styles %}
+<!-- Select2 -->
+<link rel="stylesheet" href="{% static 'plugins/select2/select2.min.css' %}">
+
+<style type="text/css">
+</style>
+
+{% endblock %}
+
+{% block customize-script %}
+<!-- Select2 -->
+<script src="{% static 'plugins/select2/select2.full.min.js' %}"></script>
+<script>
+    leaf_active("sql_lab"); // 激活左侧菜单栏图标效果
+
+    $(function(){
+        $(".select2").select2({
+            placeholder: {
+                id: '-1', // the value of the option
+                text: 'Select an option'
+            }
+        });    
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+    <section class="content-header">
+        <h1>SQL Lab</h1>
+        <ol class="breadcrumb">
+            <li><a href="{% url 'dashboard:index' %}"><i class="fa fa-dashboard"></i> 仪表盘 <small>[Dashboard]</small> </a></li>
+            <li><a href="#"><i class="fa fa-area-chart"></i>数据展示 <small>[Performance]</small></a></li>
+            <li class="active"><i class="fa fa-flask"></i> SQL Lab</small></li>
+        </ol>
+    </section>
+    <section class="content">
+        <div class="box box-default">
+        <div class="box-header with-border">
+          <h3 class="box-title">Select2</h3>
+
+          <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>
+          </div>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Minimal</label>
+                <select class="form-control select2" style="width: 100%;">
+                  <option selected="selected">Alabama</option>
+                  <option>Alaska</option>
+                  <option>California</option>
+                  <option>Delaware</option>
+                  <option>Tennessee</option>
+                  <option>Texas</option>
+                  <option>Washington</option>
+                </select>
+              </div>
+              <!-- /.form-group -->
+              <div class="form-group">
+                <label>Disabled</label>
+                <select class="form-control select2" disabled="disabled" style="width: 100%;">
+                  <option selected="selected">Alabama</option>
+                  <option>Alaska</option>
+                  <option>California</option>
+                  <option>Delaware</option>
+                  <option>Tennessee</option>
+                  <option>Texas</option>
+                  <option>Washington</option>
+                </select>
+              </div>
+              <!-- /.form-group -->
+            </div>
+            <!-- /.col -->
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Multiple</label>
+                <select class="form-control select2" multiple="multiple" data-placeholder="Select a State" style="width: 100%;">
+                  <option>Alabama</option>
+                  <option>Alaska</option>
+                  <option>California</option>
+                  <option>Delaware</option>
+                  <option>Tennessee</option>
+                  <option>Texas</option>
+                  <option>Washington</option>
+                </select>
+              </div>
+              <!-- /.form-group -->
+              <div class="form-group">
+                <label>Disabled Result</label>
+                <select class="form-control select2" style="width: 100%;">
+                  <option selected="selected">Alabama</option>
+                  <option>Alaska</option>
+                  <option disabled="disabled">California (disabled)</option>
+                  <option>Delaware</option>
+                  <option>Tennessee</option>
+                  <option>Texas</option>
+                  <option>Washington</option>
+                </select>
+              </div>
+              <!-- /.form-group -->
+            </div>
+            <!-- /.col -->
+          </div>
+          <!-- /.row -->
+        </div>
+        <!-- /.box-body -->
+        <div class="box-footer">
+          Visit <a href="https://select2.github.io/">Select2 documentation</a> for more examples and information about
+          the plugin.
+        </div>
+      </div> 
+    </section>
+</div>
+{% endblock %}

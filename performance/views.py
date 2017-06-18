@@ -5,3 +5,6 @@ from django.shortcuts import render
 
 def filesystem(request):
     return render(request, "performance/filesystem.html")
+
+def sql_lab(request):
+    return render(request, "performance/sql_lab.html")

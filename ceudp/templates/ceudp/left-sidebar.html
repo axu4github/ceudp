@@ -48,7 +48,9 @@
                 </a>
                 <ul class="treeview-menu">
                     <li class="leaf" id="visualization"><a href="#"><i class="fa fa-pie-chart"></i>可视化 <small>[Visualization]</small></a></li>
-                    <li class="leaf" id="sql_lab"><a href="#"><i class="fa fa-flask"></i>SQL Lab<small></small></a></li>
+                    <li class="leaf" id="sql_lab">
+                        <a href="{% url 'performance:sql_lab' %}"><i class="fa fa-flask"></i>SQL Lab<small></small></a>
+                    </li>
                     <li class="leaf" id="filesystem">
                         <a href="{% url 'performance:filesystem' %}">
                             <i class="fa fa-folder-open"></i>文件系统 <small>[File System]</small>
