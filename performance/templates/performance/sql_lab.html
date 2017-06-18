@@ -6,14 +6,28 @@
 <script src="{% static 'plugins/select2/select2.full.min.js' %}"></script>
 <script>
     leaf_active("sql_lab"); // 激活左侧菜单栏图标效果
-
     $(function(){
         $(".select2").select2({
             placeholder: {
                 id: '-1', // the value of the option
                 text: 'Select an option'
             }
-        });    
+        }); 
+
+        CodeMirror.fromTextArea(document.getElementById('code'), {
+          mode: "text/x-hive",
+          // theme: "monokai",
+          indentWithTabs: true,
+          smartIndent: true,
+          lineNumbers: true,
+          matchBrackets : true,
+          autofocus: true,
+          extraKeys: {"Ctrl-Space": "autocomplete"},
+          hintOptions: {tables: {
+            users: {name: null, score: null, birthDate: null},
+            countries: {name: null, population: null, size: null}
+          }}
+        });   
     });
 </script>
 {% endblock %}
@@ -42,7 +56,7 @@
             </div>
             <div class="box-body">
               <div class="form-group">
-                <select class="form-control select2">
+                <select class="form-control select2" style="width: 100%;">
                   <option selected="selected">Alabama</option>
                   <option>Alaska</option>
                   <option>California</option>
@@ -85,11 +99,18 @@
         <div class="col-md-8">
           <div class="box box-info">
             <div class="box-header with-border">
-              <h3 class="box-title">SQL</h3>
+              <h3 class="box-title">编辑器 <small>[SQL Editer]</small></h3>
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                 <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>
               </div>
+            </div>
+            <div class="box-body">
+              <textarea id="code" name="code"></textarea>
+            </div>
+            <div class="box-footer">
+              <button type="button" class="btn btn-flat btn-success"><i class="fa fa-caret-right"></i> 运行</button>
+              
             </div>
           </div>
         </div>
