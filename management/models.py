@@ -3,6 +3,11 @@ from __future__ import unicode_literals
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
+"""
+字段类型参考：
+https://docs.djangoproject.com/en/1.11/ref/models/fields/
+"""
+
 
 class User(AbstractUser):
     """

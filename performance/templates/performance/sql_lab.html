@@ -30,17 +30,19 @@
 
             CodeMirror.fromTextArea(document.getElementById('code'), {
                 mode: "text/x-hive",
-                // theme: "monokai",
+                theme: "monokai",
                 indentWithTabs: true,
                 smartIndent: true,
                 lineNumbers: true,
                 matchBrackets : true,
                 autofocus: true,
-                extraKeys: {"Ctrl-Space": "autocomplete"},
-                hintOptions: {tables: {
-                users: {name: null, score: null, birthDate: null},
-                    countries: {name: null, population: null, size: null}
-                }}
+                // extraKeys: {"Ctrl-Space": "autocomplete"},
+                hintOptions: {
+                    tables: {
+                        users: {name: null, score: null, birthDate: null},
+                        countries: {name: null, population: null, size: null}
+                    }
+                }
             });   
         });
     </script>
@@ -73,21 +75,18 @@
                                 <button type="button" class="btn btn-box-tool" data-widget="collapse">
                                     <i class="fa fa-minus"></i>
                                 </button>
-                                <button type="button" class="btn btn-box-tool" data-widget="remove">
-                                    <i class="fa fa-remove"></i>
-                                </button>
                             </div>
                         </div>
                         <div class="box-body">
                             <div class="form-group">
                                 <select class="form-control select2" style="width: 100%;">
-                                    <option selected="selected">Alabama</option>
-                                    <option>Alaska</option>
-                                    <option>California</option>
-                                    <option>Delaware</option>
-                                    <option>Tennessee</option>
-                                    <option>Texas</option>
-                                    <option>Washington</option>
+                                    <option selected="selected"><i class="icon fa fa-database"></i>Alabama</option>
+                                    <option><i class="icon fa fa-database"></i>Alaska</option>
+                                    <option><i class="icon fa fa-database"></i>California</option>
+                                    <option><i class="icon fa fa-database"></i>Delaware</option>
+                                    <option><i class="icon fa fa-database"></i>Tennessee</option>
+                                    <option><i class="icon fa fa-database"></i>Texas</option>
+                                    <option><i class="icon fa fa-database"></i>Washington</option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -112,9 +111,6 @@
                                 <button type="button" class="btn btn-box-tool" data-widget="collapse">
                                     <i class="fa fa-minus"></i>
                                 </button>
-                                <button type="button" class="btn btn-box-tool" data-widget="remove">
-                                    <i class="fa fa-remove"></i>
-                                </button>
                             </div>
                         </div>
                         <div class="box-body" style="height: 300px;">
@@ -133,14 +129,10 @@
                                 <button type="button" class="btn btn-box-tool" data-widget="collapse">
                                     <i class="fa fa-minus"></i>
                                 </button>
-                                <button type="button" class="btn btn-box-tool" data-widget="remove">
-                                    <i class="fa fa-remove"></i>
-                                </button>
                             </div>
                         </div>
                         <div class="box-body">
                             <textarea id="code" name="code">
--- SQL Mode for CodeMirror
 SELECT SQL_NO_CACHE DISTINCT
     @var1 AS `val1`, @'val2', @global.'sql_mode',
     1.1 AS `float_val`, .14 AS `another_float`, 0.09e3 AS `int_with_esp`,
