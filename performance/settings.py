@@ -15,8 +15,8 @@ class Settings(AppConf):
     - 如果设置和项目配置（django.conf）同样名称的配置项，调用时会使用项目配置文件中指定的配置项，而不会使用当前类中的配置项。
     """
 
-    FAILED = -1
-    SUCCESS = 0
+    FAILED = "-1"
+    SUCCESS = "0"
 
     QUERY_STASTUS = {
         FAILED: "failed",

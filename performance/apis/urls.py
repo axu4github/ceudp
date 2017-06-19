@@ -4,5 +4,5 @@ from views import QueryViewSet
 
 
 urlpatterns = [
-    url(r"querys/$", QueryViewSet.as_view({'get': 'list'})),
+    url(r"querys/$", QueryViewSet.as_view({'get': 'list'}), name="query_list"),
 ]
