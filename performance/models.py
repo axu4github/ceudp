@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/1.11/ref/models/fields/
 
 class Query(models.Model):
     """查询表"""
-    query = models.TextField(verbose_name="查询内容", blank=False, default="")
+    query = models.TextField(verbose_name="查询内容", blank=False)
     excuted_query = models.TextField(verbose_name="执行的查询", default="")
     created = models.DateTimeField(verbose_name="创建时间", auto_now_add=True)
     duration = models.FloatField(verbose_name="执行时长", default=0.0)

@@ -14,6 +14,7 @@
         .nav-tabs-custom > .tab-content {
             /*height: 200px;*/
         }
+
     </style>
 {% endblock %}
 
@@ -53,7 +54,7 @@
                 "scrollCollapse": true,
                 "iDisplayLength" : 10, // 设置单页显示数量
                 "ajax": {
-                    "url": "{% url 'performance_api:query_list' %}",
+                    "url": "/api/performance/querys/",
                     "method": "GET",
                     "timeout": 5000,
                     "dataSrc": function(response){ return response },
