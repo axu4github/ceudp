@@ -20,6 +20,8 @@
 {% block customize-script %}
     <script>
         leaf_active("sql_lab"); // 激活左侧菜单栏图标效果
+        var code_editor = null;
+        var query_history_table = null; 
         $(function(){
             $(".select2").select2({
                 placeholder: {
@@ -28,7 +30,10 @@
                 }
             }); 
 
-            CodeMirror.fromTextArea(document.getElementById('code'), {
+            query_history_table = $('#query-history-table').DataTable({
+            });
+
+            code_editor = CodeMirror.fromTextArea(document.getElementById('code'), {
                 mode: "text/x-hive",
                 theme: "monokai",
                 indentWithTabs: true,
@@ -183,7 +188,17 @@ LIMIT 1 OFFSET 0;
                                 RESULTS
                             </div>
                             <div class="tab-pane" id="query-history">
-                                HISTORY
+                                <table id="query-history-table" class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>status</th>
+                                            <th>created</th>
+                                            <th>duration</th>
+                                            <th>total</th>
+                                            <th>query</th>
+                                        </tr>
+                                    </thead>
+                                </table>
                             </div>
                             <div class="tab-pane" id="preview">
                                 PREVIEW
