@@ -20,10 +20,14 @@ from django.contrib import admin
 from dashboard import views as dashboard_views
 from management.views import login, logout
 from django.contrib.auth.decorators import login_required
+from rest_framework_swagger.views import get_swagger_view
+schema_view = get_swagger_view(title='统一数据平台 API')
 
 urlpatterns = [
     # /
     url(r"^$", login_required(dashboard_views.index), name="index"),
+    # /apis
+    url(r"^apis/$", login_required(schema_view), name="apis"),
     # /login
     url(r"^login/$", login, name="login"),
     # /logout

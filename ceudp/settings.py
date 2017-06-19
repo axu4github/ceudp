@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "rest_framework",
+    'rest_framework_swagger',
     "dashboard.apps.DashboardConfig",
     "performance.apps.PerformanceConfig",
     "management.apps.ManagementConfig",
