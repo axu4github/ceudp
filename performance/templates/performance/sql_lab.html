@@ -2,129 +2,144 @@
 {% load staticfiles %}
 
 {% block customize-style %}
-  <style type="text/css">
-    .icon {
-      margin-right: 3px;
-    }
+    <style type="text/css">
+        .icon {
+            margin-right: 3px;
+        }
 
-    .nav-tabs-custom > .nav-tabs > li.active {
-      border-top-color: #00a65a;
-    }
+        .nav-tabs-custom > .nav-tabs > li.active {
+            border-top-color: #00a65a;
+        }
 
-    .nav-tabs-custom > .tab-content {
-      height: 200px;
-    }
-
-  </style>
+        .nav-tabs-custom > .tab-content {
+            height: 200px;
+        }
+    </style>
 {% endblock %}
 
 {% block customize-script %}
-<!-- Select2 -->
-<script src="{% static 'plugins/select2/select2.full.min.js' %}"></script>
-<script>
-    leaf_active("sql_lab"); // 激活左侧菜单栏图标效果
-    $(function(){
-        $(".select2").select2({
-            placeholder: {
-                id: '-1', // the value of the option
-                text: 'Select an option'
-            }
-        }); 
+    <script>
+        leaf_active("sql_lab"); // 激活左侧菜单栏图标效果
+        $(function(){
+            $(".select2").select2({
+                placeholder: {
+                    id: '-1', // the value of the option
+                    text: 'Select an option'
+                }
+            }); 
 
-        CodeMirror.fromTextArea(document.getElementById('code'), {
-          mode: "text/x-hive",
-          // theme: "monokai",
-          indentWithTabs: true,
-          smartIndent: true,
-          lineNumbers: true,
-          matchBrackets : true,
-          autofocus: true,
-          extraKeys: {"Ctrl-Space": "autocomplete"},
-          hintOptions: {tables: {
-            users: {name: null, score: null, birthDate: null},
-            countries: {name: null, population: null, size: null}
-          }}
-        });   
-    });
-</script>
+            CodeMirror.fromTextArea(document.getElementById('code'), {
+                mode: "text/x-hive",
+                // theme: "monokai",
+                indentWithTabs: true,
+                smartIndent: true,
+                lineNumbers: true,
+                matchBrackets : true,
+                autofocus: true,
+                extraKeys: {"Ctrl-Space": "autocomplete"},
+                hintOptions: {tables: {
+                users: {name: null, score: null, birthDate: null},
+                    countries: {name: null, population: null, size: null}
+                }}
+            });   
+        });
+    </script>
 {% endblock %}
 
 {% block content %}
-<div class="content-wrapper">
-    <section class="content-header">
-        <h1>SQL Lab</h1>
-        <ol class="breadcrumb">
-            <li><a href="{% url 'dashboard:index' %}"><i class="fa fa-dashboard"></i> 仪表盘 <small>[Dashboard]</small> </a></li>
-            <li><a href="#"><i class="fa fa-area-chart"></i>数据展示 <small>[Performance]</small></a></li>
-            <li class="active"><i class="fa fa-flask"></i> SQL Lab</small></li>
-        </ol>
-    </section>
-    <section class="content">
-      <div class="row">
-        <div class="col-md-4">
-          <!-- 数据库&表 -->
-          <div class="box box-danger">
-            <div class="box-header with-border">
-              <h3 class="box-title">数据库 <small> [Databases]</small> </h3>
-              <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>
-              </div>
-            </div>
-            <div class="box-body">
-              <div class="form-group">
-                <select class="form-control select2" style="width: 100%;">
-                  <option selected="selected">Alabama</option>
-                  <option>Alaska</option>
-                  <option>California</option>
-                  <option>Delaware</option>
-                  <option>Tennessee</option>
-                  <option>Texas</option>
-                  <option>Washington</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <select class="form-control select2" disabled="disabled" style="width: 100%;">
-                  <option selected="selected">Alabama</option>
-                  <option>Alaska</option>
-                  <option>California</option>
-                  <option>Delaware</option>
-                  <option>Tennessee</option>
-                  <option>Texas</option>
-                  <option>Washington</option>
-                </select>
-              </div>
-            </div>
-          </div>
-          <!-- 数据库&表 -EOF- -->
-          <!-- 表结构说明 -->
-          <div class="box box-warning">
-            <div class="box-header with-border">
-              <h3 class="box-title">表结构 <small> [Tables]</small></h3>
-              <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>
-              </div>
-            </div>
-            <div class="box-body" style="height: 300px;">
-              
-            </div>
-          </div>
-          <!-- 表结构说明 -EOF- -->
-        </div>
+    <div class="content-wrapper">
+        <section class="content-header">
+            <h1>SQL Lab</h1>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="{% url 'dashboard:index' %}"><i class="fa fa-dashboard"></i> 仪表盘 <small>[Dashboard]</small> </a>
+                </li>
+                <li>
+                    <a href="#"><i class="fa fa-area-chart"></i>数据展示 <small>[Performance]</small></a>
+                </li>
+                <li class="active">
+                    <i class="fa fa-flask"></i> SQL Lab</small>
+                </li>
+            </ol>
+        </section>
+        <section class="content">
+            <div class="row">
+                <div class="col-md-4">
+                    <!-- 数据库&表 -->
+                    <div class="box box-danger">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">数据库 <small> [Databases]</small> </h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove">
+                                    <i class="fa fa-remove"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <div class="form-group">
+                                <select class="form-control select2" style="width: 100%;">
+                                    <option selected="selected">Alabama</option>
+                                    <option>Alaska</option>
+                                    <option>California</option>
+                                    <option>Delaware</option>
+                                    <option>Tennessee</option>
+                                    <option>Texas</option>
+                                    <option>Washington</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <select class="form-control select2" disabled="disabled" style="width: 100%;">
+                                    <option selected="selected">Alabama</option>
+                                    <option>Alaska</option>
+                                    <option>California</option>
+                                    <option>Delaware</option>
+                                    <option>Tennessee</option>
+                                    <option>Texas</option>
+                                    <option>Washington</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 数据库&表 -EOF- -->
+                    <!-- 表结构说明 -->
+                    <div class="box box-warning">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">表结构 <small> [Tables]</small></h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove">
+                                    <i class="fa fa-remove"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="box-body" style="height: 300px;">
 
-        <div class="col-md-8">
-          <!-- SQL编辑器 -->
-          <div class="box box-info">
-            <div class="box-header with-border">
-              <h3 class="box-title">编辑器 <small>[SQL Editer]</small></h3>
-              <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>
-              </div>
-            </div>
-            <div class="box-body">
-              <textarea id="code" name="code">
+                        </div>
+                    </div>
+                    <!-- 表结构说明 -EOF- -->
+                </div>
+
+                <div class="col-md-8">
+                    <!-- SQL编辑器 -->
+                    <div class="box box-info">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">编辑器 <small>[SQL Editer]</small></h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-box-tool" data-widget="remove">
+                                    <i class="fa fa-remove"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <textarea id="code" name="code">
 -- SQL Mode for CodeMirror
 SELECT SQL_NO_CACHE DISTINCT
     @var1 AS `val1`, @'val2', @global.'sql_mode',
@@ -135,57 +150,57 @@ SELECT SQL_NO_CACHE DISTINCT
         TRUE, FALSE, UNKNOWN
 FROM DUAL
 LIMIT 1 OFFSET 0;
-              </textarea>
+                            </textarea>
+                        </div>
+                        <div class="box-footer">
+                            <button type="button" class="btn btn-flat btn-sm btn-success"> 
+                                <i class="icon fa fa-chevron-right"></i> 
+                                执行查询
+                            </button>
+                            <button type="button" class="btn btn-flat btn-sm btn-primary" style="margin-left: 5px;"> 
+                                <i class="icon fa fa-lg fa-save"></i> 
+                                保存查询
+                            </button>
+                        </div>
+                    </div>
+                    <!-- SQL编辑器 -EOF- -->
+                    <!-- 查询结果 -->
+                    <div class="nav-tabs-custom">
+                        <ul class="nav nav-tabs">
+                            <li>
+                                <a href="#preview" data-toggle="tab">
+                                    <i class="icon fa fa-search"></i>
+                                    预览 <small>[Preview]</small>
+                                </a>
+                            </li>
+                            <li class="active">
+                                <a href="#query-results" data-toggle="tab">
+                                    <i class="icon fa fa-table"></i>
+                                    查询结果 <small>[Results]</small>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#query-history" data-toggle="tab">
+                                    <i class="icon fa fa-history"></i>
+                                    历史查询 <small>[History]</small>
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="query-results">
+                                RESULTS
+                            </div>
+                            <div class="tab-pane" id="query-history">
+                                HISTORY
+                            </div>
+                            <div class="tab-pane" id="preview">
+                                PREVIEW
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 查询结果 -EOF- -->
+                </div>
             </div>
-            <div class="box-footer">
-              <button type="button" class="btn btn-flat btn-sm btn-success"> 
-                <i class="icon fa fa-chevron-right"></i> 
-                执行查询
-              </button>
-              <button type="button" class="btn btn-flat btn-sm btn-primary" style="margin-left: 5px;"> 
-                <i class="icon fa fa-lg fa-save"></i> 
-                保存查询
-              </button>
-            </div>
-          </div>
-          <!-- SQL编辑器 -EOF- -->
-          <!-- 查询结果 -->
-          <div class="nav-tabs-custom">
-            <ul class="nav nav-tabs">
-              <li>
-                <a href="#preview" data-toggle="tab">
-                  <i class="icon fa fa-search"></i>
-                  预览 <small>[Preview]</small>
-                </a>
-              </li>
-              <li class="active">
-                <a href="#query-results" data-toggle="tab">
-                  <i class="icon fa fa-table"></i>
-                  查询结果 <small>[Results]</small>
-                </a>
-              </li>
-              <li>
-                <a href="#query-history" data-toggle="tab">
-                  <i class="icon fa fa-history"></i>
-                  历史查询 <small>[History]</small>
-                </a>
-              </li>
-            </ul>
-            <div class="tab-content">
-              <div class="tab-pane active" id="query-results">
-                RESULTS
-              </div>
-              <div class="tab-pane" id="query-history">
-                HISTORY
-              </div>
-              <div class="tab-pane" id="preview">
-                PREVIEW
-              </div>
-            </div>
-          </div>
-          <!-- 查询结果 -EOF- -->
-        </div>
-      </div>
-    </section>
-</div>
+        </section>
+    </div>
 {% endblock %}
