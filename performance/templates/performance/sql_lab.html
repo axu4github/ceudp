@@ -1,6 +1,23 @@
 {% extends "ceudp/base.html" %}
 {% load staticfiles %}
 
+{% block customize-style %}
+  <style type="text/css">
+    .icon {
+      margin-right: 3px;
+    }
+
+    .nav-tabs-custom > .nav-tabs > li.active {
+      border-top-color: #00a65a;
+    }
+
+    .nav-tabs-custom > .tab-content {
+      height: 200px;
+    }
+
+  </style>
+{% endblock %}
+
 {% block customize-script %}
 <!-- Select2 -->
 <script src="{% static 'plugins/select2/select2.full.min.js' %}"></script>
@@ -45,10 +62,10 @@
     <section class="content">
       <div class="row">
         <div class="col-md-4">
+          <!-- 数据库&表 -->
           <div class="box box-danger">
             <div class="box-header with-border">
               <h3 class="box-title">数据库 <small> [Databases]</small> </h3>
-
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                 <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>
@@ -66,7 +83,6 @@
                   <option>Washington</option>
                 </select>
               </div>
-              <!-- /.form-group -->
               <div class="form-group">
                 <select class="form-control select2" disabled="disabled" style="width: 100%;">
                   <option selected="selected">Alabama</option>
@@ -78,10 +94,10 @@
                   <option>Washington</option>
                 </select>
               </div>
-              <!-- /.form-group -->
             </div>
           </div>
-
+          <!-- 数据库&表 -EOF- -->
+          <!-- 表结构说明 -->
           <div class="box box-warning">
             <div class="box-header with-border">
               <h3 class="box-title">表结构 <small> [Tables]</small></h3>
@@ -94,9 +110,11 @@
               
             </div>
           </div>
+          <!-- 表结构说明 -EOF- -->
         </div>
 
         <div class="col-md-8">
+          <!-- SQL编辑器 -->
           <div class="box box-info">
             <div class="box-header with-border">
               <h3 class="box-title">编辑器 <small>[SQL Editer]</small></h3>
@@ -120,9 +138,52 @@ LIMIT 1 OFFSET 0;
               </textarea>
             </div>
             <div class="box-footer">
-              <button type="button" class="btn btn-flat btn-sm btn-success"> <i class="fa fa-chevron-right" style="margin-right: 3px;"></i> 执行查询</button>
+              <button type="button" class="btn btn-flat btn-sm btn-success"> 
+                <i class="icon fa fa-chevron-right"></i> 
+                执行查询
+              </button>
+              <button type="button" class="btn btn-flat btn-sm btn-primary" style="margin-left: 5px;"> 
+                <i class="icon fa fa-lg fa-save"></i> 
+                保存查询
+              </button>
             </div>
           </div>
+          <!-- SQL编辑器 -EOF- -->
+          <!-- 查询结果 -->
+          <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+              <li>
+                <a href="#preview" data-toggle="tab">
+                  <i class="icon fa fa-search"></i>
+                  预览 <small>[Preview]</small>
+                </a>
+              </li>
+              <li class="active">
+                <a href="#query-results" data-toggle="tab">
+                  <i class="icon fa fa-table"></i>
+                  查询结果 <small>[Results]</small>
+                </a>
+              </li>
+              <li>
+                <a href="#query-history" data-toggle="tab">
+                  <i class="icon fa fa-history"></i>
+                  历史查询 <small>[History]</small>
+                </a>
+              </li>
+            </ul>
+            <div class="tab-content">
+              <div class="tab-pane active" id="query-results">
+                RESULTS
+              </div>
+              <div class="tab-pane" id="query-history">
+                HISTORY
+              </div>
+              <div class="tab-pane" id="preview">
+                PREVIEW
+              </div>
+            </div>
+          </div>
+          <!-- 查询结果 -EOF- -->
         </div>
       </div>
     </section>
