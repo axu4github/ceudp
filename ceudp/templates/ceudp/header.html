@@ -1,4 +1,13 @@
 {% load staticfiles %}
+{% block customize-style %}
+    <link href="https://fonts.googleapis.com/css?family=Norican|Pacifico" rel="stylesheet">
+    <style type="text/css">
+        .main-header .logo .logo-mini {
+            font-family: 'Norican', cursive;
+        }
+    </style>
+{% endblock%}
+
 <header class="main-header">
     <a href="#" class="logo">
         <span class="logo-mini"><b>U</b>DP</span>
