@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "rest_framework",
     "dashboard.apps.DashboardConfig",
     "performance.apps.PerformanceConfig",
     "management.apps.ManagementConfig",
@@ -136,3 +137,12 @@ AUTH_USER_MODEL = "management.User"
 
 # 默认登陆地址
 LOGIN_URL = "/management/login"
+
+# REST_FRAMEWORK settings
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}

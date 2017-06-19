@@ -34,6 +34,8 @@ urlpatterns = [
     url(r"^dashboard/", include("dashboard.urls")),
     # /performance/
     url(r"^performance/", include("performance.urls", namespace="performance")),
+    # /api/performance/
+    url(r"^api/performance/", include("performance.apis.urls", namespace="performance_api")),
     # /management/
     url(r"^management/", include("management.urls", namespace="management")),
 ]
