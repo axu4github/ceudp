@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from performance.databases.backends.base.sqlparser import SQLParser
+from performance.databases.backends.base.sqlparser import BaseSQLParser
 
 
-class SparkSQLParser(SQLParser):
+class SparkSQLParser(BaseSQLParser):
     """基础SparkSQL情况的sql语句解析器"""
 
-    def __init__(self, arg):
-        super(SparkSQLParser, self).__init__()
-        self.arg = arg
+    def __init__(self, sql_query):
+        super(SparkSQLParser, self).__init__(sql_query)
