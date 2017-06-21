@@ -3,12 +3,13 @@ from __future__ import unicode_literals
 from django.db import models
 from management.models import User
 from performance.settings import settings
-from performance.databases.backends.sparksql import SparkSQL
+from performance.databases.backends.spark.sparksql import SparkSQLBackend
 
 """
 # 参考文档
 - [字段类型](https://docs.djangoproject.com/en/1.11/ref/models/fields/)
 """
+
 
 class Query(models.Model):
     """查询表"""
@@ -22,7 +23,10 @@ class Query(models.Model):
     user = models.ForeignKey(User, verbose_name="执行人")
 
     def execute(self):
-        return SparkSQL().sql(self.query)
+        if self.query is None:
+            raise Exception("param query must have values!")
+
+        return SparkSQLBackend().sql(self.query)
 
     def __unicode__(self):
         return self.query

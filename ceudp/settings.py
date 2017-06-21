@@ -147,7 +147,7 @@ REST_FRAMEWORK = {
     ]
 }
 
-
+# 日志配置
 LOG_FILE = os.path.join(BASE_DIR, "logs", "cedup.log")
 LOGGER_NAME = "common"
 LOGGING = {
@@ -168,7 +168,7 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
             'filename': LOG_FILE,
-            'formatter': 'verbose', 
+            'formatter': 'verbose',
         },
     },
     'loggers': {
@@ -179,3 +179,7 @@ LOGGING = {
         },
     }
 }
+# 日志配置 -EOF-
+
+# 默认应用名称
+DEFAULT_APPLICATION_NAME = "CEUDP"
