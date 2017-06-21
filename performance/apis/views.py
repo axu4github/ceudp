@@ -20,6 +20,7 @@ class QueryViewSet(mixins.CreateModelMixin,
     def get_queryset(self):
         return Query.objects.filter(user=self.request.user)
 
+
     def create(self, request):
         self.log_debug("request datas: [{request_data}]".format(request_data=request.data))
         serializer = self.get_serializer(data=request.data)
@@ -28,17 +29,11 @@ class QueryViewSet(mixins.CreateModelMixin,
         # try:
         #     query_results = new_query.execute()
         #     new_query.save(
-        #         executed_query=query_results["executed_query"],
-        #         duration=query_results["duration"],
-        #         rows=query_results["rows"],
-        #         status=settings.QUERY_STASTUS[settings.SUCCESS],
+        #         executed_query=query_results["executed_query"], duration=query_results["duration"],
+        #         rows=query_results["rows"], status=settings.QUERY_STASTUS[settings.SUCCESS],
         #     )
         # except Exception as e:
-        #     new_query.save(
-        #         status=settings.QUERY_STASTUS[settings.FAILED], 
-        #         error_messages=e
-        #     )
-
+        #     new_query.save(status=settings.QUERY_STASTUS[settings.FAILED], error_messages=e)
         return Response(new_query.query)
 
     def list(self, request):
