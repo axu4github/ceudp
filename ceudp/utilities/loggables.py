@@ -10,7 +10,7 @@ class Loggable(object):
     logger = logging.getLogger(settings.LOGGER_NAME)
 
     def get_message(self, message):
-        return "{class_name}, {message}".format(class_name=self.__class__.__name__, message=message)
+        return "{class_name} {message}".format(class_name=self.__class__.__name__, message=message)
 
     def log_debug(self, message):
         self.logger.debug(self.get_message(message))
