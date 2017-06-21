@@ -48,7 +48,11 @@ class SparkSQLBackend(Loggable):
         pass
 
     def pagination(self, start=0):
-        """分页"""
+        """
+        分页
+        
+        `pagination` 单词出处（http://www.django-rest-framework.org/api-guide/pagination/）
+        """
         pass
 
     def sql(self, sql_query):
