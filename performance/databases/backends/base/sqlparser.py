@@ -9,27 +9,22 @@ from sqlparse.tokens import Whitespace, Newline
 - https://sqlparse.readthedocs.io/en/latest/
 """
 
+
 class BaseSQLParser(Loggable):
     """基础SQL解析器"""
 
     def __init__(self, sql_query):
         super(BaseSQLParser, self).__init__()
-        self.sql_query = sql_query
-
-    def flat_tokens(self, parsed):
-        """将所有的token扁平化放在一个生成器中"""
-        for item in parsed.tokens:
-            if item.is_group:
-                for x in self.flat_tokens(item):
-                    yield x
-            else:
-                yield item
+        self.sql_query = sql_query  # 原始SQL
+        self.formated = self.format(keyword_case="upper")  # 格式化后的SQL
 
     def format(self, **kwargs):
-        """格式化SQL"""
+        """
+        格式化SQL
+        **kwargs 参数参考文档：https://sqlparse.readthedocs.io/en/latest/api/#formatting
+        """
         sql = ""
-        parsed = sqlparse.parse(self.sql_query)[0]
-        for item in self.flat_tokens(parsed):
+        for item in sqlparse.parse(self.sql_query)[0].flatten():
             item_type = item.ttype
             if item_type is Newline:
                 pass
