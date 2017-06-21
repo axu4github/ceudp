@@ -54,7 +54,6 @@
                 "scrollCollapse": true,
                 "iDisplayLength" : 10, // 设置单页显示数量
                 "ajax": {
-                    // "url": "/api/performance/querys/",
                     "url": "{% url 'performance_api:query-list' %}",
                     "method": "GET",
                     "timeout": 5000,
