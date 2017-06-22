@@ -59,15 +59,16 @@ class BaseSQLParser(Loggable):
         OrderedDict([
             (u'SELECT', [u' ', u'*', u' ']), 
             (u'FROM', [u' ', u'TABLE', u' ', u'AS', u' ', u't', u' ', u"WHERE t.a='1' AND t.b='2' "]), 
-            (u'GROUP BY', [u' ', u't.c', u' ']), (u'ORDER BY', [u' ', u't.d DESC', u' ']), 
+            (u'GROUP BY', [u' ', u't.c', u' ']), 
+            (u'ORDER BY', [u' ', u't.d DESC', u' ']), 
             (u'LIMIT', [u' ', u'1', u' ']), 
             (u'OFFSET', [u' ', u'2']), 
-            (u';', [';'])
+            (u';', [u';'])
         ])
         ```
         """
         main_construction = OrderedDict()
-        is_append = True # 为了处理`GROUP BY` 和 `ORDER BY` 中间的空格
+        is_append = True  # 为了处理`GROUP BY` 和 `ORDER BY` 中间的空格
         for item in sqlparse.parse(self.formated)[0].tokens:
             # 处理 `SELECT`
             if item.ttype is DML and "SELECT" == item.value.upper():
@@ -91,6 +92,7 @@ class BaseSQLParser(Loggable):
             # 处理分号 `;`
             elif item.ttype is Punctuation and ";" == item.value:
                 main_construction[current_keyword] = tmp_values
+                main_construction[item.value] = [item.value]
             # 处理值和空格（`Whitespace`）
             else:
                 if is_append:

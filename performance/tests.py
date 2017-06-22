@@ -35,7 +35,9 @@ class BaseSQLParserTest(TestCase):
         self.assertTrue("ORDER BY" in main_construction, main_construction)
         self.assertTrue("OFFSET" in main_construction, main_construction)
         self.assertEqual(
-            2, int("".join(main_construction.get("OFFSET")).strip()), int("".join(main_construction.get("OFFSET")).strip()))
+            2, int("".join(main_construction.get("OFFSET")).strip()), main_construction)
+        self.assertEqual(
+            ";", "".join(main_construction.get(";")).strip(), main_construction)
 
 
 class SparkSQLRunEnvTests(TestCase):
