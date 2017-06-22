@@ -92,10 +92,22 @@ class BaseSQLParser(Loggable):
             # 处理分号 `;`
             elif item.ttype is Punctuation and ";" == item.value:
                 main_construction[current_keyword] = tmp_values
-                main_construction[item.value] = [item.value]
+                main_construction[item.value] = []
             # 处理值和空格（`Whitespace`）
             else:
                 if is_append:
                     tmp_values.append(item.value)
 
         return main_construction
+
+    def print_main_construction(self, main_construction=None):
+        """通过主结构对象返回SQL"""
+        sql = ""
+
+        if main_construction is None:
+            main_construction = self.main_construction
+
+        for keyword, values in main_construction.items():
+            sql += keyword + "".join(values)
+
+        return sql

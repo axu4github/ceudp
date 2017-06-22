@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from django.test import TestCase
 from performance.databases.backends.base.sqlparser import BaseSQLParser
 import sqlparse
+from collections import OrderedDict
 
 
 class BaseSQLParserTest(TestCase):
@@ -36,8 +37,26 @@ class BaseSQLParserTest(TestCase):
         self.assertTrue("OFFSET" in main_construction, main_construction)
         self.assertEqual(
             2, int("".join(main_construction.get("OFFSET")).strip()), main_construction)
-        self.assertEqual(
-            ";", "".join(main_construction.get(";")).strip(), main_construction)
+        self.assertTrue(";" in main_construction, main_construction)
+
+    def test_print_main_construction_func(self):
+        sql = """
+            select username, 
+
+
+                passwd, * from table_a as       ta, A,            B, (select      * from  
+                table_b as tb) 
+            group by A.a, B.a    order by tb.a 
+            limit 1
+            offset 2
+                ;
+        """
+        sqlparser = BaseSQLParser(sql)
+        mc = sqlparser.main_construction
+        self.assertTrue(isinstance(mc, OrderedDict), mc)
+
+        mc_sql = sqlparser.print_main_construction(main_construction)
+        self.assertEqual(sqlparser.formated, mc_sql, mc_sql)
 
 
 class SparkSQLRunEnvTests(TestCase):
