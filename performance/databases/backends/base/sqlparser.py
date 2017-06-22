@@ -36,9 +36,9 @@ class BaseSQLParser(Loggable):
             else:
                 sql += item.value
 
-        sql = sqlparse.format(sql.strip(), **kwargs)
+        sql = sqlparse.format(sql.strip(), **kwargs).strip()
         # 如果不存在分号（`;`），则在最后添加分号（`;`）。
-        if ";" not in sql and ";" != sql.endswith():
+        if ";" not in sql and not sql.endswith(";"):
             sql += ";"
 
         return sql
@@ -108,6 +108,10 @@ class BaseSQLParser(Loggable):
             main_construction = self.main_construction
 
         for keyword, values in main_construction.items():
-            sql += keyword + "".join(values)
+            # 解决 "SELECT * FROM tLIMIT 40" 这种问题
+            if sql != "" and not sql.endswith(" "):
+                sql += " " + keyword + "".join(values)
+            else:
+                sql += keyword + "".join(values)
 
-        return sql
+        return sql.strip()

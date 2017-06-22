@@ -50,8 +50,7 @@ class PerformanceConfigurtion(AppConf):
     # SPARK_ENVS -EOF-
 
     # SQLParser 配置
-    DEFAULT_OFFSET = 0  # 默认分页配置
-    DEFAULT_LIMIT = 20  # 默认分页配置
+    PER_PAGE_ROWS = 20 # 单页显示记录数
     # SQLParser -EOF-
 
     class Meta:
