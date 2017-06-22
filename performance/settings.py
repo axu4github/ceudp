@@ -49,6 +49,11 @@ class PerformanceConfigurtion(AppConf):
 
     # SPARK_ENVS -EOF-
 
+    # SQLParser 配置
+    DEFAULT_OFFSET = 0  # 默认分页配置
+    DEFAULT_LIMIT = 20  # 默认分页配置
+    # SQLParser -EOF-
+
     class Meta:
         """如果设置了前缀那么，调用配置的时候也要加上前缀调用。"""
         prefix = ""
