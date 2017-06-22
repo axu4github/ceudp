@@ -6,6 +6,7 @@ from collections import OrderedDict
 from django.test import TestCase
 from performance.databases.backends.base.sqlparser import BaseSQLParser
 from performance.databases.backends.spark.spark_sqlparser import SparkSQLParser
+from performance.databases.backends.spark.sparksql import SparkSQL
 
 
 class BaseSQLParserTest(TestCase):
@@ -120,6 +121,12 @@ class SparkSQLParserTest(TestCase):
         self.assertTrue(not count_sql[1])
 
 
-class SparkSQLRunEnvTests(TestCase):
+class SparkSQLRunEnvTest(TestCase):
     """Spark SQL 运行环境测试"""
     pass
+
+
+class SparkSQLClassTest(TestCase):
+
+    def test_sql_func(self):
+        pass

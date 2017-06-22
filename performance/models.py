@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from django.db import models
 from management.models import User
 from performance.settings import settings
-from performance.databases.backends.spark.sparksql import SparkSQLBackend
+from performance.databases.backends.spark.sparksql import SparkSQL
 
 """
 # 参考文档
@@ -24,9 +24,9 @@ class Query(models.Model):
 
     def execute(self):
         if self.query is None:
-            raise Exception("param query must have values!")
+            raise Exception("param query is None.")
 
-        return SparkSQLBackend().sql(self.query)
+        return SparkSQL().sql(self.query)
 
     def __unicode__(self):
         return self.query

@@ -13,6 +13,7 @@ class SparkSQLParser(BaseSQLParser):
             raise Exception("page_number invalid")
 
         self.page_number = int(page_number)
+        self.per_page_rows = settings.PER_PAGE_ROWS
         self.limit = None
 
         super(SparkSQLParser, self).__init__(sql_query)
@@ -60,20 +61,25 @@ class SparkSQLParser(BaseSQLParser):
         # 生成执行查询语句
 
         # 规则
-        - 若原始SQL中存在`LIMIT`参数，且 `LIMIT` < `settings.PER_PAGE_ROWS * self.page_number`，是第一页 => 查 `self.limit` 条
-        - 若原始SQL中存在`LIMIT`参数，且 `LIMIT` >= `settings.PER_PAGE_ROWS * self.page_number` => 查`settings.PER_PAGE_ROWS * self.page_number`条
-        - 若原始SQL中不存在`LIMIT`参数，查`settings.PER_PAGE_ROWS * self.page_number`条 
+        - 若原始SQL中存在`LIMIT`参数，且 `LIMIT` < `self.per_page_rows * self.page_number`，是第一页 => 查 `self.limit` 条
+        - 若原始SQL中存在`LIMIT`参数，且 `LIMIT` >= `self.per_page_rows * self.page_number` => 查`self.per_page_rows * self.page_number`条
+        - 若原始SQL中不存在`LIMIT`参数，查`self.per_page_rows * self.page_number`条 
         """
         limit = self.limit
-        if limit is None or limit > settings.PER_PAGE_ROWS * self.page_number:
-            limit = settings.PER_PAGE_ROWS * self.page_number
+        if limit is None or limit > self.per_page_rows * self.page_number:
+            limit = self.per_page_rows * self.page_number
 
         mc = self.main_construction
         mc["LIMIT"] = [" ", str(limit), " "]
         return self.print_main_construction(mc)
 
     def get_pagination(self):
-        return self.limit
+        start = (self.page_number - 1) * self.per_page_rows
+        end = start + self.per_page_rows
+        if self.limit is not None and self.limit < end:
+            end = self.limit
+
+        return (start, end)
 
     def remove_orderby_if_exists(self, main_construction):
         """若存在`ORDER BY`则删除"""

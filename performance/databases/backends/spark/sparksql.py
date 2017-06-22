@@ -7,7 +7,7 @@ from pyspark import SparkConf
 from time import time
 
 
-class SparkSQLBackend(Loggable):
+class SparkSQL(Loggable):
     """
     SparkSQL 执行引擎
 
@@ -15,7 +15,7 @@ class SparkSQLBackend(Loggable):
     """
 
     def __init__(self, *arg, **kwargs):
-        super(SparkSQLBackend, self).__init__(*arg, **kwargs)
+        super(SparkSQL, self).__init__(*arg, **kwargs)
         self._init_spark_conf(*arg, **kwargs)
         self._init_spark_session(*arg, **kwargs)
 
@@ -43,30 +43,54 @@ class SparkSQLBackend(Loggable):
         duration = time() - start_microsecond
         return (duration, query_set)
 
-    def count(self, sql_query):
+    def count(self, count_sql, need_count=True):
         """获取查询总数"""
-        pass
+        start_microsecond = time()  # 毫秒
+        if need_count:
+            total = int(self.spark.sql(count_sql).count())
+        else:
+            total = int(self.spark.sqk(count_sql).collect()[0].asDict()['cnt'])
 
-    def pagination(self, start=0):
+        duration = time() - start_microsecond
+        return (duration, total)
+
+    def pagination(self, query_set, start, end):
         """
         分页
-        
+
         `pagination` 单词出处（http://www.django-rest-framework.org/api-guide/pagination/）
         """
-        pass
+        return query_set[start:end]
 
-    def sql(self, sql_query):
+    def sql(self, sql_query, page_number=1):
         """SQL查询"""
-        sqlparser = SparkSQLParser(sql_query)
-        start = sqlparser.start()
-        (count_duration, rows) = self.count(sqlparser.count())
-        (perform_duration, query_set) = self.perform_sql(sqlparser.executed())
-        (page_duration, paged_query_set) = self.pagination(query_set, start)
-        duration = count_duration + perform_duration + page_duration
+
+        # 解析SQL
+        sqlparser = SparkSQLParser(sql_query, page_number)
+
+        # 执行查询总数
+        (count_sql, need_count) = sqlparser.generate_count_sql()
+        (count_duration, total) = self.count(count_sql, need_count)
+        self.log_info(
+            "- COUNT SQL: {s}, DURATION: {d}".format(s=count_sql, d=count_duration))
+
+        # 执行查询条件
+        sql_query = sqlparser.generate_execute_sql()
+        (perform_duration, query_set) = self.perform_sql(sql_query)
+        self.log_info(
+            "- EXECUTE SQL: {s}, DURATION: {d}".format(s=sql_query, d=perform_duration))
+
+        # 进行分页
+        (start, end) = sqlparser.get_pagination()
+        paged_query_set = self.pagination(query_set, start, end)
+
+        # 计算查询时长
+        duration = count_duration + perform_duration
+
         return {
-            "rows": rows,  # 查询总数量
+            "total": total,  # 查询总数量
             "duration": duration,  # 查询时间
-            "start": start,  # 分页起始数量
+            "page_number": page_number,  # 分页起始数量
             "executed_query": sqlparser.format(),  # 执行查询语句
             "data": paged_query_set,  # 查询结果集
         }
