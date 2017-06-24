@@ -29,6 +29,10 @@ class SparkSQL(Loggable):
             for k, v in settings.SPARK_CONFS.items():
                 self.spark_conf.set(k, v)
 
+        # if kwargs is not None:
+        #     for k, v in kwargs.items():
+        #         self.spark_conf.set(k, v)
+
     def _init_spark_session(self, *arg, **kwargs):
         """获取或者申请SparkSession"""
         self.spark = SparkSession.builder \
@@ -36,9 +40,11 @@ class SparkSQL(Loggable):
             .enableHiveSupport() \
             .getOrCreate()
 
-        self.spark.sparkContext.setLogLevel('ERROR')
+        # 设置Spark打印日志级别
+        self.spark.sparkContext.setLogLevel(settings.SPARK_LOG_LEVEL)
 
     def get_spark_session(self):
+        """获得spark_session"""
         return self.spark
 
     def perform_sql(self, sql_query):
@@ -46,7 +52,8 @@ class SparkSQL(Loggable):
         start_microsecond = time()  # 毫秒
         df = self.spark.sql(sql_query)  # data frame
         columns = df.columns
-        query_set = df.collect()
+        # 将 Row 转化成为 Dict
+        query_set = map(lambda row: row.asDict(), df.collect())
         duration = time() - start_microsecond
         return (duration, query_set, columns)
 

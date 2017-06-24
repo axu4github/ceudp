@@ -48,6 +48,9 @@ class PerformanceConfigurtion(AppConf):
     if 'SPARK_HOME' not in os.environ:
         os.environ['SPARK_HOME'] = SPARK_HOME
 
+    # Spark执行程序日志级别
+    SPARK_LOG_LEVEL = "ERROR"
+
     # SPARK_ENVS -EOF-
 
     # SQLParser 配置
