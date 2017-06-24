@@ -44,9 +44,11 @@ class SparkSQL(Loggable):
     def perform_sql(self, sql_query):
         """执行SQL查询，返回执行时间和结果"""
         start_microsecond = time()  # 毫秒
-        query_set = self.spark.sql(sql_query).collect()
+        df = self.spark.sql(sql_query)  # data frame
+        columns = df.columns
+        query_set = df.collect()
         duration = time() - start_microsecond
-        return (duration, query_set)
+        return (duration, query_set, columns)
 
     def count(self, count_sql, need_count=True):
         """获取查询总数"""
@@ -65,7 +67,10 @@ class SparkSQL(Loggable):
 
         `pagination` 单词出处（http://www.django-rest-framework.org/api-guide/pagination/）
         """
-        return query_set[start:end]
+        start_microsecond = time()  # 毫秒
+        paged = query_set[start:end]
+        duration = time() - start_microsecond
+        return (duration, paged)
 
     def sql(self, sql_query, page_number=1):
         """SQL查询"""
@@ -81,21 +86,24 @@ class SparkSQL(Loggable):
 
         # 执行查询条件
         sql_query = sqlparser.generate_execute_sql()
-        (perform_duration, query_set) = self.perform_sql(sql_query)
+        (perform_duration, query_set, columns) = self.perform_sql(sql_query)
         self.log_info(
             "- EXECUTE SQL: {s}, DURATION: {d}".format(s=sql_query, d=perform_duration))
 
         # 进行分页
         (start, end) = sqlparser.get_pagination()
-        paged_query_set = self.pagination(query_set, start, end)
+        (page_duration, paged_query_set) = self.pagination(query_set, start, end)
+        self.log_info(
+            "- PAGINATION DURATION: {d}".format(d=page_duration))
 
         # 计算查询时长
-        duration = count_duration + perform_duration
+        duration = count_duration + perform_duration + page_duration
 
         return {
             "total": total,  # 查询总数量
             "duration": duration,  # 查询时间
             "page_number": page_number,  # 分页起始数量
             "executed_query": sqlparser.format(),  # 执行查询语句
+            "columns": columns,
             "data": paged_query_set,  # 查询结果集
         }
