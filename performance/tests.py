@@ -129,4 +129,4 @@ class SparkSQLRunEnvTest(TestCase):
 class SparkSQLClassTest(TestCase):
 
     def test_sql_func(self):
-        pass
+        print SparkSQL().sql("show tables;")

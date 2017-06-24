@@ -33,8 +33,8 @@ class SparkSQL(Loggable):
         """获取或者申请SparkSession"""
         self.spark = SparkSession.builder \
             .config(conf=self.spark_conf) \
-            .enableHiveSupport() \
             .getOrCreate()
+            # .enableHiveSupport() \
 
     def perform_sql(self, sql_query):
         """执行SQL查询，返回执行时间和结果"""
@@ -49,7 +49,7 @@ class SparkSQL(Loggable):
         if need_count:
             total = int(self.spark.sql(count_sql).count())
         else:
-            total = int(self.spark.sqk(count_sql).collect()[0].asDict()['cnt'])
+            total = int(self.spark.sql(count_sql).collect()[0].asDict()['cnt'])
 
         duration = time() - start_microsecond
         return (duration, total)
