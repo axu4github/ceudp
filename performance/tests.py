@@ -129,4 +129,5 @@ class SparkSQLRunEnvTest(TestCase):
 class SparkSQLClassTest(TestCase):
 
     def test_sql_func(self):
-        print SparkSQL().sql("show tables;")
+        print SparkSQL().sql("select count(name) from people group by name order by name desc limit 1;")
+        # pass

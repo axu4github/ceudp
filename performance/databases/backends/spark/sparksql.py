@@ -33,8 +33,13 @@ class SparkSQL(Loggable):
         """获取或者申请SparkSession"""
         self.spark = SparkSession.builder \
             .config(conf=self.spark_conf) \
+            .enableHiveSupport() \
             .getOrCreate()
-            # .enableHiveSupport() \
+
+        self.spark.sparkContext.setLogLevel('ERROR')
+
+    def get_spark_session(self):
+        return self.spark
 
     def perform_sql(self, sql_query):
         """执行SQL查询，返回执行时间和结果"""

@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from performance.databases.backends.base.sqlparser import BaseSQLParser
 from performance.settings import settings
+from copy import copy
 
 
 class SparkSQLParser(BaseSQLParser):
@@ -45,7 +46,8 @@ class SparkSQLParser(BaseSQLParser):
         - 若既不存在`GROUP BY`，且不存在`LIMIT`则将`SELECT`和`FROM`中间的内容替换成为`COUNT(*) AS cnt`
         """
         need_count = True  # 在SparkSQL处理的时候是否最后执行.count()操作
-        mc = self.main_construction
+
+        mc = copy(self.main_construction)
         if self.limit is not None:
             mc["LIMIT"] = [" ", str(self.limit), " "]
 
@@ -69,7 +71,7 @@ class SparkSQLParser(BaseSQLParser):
         if limit is None or limit > self.per_page_rows * self.page_number:
             limit = self.per_page_rows * self.page_number
 
-        mc = self.main_construction
+        mc = copy(self.main_construction)
         mc["LIMIT"] = [" ", str(limit), " "]
         return self.print_main_construction(mc)
 
