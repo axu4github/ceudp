@@ -65,5 +65,6 @@ class QueryViewSet(mixins.CreateModelMixin,
 
     def list(self, request):
         """获取历史查询记录的接口"""
-        reponses = super(QueryViewSet, self).list(request)
-        return reponses
+        query_set = map(lambda q: q.as_dict(),
+                        Query.objects.filter(user=self.request.user))
+        return Response(query_set)

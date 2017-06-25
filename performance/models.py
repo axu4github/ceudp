@@ -4,6 +4,7 @@ from django.db import models
 from management.models import User
 from performance.settings import settings
 from performance.databases.backends.spark.sparksql import SparkSQL
+from django.forms.models import model_to_dict
 
 """
 # 参考文档
@@ -28,6 +29,11 @@ class Query(models.Model):
             raise Exception("param query is None.")
 
         return SparkSQL().sql(self.query, page_number)
+
+    def as_dict(self):
+        instance_dict = model_to_dict(self)
+        instance_dict["created"] = self.created
+        return instance_dict
 
     def __unicode__(self):
         return self.query
