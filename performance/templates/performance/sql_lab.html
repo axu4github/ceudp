@@ -64,7 +64,7 @@
                 },
                 "columns": [
                     { 
-                        "data": "status", "title": "状态",
+                        "data": "status", "title": "状态", "width": "30px",
                         "render": function(status){
                             switch (status) {
                                 case "0":
@@ -74,24 +74,35 @@
                                     return "<span class='label label-danger'>失败</span>";
                                     break;
                                 default:
-                                    return "<span class='label label-default'>未知状态</span>";
+                                    return "<span class='label label-default'>未知</span>";
                             }
                         },
                     },
                     { 
-                        "data": "created", "title": "创建时间",
+                        "data": "created", "title": "创建时间", "width": "90px",
                         "render": function(created){
                             var date = new Date(created);
                             return date.toLocaleDateString() + " " + date.toLocaleTimeString();
                         },
                     },
-                    { "data": "duration", "title": "耗时" },
-                    { 
-                        "data": "rows", "title": "数量",
-                    },
                     { 
                         "data": "query", "title": "SQL", 
-                    }
+                    },
+                    { 
+                        "data": "duration", "title": "耗时", "width": "30px",
+                        "render": function(duration){
+                            if (duration != 0)
+                                duration = duration.toFixed(2);
+
+                            return duration;
+                        },
+                    },
+                    { 
+                        "data": "rows", "title": "总数", "width": "30px",
+                    },
+                    { 
+                        "data": "page_number", "title": "页数", "width": "30px",
+                    },
                 ],
             });
 
@@ -257,6 +268,7 @@ LIMIT 1 OFFSET 0;
                                             <th>created</th>
                                             <th>duration</th>
                                             <th>total</th>
+                                            <th>page_number</th>
                                             <th>query</th>
                                         </tr>
                                     </thead>
