@@ -14,4 +14,4 @@ class QuerySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Query
-        fields = "__all__"
+        fields = ["query", "page_number", ]
