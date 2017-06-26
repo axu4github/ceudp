@@ -131,12 +131,17 @@
                     }
                 }
             }); 
-             
-            $("#execute_query_btn").on("click", function(){
+
+            // 执行SQL查询
+            function executed_query(sql_query, page_number) {
+                // 同步 Ajax
                 $.ajax({
                     type: "POST",
                     url: "{% url 'performance_api:query-list' %}",
-                    data: {"query": code_editor.getValue(), "csrfmiddlewaretoken": "{{ csrf_token }}"},
+                    data: {
+                        "query": sql_query, 
+                        "page_number": page_number,
+                        "csrfmiddlewaretoken": "{{ csrf_token }}",},
                     async: false,
                     success: function(response){
                         columns = response.response_set.columns;
@@ -148,7 +153,12 @@
                         alert("error");
                     },
                 });
-
+            }
+             
+            $("#execute_query_btn").on("click", function(){
+                page_number = 1;
+                // 执行SQL查询
+                executed_query(code_editor.getValue(), page_number);
                 // 重新过去查询历史记录
                 query_history_table.ajax.reload();
 
@@ -185,11 +195,13 @@
                         "last": "最后一页",
                     },
                 },
-                "searching": true,
+                "info": false,
+                "paging": false,
+                "searching": false,
                 "ordering": false,
                 "bLengthChange": false, // 是否启动可以改变单页数量
                 "scrollCollapse": true,
-                "iDisplayLength" : 20, // 设置单页显示数量
+                "iDisplayLength" : 10, // 设置单页显示数量
                 "scrollX": true,
             });
         }
