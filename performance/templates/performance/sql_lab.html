@@ -32,6 +32,7 @@
         var code_editor = null;
         var query_history_table = null; 
         var query_result_table = null;
+        var page_number = 1;
 
         $(function(){
             $(".select2").select2({
@@ -131,42 +132,16 @@
                     }
                 }
             }); 
-
-            // 执行SQL查询
-            function executed_query(sql_query, page_number) {
-                // 同步 Ajax
-                $.ajax({
-                    type: "POST",
-                    url: "{% url 'performance_api:query-list' %}",
-                    data: {
-                        "query": sql_query, 
-                        "page_number": page_number,
-                        "csrfmiddlewaretoken": "{{ csrf_token }}",},
-                    async: false,
-                    success: function(response){
-                        columns = response.response_set.columns;
-                        data = response.response_set.data;
-                        console.info(columns, data);
-                        bulid_query_result_table(columns, data);
-                    },
-                    error: function(){
-                        alert("error");
-                    },
-                });
-            }
              
             $("#execute_query_btn").on("click", function(){
                 page_number = 1;
                 // 执行SQL查询
                 executed_query(code_editor.getValue(), page_number);
-                // 重新过去查询历史记录
-                query_history_table.ajax.reload();
-
             });
         });
 
-        function bulid_query_result_table(columns, data) {
-            columns_arr = []
+        function bulid_query_result_table(columns, data, response_set) {
+            var columns_arr = [];
             for (var i = 0; i < columns.length; i++){
                 columns_arr.push({"data": columns[i], "title": columns[i]})
             }
@@ -203,7 +178,71 @@
                 "scrollCollapse": true,
                 "iDisplayLength" : 10, // 设置单页显示数量
                 "scrollX": true,
+                "dom": "lrtip<'#pagination-toolbar'>",
             });
+            
+            // 分页按钮
+            var pagination_toolbar = "<div class='box-footer'>" +
+                "共<span id='total'>" + response_set.total + "</span>条" +
+                "<div class='btn-group pull-right'>" +
+                    "<button id='previous' type='button' class='btn btn-default'>上一页</button>" +
+                    "<button id='next' type='button' class='btn btn-default'>下一页</button>" +
+                "</div>" +
+            "</div>";
+            
+            $("#pagination-toolbar").html(pagination_toolbar);
+
+            // 判断若是第一页，则设置上一页为失效
+            if (page_number == 1) {
+                var previous_btn = $("div#pagination-toolbar button#previous");
+                previous_btn.addClass("disabled"); // 设置失效效果
+                previous_btn.attr("disabled", "true"); // 设置按钮不能点
+            }
+
+            // 判断若是最后一页，则设置下一页为失效
+            if (page_number * 10 >= response_set.total) {
+                var next_btn = $("div#pagination-toolbar button#next");
+                next_btn.addClass("disabled"); // 设置失效效果
+                next_btn.attr("disabled", "true"); // 设置按钮不能点
+            }
+
+            $("div#pagination-toolbar button#previous").on("click", function(){
+                if (page_number != 1) page_number = page_number - 1;
+                executed_query(code_editor.getValue(), page_number);
+            });
+
+            $("div#pagination-toolbar button#next").on("click", function(){
+                page_number = page_number + 1;
+                executed_query(code_editor.getValue(), page_number);
+            });
+        }
+
+        // 执行SQL查询
+        function executed_query(sql_query, page_number) {
+            console.info(sql_query, page_number);
+            // 同步 Ajax
+            $.ajax({
+                type: "POST",
+                url: "{% url 'performance_api:query-list' %}",
+                data: {
+                    "query": sql_query, 
+                    "page_number": page_number,
+                    "csrfmiddlewaretoken": "{{ csrf_token }}",},
+                async: false,
+                success: function(response){
+                    var response_set = response.response_set;
+                    var columns = response_set.columns;
+                    var data = response_set.data;
+                    console.info(columns, data, response_set);
+                    bulid_query_result_table(columns, data, response_set);
+                },
+                error: function(){
+                    alert("error");
+                },
+            });
+
+            // 重新过去查询历史记录
+            query_history_table.ajax.reload();
         }
     </script>
 {% endblock %}
@@ -331,6 +370,15 @@
                         <div class="tab-content">
                             <div class="tab-pane active" id="query-results">
                                 <table id="query-result-table" class="table table-striped table-bordered query-result-table"></table>
+                                <!--
+                                <div class="box-footer">
+                                    共<span id="total">20</span>条
+                                    <div class="btn-group pull-right">
+                                        <button type="button" class="btn btn-default">上一页</button>
+                                        <button type="button" class="btn btn-default">下一页</button>
+                                    </div>
+                                </div>
+                                -->
                             </div>
                             <div class="tab-pane" id="query-history">
                                 <table id="query-history-table" class="table table-striped table-bordered">
