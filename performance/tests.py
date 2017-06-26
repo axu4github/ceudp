@@ -87,19 +87,19 @@ class SparkSQLParserTest(TestCase):
 
         sql = "select * from t limit 30"
         executed_sql = SparkSQLParser(sql).generate_execute_sql()
-        self.assertEqual("SELECT * FROM t LIMIT 20", executed_sql)
+        self.assertEqual("SELECT * FROM t LIMIT 10", executed_sql)
 
         sql = "select * from t limit 30;"
         executed_sql = SparkSQLParser(sql, 2).generate_execute_sql()
-        self.assertEqual("SELECT * FROM t LIMIT 30", executed_sql)
+        self.assertEqual("SELECT * FROM t LIMIT 20", executed_sql)
 
         sql = "select t.a as a from t"
         executed_sql = SparkSQLParser(sql, 2).generate_execute_sql()
-        self.assertEqual("SELECT t.a AS a FROM t LIMIT 40", executed_sql)
+        self.assertEqual("SELECT t.a AS a FROM t LIMIT 20", executed_sql)
 
         sql = "select * from live_on_hive_csr where csrid = \"asdasdasd\";"
         executed_sql = SparkSQLParser(sql).generate_execute_sql()
-        self.assertEqual("SELECT * FROM live_on_hive_csr WHERE csrid = \"asdasdasd\" LIMIT 20", executed_sql)
+        self.assertEqual("SELECT * FROM live_on_hive_csr WHERE csrid = \"asdasdasd\" LIMIT 10", executed_sql)
 
     def test_generate_count_sql_func(self):
         sql = "select sum(t.a) as sum_a from t group by t.a"
