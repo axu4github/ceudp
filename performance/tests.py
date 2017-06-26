@@ -21,7 +21,7 @@ class BaseSQLParserTest(TestCase):
         """
         formated = BaseSQLParser(sql).formated
         self.assertEqual(
-            formated, "SELECT username, passwd, * FROM table_a AS ta, A, B, (SELECT * FROM table_b AS tb);", formated)
+            formated, "SELECT username, passwd, * FROM table_a AS ta, A, B, (SELECT * FROM table_b AS tb)", formated)
 
     def test_formart_main_construction_func(self):
         sql = """
@@ -40,7 +40,7 @@ class BaseSQLParserTest(TestCase):
         self.assertTrue("OFFSET" in main_construction, main_construction)
         self.assertEqual(
             2, int("".join(main_construction.get("OFFSET")).strip()), main_construction)
-        self.assertTrue(";" in main_construction, main_construction)
+        self.assertTrue(";" not in main_construction, main_construction)
 
     def test_print_main_construction_func(self):
         sql = """
@@ -59,7 +59,7 @@ class BaseSQLParserTest(TestCase):
         self.assertTrue(isinstance(mc, OrderedDict), mc)
 
         mc_sql = sqlparser.print_main_construction(mc)
-        self.assertEqual(sqlparser.formated, mc_sql, mc_sql)
+        self.assertEqual(sqlparser.formated[0:-1], mc_sql)
 
 
 class SparkSQLParserTest(TestCase):
@@ -81,7 +81,7 @@ class SparkSQLParserTest(TestCase):
         self.assertTrue("LIMIT" not in main_construction, main_construction)
 
     def test_generate_execute_sql_func(self):
-        sql = "select * from t limit 10"
+        sql = "select * from t limit 10;"
         executed_sql = SparkSQLParser(sql).generate_execute_sql()
         self.assertEqual("SELECT * FROM t LIMIT 10", executed_sql)
 
@@ -89,13 +89,17 @@ class SparkSQLParserTest(TestCase):
         executed_sql = SparkSQLParser(sql).generate_execute_sql()
         self.assertEqual("SELECT * FROM t LIMIT 20", executed_sql)
 
-        sql = "select * from t limit 30"
+        sql = "select * from t limit 30;"
         executed_sql = SparkSQLParser(sql, 2).generate_execute_sql()
         self.assertEqual("SELECT * FROM t LIMIT 30", executed_sql)
 
         sql = "select t.a as a from t"
         executed_sql = SparkSQLParser(sql, 2).generate_execute_sql()
         self.assertEqual("SELECT t.a AS a FROM t LIMIT 40", executed_sql)
+
+        sql = "select * from live_on_hive_csr where csrid = \"asdasdasd\";"
+        executed_sql = SparkSQLParser(sql).generate_execute_sql()
+        self.assertEqual("SELECT * FROM live_on_hive_csr WHERE csrid = \"asdasdasd\" LIMIT 20", executed_sql)
 
     def test_generate_count_sql_func(self):
         sql = "select sum(t.a) as sum_a from t group by t.a"
@@ -118,6 +122,11 @@ class SparkSQLParserTest(TestCase):
         sql = "select * from t order by t.a  "
         count_sql = SparkSQLParser(sql).generate_count_sql()
         self.assertEqual("SELECT COUNT(*) AS cnt FROM t", count_sql[0])
+        self.assertTrue(not count_sql[1])
+
+        sql = "select * from live_on_hive_csr where csrid = \"asdasdasd\";"
+        count_sql = SparkSQLParser(sql).generate_count_sql()
+        self.assertEqual("SELECT COUNT(*) AS cnt FROM live_on_hive_csr WHERE csrid = \"asdasdasd\"", count_sql[0])
         self.assertTrue(not count_sql[1])
 
 

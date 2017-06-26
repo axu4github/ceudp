@@ -37,9 +37,9 @@ class BaseSQLParser(Loggable):
                 sql += item.value
 
         sql = sqlparse.format(sql.strip(), **kwargs).strip()
-        # 如果不存在分号（`;`），则在最后添加分号（`;`）。
-        if ";" not in sql and not sql.endswith(";"):
-            sql += ";"
+        # 去除最后的分号（`;`）
+        if ";" in sql and sql.endswith(";"):
+            sql = sql[0:-1] # 去除最后的分号（`;`）
 
         return sql
 
@@ -91,12 +91,16 @@ class BaseSQLParser(Loggable):
                 is_append = True
             # 处理分号 `;`
             elif item.ttype is Punctuation and ";" == item.value:
-                main_construction[current_keyword] = tmp_values
-                main_construction[item.value] = []
+                # main_construction[current_keyword] = tmp_values
+                # main_construction[item.value] = []
+                pass
             # 处理值和空格（`Whitespace`）
             else:
                 if is_append:
                     tmp_values.append(item.value)
+
+        # 将最后一次`Keyword`内容进栈
+        main_construction[current_keyword] = tmp_values
 
         return main_construction
 
