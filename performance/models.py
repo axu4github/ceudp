@@ -24,11 +24,11 @@ class Query(models.Model):
     error_messages = models.TextField(verbose_name="查询错误", blank=True, default="")
     user = models.ForeignKey(User, verbose_name="执行人")
 
-    def execute(self, page_number=1):
+    def execute(self):
         if self.query is None:
             raise Exception("param query is None.")
 
-        return SparkSQL().sql(self.query, page_number)
+        return SparkSQL().sql(self.query, self.page_number)
 
     def as_dict(self):
         """模型转换成为Dict"""
