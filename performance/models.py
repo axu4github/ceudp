@@ -31,6 +31,9 @@ class Query(models.Model):
         return SparkSQL().sql(self.query, page_number)
 
     def as_dict(self):
+        """模型转换成为Dict"""
+        # model_to_dict 方法无法转换 Editable=False 的字段
+        # 例如含有 auto_now_add=True 的字段
         instance_dict = model_to_dict(self)
         instance_dict["created"] = self.created
         return instance_dict
