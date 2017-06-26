@@ -32,8 +32,8 @@ class PerformanceConfigurtion(AppConf):
     SPARK_MASTER = "spark://192.168.1.152:7077"
 
     SPARK_HOME = "/Users/axu/opt/01.Spark/2.1.1"
-    PYSPARK_DIR = os.path.normpath(SPARK_HOME + '/python')
-    PY4J_DIR = os.path.normpath(SPARK_HOME + '/python/lib/py4j-0.10.4-src.zip')
+    PYSPARK_DIR = os.path.normpath(SPARK_HOME + "/python")
+    PY4J_DIR = os.path.normpath(SPARK_HOME + "/python/lib/py4j-0.10.4-src.zip")
     CONF_SPARK_EXECUTOR_MEMORY = 6
     CONF_SPARK_EXECUTOR_CORES = 2
 
@@ -45,8 +45,8 @@ class PerformanceConfigurtion(AppConf):
     sys.path.insert(0, PYSPARK_DIR)
     sys.path.insert(0, PY4J_DIR)
 
-    if 'SPARK_HOME' not in os.environ:
-        os.environ['SPARK_HOME'] = SPARK_HOME
+    if "SPARK_HOME" not in os.environ:
+        os.environ["SPARK_HOME"] = SPARK_HOME
 
     # Spark执行程序日志级别
     SPARK_LOG_LEVEL = "ERROR"
