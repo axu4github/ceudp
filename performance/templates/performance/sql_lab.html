@@ -16,11 +16,7 @@
         }
 
         .query-result-table {
-            width: 100% !important;  
-        }
-
-        .query-result-table > .dataTables_scrollHead {
-            width: 100% !important;
+            width: 100%;  
         }
 
     </style>
@@ -187,7 +183,7 @@
             
             // 分页按钮
             var pagination_toolbar = "<div class='box-footer'>" +
-                "共<span id='total'>" + response_set.total + "</span>条" +
+                "共<span id='total'> " + response_set.total + " </span>条" +
                 "<div class='btn-group pull-right'>" +
                     "<button id='previous' type='button' class='btn btn-default'>上一页</button>" +
                     "<button id='next' type='button' class='btn btn-default'>下一页</button>" +
@@ -198,7 +194,7 @@
             var top_toolbar = "<div class='box-header'>" +
                 "<div class='btn-group pull-right'>" +
                     // "<button type='button' class='btn btn-primary'><i class='fa fa-save'></i></button>" +
-                    "<button type='button' class='btn btn-danger'><i class='fa fa-download'></i>`</button>" +
+                    "<button type='button' class='btn btn-danger'><i class='fa fa-download'></i></button>" +
                 "</div>" +
             "</div>";
             
