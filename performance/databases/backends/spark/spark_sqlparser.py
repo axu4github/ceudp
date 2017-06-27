@@ -16,8 +16,24 @@ class SparkSQLParser(BaseSQLParser):
         self.page_number = int(page_number)
         self.per_page_rows = settings.PER_PAGE_ROWS
         self.limit = None
+        # 将特殊字符例如（`\n`, `\t`）等，替换为指定字符。
+        sql_query = self.replace_special_chars(sql_query)
 
         super(SparkSQLParser, self).__init__(sql_query)
+
+
+    def replace_special_chars(self, sql_query):
+        """替换特殊字符"""
+        special_chars = {
+            "\t": " ",
+            "\n": " ",
+        }
+
+        for special, replace in special_chars.items():
+            if special in sql_query:
+                sql_query = sql_query.replace(special, replace)
+
+        return sql_query
 
     def formart_main_construction(self):
         """

@@ -99,7 +99,15 @@ class SparkSQLParserTest(TestCase):
 
         sql = "select * from live_on_hive_csr where csrid = \"asdasdasd\";"
         executed_sql = SparkSQLParser(sql).generate_execute_sql()
-        self.assertEqual("SELECT * FROM live_on_hive_csr WHERE csrid = \"asdasdasd\" LIMIT 10", executed_sql)
+        self.assertEqual(
+            "SELECT * FROM live_on_hive_csr WHERE csrid = \"asdasdasd\" LIMIT 10", executed_sql)
+
+        sql = """
+            select\n\t*\nfrom\n(select\n\tcsragentid, count(csragentid) as group_csragentid\nfrom\n\tlive_on_hive_csr\ngroup by\n\tcsragentid) t\norder by\n\tt.group_csragentid DESC;
+        """
+        executed_sql = SparkSQLParser(sql).generate_execute_sql()
+        self.assertEqual(
+            "SELECT * FROM (SELECT csragentid, count(csragentid) AS group_csragentid FROM live_on_hive_csr GROUP BY csragentid) t ORDER BY t.group_csragentid DESC LIMIT 10", executed_sql)
 
     def test_generate_count_sql_func(self):
         sql = "select sum(t.a) as sum_a from t group by t.a"
@@ -126,8 +134,17 @@ class SparkSQLParserTest(TestCase):
 
         sql = "select * from live_on_hive_csr where csrid = \"asdasdasd\";"
         count_sql = SparkSQLParser(sql).generate_count_sql()
-        self.assertEqual("SELECT COUNT(*) AS cnt FROM live_on_hive_csr WHERE csrid = \"asdasdasd\"", count_sql[0])
+        self.assertEqual(
+            "SELECT COUNT(*) AS cnt FROM live_on_hive_csr WHERE csrid = \"asdasdasd\"", count_sql[0])
         self.assertTrue(not count_sql[1])
+
+        sql = """
+            select\n\t*\nfrom\n(select\n\tcsragentid, count(csragentid) as group_csragentid\nfrom\n\tlive_on_hive_csr\ngroup by\n\tcsragentid) t\norder by\n\tt.group_csragentid DESC;
+        """
+        (count_sql, need_count) = SparkSQLParser(sql).generate_count_sql()
+        self.assertEqual(
+            "SELECT COUNT(*) AS cnt FROM (SELECT csragentid, count(csragentid) AS group_csragentid FROM live_on_hive_csr GROUP BY csragentid) t", count_sql)
+        self.assertTrue(not need_count)
 
 
 class SparkSQLRunEnvTest(TestCase):
