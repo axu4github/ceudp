@@ -58,6 +58,7 @@
                         "last": "最后一页",
                     },
                 },
+                "processing": true,
                 "searching": true,
                 "ordering": false,
                 "bLengthChange": false, // 是否启动可以改变单页数量
@@ -134,6 +135,8 @@
             }); 
              
             $("#execute_query_btn").on("click", function(){
+                // 开启遮罩
+                append_overlay();
                 page_number = 1;
                 // 执行SQL查询
                 executed_query(code_editor.getValue(), page_number);
@@ -170,6 +173,7 @@
                         "last": "最后一页",
                     },
                 },
+                "processing": true,
                 "info": false,
                 "paging": false,
                 "searching": false,
@@ -178,7 +182,7 @@
                 "scrollCollapse": true,
                 "iDisplayLength" : 10, // 设置单页显示数量
                 "scrollX": true,
-                "dom": "lrtip<'#pagination-toolbar'>",
+                "dom": "<'#top-toolbar'>lrtip<'#pagination-toolbar'>",
             });
             
             // 分页按钮
@@ -189,8 +193,17 @@
                     "<button id='next' type='button' class='btn btn-default'>下一页</button>" +
                 "</div>" +
             "</div>";
+
+            // 顶部按钮
+            var top_toolbar = "<div class='box-header'>" +
+                "<div class='btn-group pull-right'>" +
+                    "<button type='button' class='btn btn-primary'><i class='fa fa-save'></i></button>" +
+                    "<button type='button' class='btn btn-danger'><i class='fa fa-download'></i></button>" +
+                "</div>" +
+            "</div>";
             
             $("#pagination-toolbar").html(pagination_toolbar);
+            $("#top-toolbar").html(top_toolbar);
 
             // 判断若是第一页，则设置上一页为失效
             if (page_number == 1) {
@@ -207,18 +220,37 @@
             }
 
             $("div#pagination-toolbar button#previous").on("click", function(){
+                // 开启遮罩
+                append_overlay();
                 if (page_number != 1) page_number = page_number - 1;
                 executed_query(code_editor.getValue(), page_number);
             });
 
             $("div#pagination-toolbar button#next").on("click", function(){
+                // 开启遮罩
+                append_overlay();
                 page_number = page_number + 1;
                 executed_query(code_editor.getValue(), page_number);
             });
         }
 
+        function append_overlay() {
+            var overlay = "<div class='overlay'>" +
+                "<i class='fa fa-refresh fa-spin'></i>" +
+            "</div>";
+
+            $("div#sql-editer-box").append(overlay);
+            console.info($("#sql-editer-box"));
+            $("div#query-results-box").append(overlay);
+        }
+
+        function remove_overlay() {
+            $("div.overlay").remove();
+        }
+
         // 执行SQL查询
         function executed_query(sql_query, page_number) {
+            
             console.info(sql_query, page_number);
             // 同步 Ajax
             $.ajax({
@@ -240,10 +272,28 @@
                     alert("error");
                 },
             });
-
+            // 切换到查询结果
+            active_pane("query-results");
             // 重新过去查询历史记录
             query_history_table.ajax.reload();
+            // 关闭遮罩
+            console.info("关闭遮罩");
+            remove_overlay();
         }
+
+        function active_pane(id) {
+            $("div#query-results-box div.nav-tabs-custom ul.nav-tabs li").each(function(){
+                $(this).removeClass("active");
+            });
+
+            $("div.tab-content div.tab-pane").each(function(){
+                $(this).removeClass("active");
+            });
+
+            $("#" + id + "-tab").addClass("active");
+            $("#" + id + "-pane").addClass("active");
+        }
+
     </script>
 {% endblock %}
 
@@ -321,7 +371,7 @@
 
                 <div class="col-md-8">
                     <!-- SQL编辑器 -->
-                    <div class="box box-info">
+                    <div class="box box-info" id="sql-editer-box">
                         <div class="box-header with-border">
                             <h3 class="box-title">编辑器 <small>[SQL Editer]</small></h3>
                             <div class="box-tools pull-right">
@@ -346,56 +396,49 @@
                     </div>
                     <!-- SQL编辑器 -EOF- -->
                     <!-- 查询结果 -->
-                    <div class="nav-tabs-custom">
-                        <ul class="nav nav-tabs">
-                            <li>
-                                <a href="#preview" data-toggle="tab">
-                                    <i class="icon fa fa-search"></i>
-                                    预览 <small>[Preview]</small>
-                                </a>
-                            </li>
-                            <li class="active">
-                                <a href="#query-results" data-toggle="tab">
-                                    <i class="icon fa fa-table"></i>
-                                    查询结果 <small>[Results]</small>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#query-history" data-toggle="tab">
-                                    <i class="icon fa fa-history"></i>
-                                    历史查询 <small>[History]</small>
-                                </a>
-                            </li>
-                        </ul>
-                        <div class="tab-content">
-                            <div class="tab-pane active" id="query-results">
-                                <table id="query-result-table" class="table table-striped table-bordered query-result-table"></table>
-                                <!--
-                                <div class="box-footer">
-                                    共<span id="total">20</span>条
-                                    <div class="btn-group pull-right">
-                                        <button type="button" class="btn btn-default">上一页</button>
-                                        <button type="button" class="btn btn-default">下一页</button>
-                                    </div>
+                    <div class="box box-solid" id="query-results-box">
+                        <div class="nav-tabs-custom">
+                            <ul class="nav nav-tabs">
+                                <li class="active" id="preview-tab">
+                                    <a href="#preview-pane" data-toggle="tab">
+                                        <i class="icon fa fa-search"></i>
+                                        预览 <small>[Preview]</small>
+                                    </a>
+                                </li>
+                                <li id="query-results-tab">
+                                    <a href="#query-results-pane" data-toggle="tab">
+                                        <i class="icon fa fa-table"></i>
+                                        查询结果 <small>[Results]</small>
+                                    </a>
+                                </li>
+                                <li id="query-history-tab">
+                                    <a href="#query-history-pane" data-toggle="tab">
+                                        <i class="icon fa fa-history"></i>
+                                        历史查询 <small>[History]</small>
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="preview-pane">
+                                    <table id="query-preview-table" class="table table-striped table-bordered">无数据</table>
                                 </div>
-                                -->
-                            </div>
-                            <div class="tab-pane" id="query-history">
-                                <table id="query-history-table" class="table table-striped table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>status</th>
-                                            <th>created</th>
-                                            <th>duration</th>
-                                            <th>total</th>
-                                            <th>page_number</th>
-                                            <th>query</th>
-                                        </tr>
-                                    </thead>
-                                </table>
-                            </div>
-                            <div class="tab-pane" id="preview">
-                                <table id="query-preview-table" class="table table-striped table-bordered">无数据</table>
+                                <div class="tab-pane" id="query-results-pane">
+                                    <table id="query-result-table" class="table table-striped table-bordered query-result-table"></table>
+                                </div>
+                                <div class="tab-pane" id="query-history-pane">
+                                    <table id="query-history-table" class="table table-striped table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>status</th>
+                                                <th>created</th>
+                                                <th>duration</th>
+                                                <th>total</th>
+                                                <th>page_number</th>
+                                                <th>query</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
