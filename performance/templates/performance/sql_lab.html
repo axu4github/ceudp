@@ -29,6 +29,7 @@
 {% block customize-script %}
     <script>
         leaf_active("sql_lab"); // 激活左侧菜单栏图标效果
+
         var code_editor = null;
         var query_history_table = null; 
         var query_result_table = null;
@@ -135,14 +136,13 @@
             }); 
              
             $("#execute_query_btn").on("click", function(){
-                // 开启遮罩
-                append_overlay();
                 page_number = 1;
                 // 执行SQL查询
                 executed_query(code_editor.getValue(), page_number);
             });
         });
 
+        // 重新生成表格
         function bulid_query_result_table(columns, data, response_set) {
             var columns_arr = [];
             for (var i = 0; i < columns.length; i++){
@@ -197,8 +197,8 @@
             // 顶部按钮
             var top_toolbar = "<div class='box-header'>" +
                 "<div class='btn-group pull-right'>" +
-                    "<button type='button' class='btn btn-primary'><i class='fa fa-save'></i></button>" +
-                    "<button type='button' class='btn btn-danger'><i class='fa fa-download'></i></button>" +
+                    // "<button type='button' class='btn btn-primary'><i class='fa fa-save'></i></button>" +
+                    "<button type='button' class='btn btn-danger'><i class='fa fa-download'></i>`</button>" +
                 "</div>" +
             "</div>";
             
@@ -220,38 +220,36 @@
             }
 
             $("div#pagination-toolbar button#previous").on("click", function(){
-                // 开启遮罩
-                append_overlay();
                 if (page_number != 1) page_number = page_number - 1;
                 executed_query(code_editor.getValue(), page_number);
             });
 
             $("div#pagination-toolbar button#next").on("click", function(){
-                // 开启遮罩
-                append_overlay();
                 page_number = page_number + 1;
                 executed_query(code_editor.getValue(), page_number);
             });
         }
 
+        // 开启遮罩
         function append_overlay() {
-            var overlay = "<div class='overlay'>" +
-                "<i class='fa fa-refresh fa-spin'></i>" +
-            "</div>";
-
-            $("div#sql-editer-box").append(overlay);
-            console.info($("#sql-editer-box"));
-            $("div#query-results-box").append(overlay);
+            $("div.overlay").each(function(){
+                $(this).css("display", "block");
+            });
         }
 
+        // 关闭遮罩
         function remove_overlay() {
-            $("div.overlay").remove();
+            $("div.overlay").each(function(){
+                $(this).css("display", "none");
+            });
         }
 
         // 执行SQL查询
         function executed_query(sql_query, page_number) {
-            
-            console.info(sql_query, page_number);
+            // 开启遮罩
+            console.info("开启遮罩");
+            append_overlay();
+            console.info(sql_query, page_number);           
             // 同步 Ajax
             $.ajax({
                 type: "POST",
@@ -275,7 +273,7 @@
             // 切换到查询结果
             active_pane("query-results");
             // 重新过去查询历史记录
-            query_history_table.ajax.reload();
+            query_history_table.ajax.reload();            
             // 关闭遮罩
             console.info("关闭遮罩");
             remove_overlay();
@@ -388,10 +386,13 @@
                                 <i class="icon fa fa-chevron-right"></i> 
                                 执行查询
                             </button>
-                            <button type="button" class="btn btn-flat btn-sm btn-primary" style="margin-left: 5px;"> 
+                            <!-- <button type="button" class="btn btn-flat btn-sm btn-primary" style="margin-left: 5px;"> 
                                 <i class="icon fa fa-lg fa-save"></i> 
                                 保存查询
-                            </button>
+                            </button> -->
+                        </div>
+                        <div class="overlay" style="display: none;">
+                            <i class="fa fa-refresh fa-spin"></i>
                         </div>
                     </div>
                     <!-- SQL编辑器 -EOF- -->
@@ -440,6 +441,9 @@
                                     </table>
                                 </div>
                             </div>
+                        </div>
+                        <div class="overlay" id="a_overlay" style="display: none;">
+                            <i class="fa fa-refresh fa-spin"></i>
                         </div>
                     </div>
                     <!-- 查询结果 -EOF- -->
