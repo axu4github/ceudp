@@ -27,26 +27,26 @@ $(document).ready(function(){
     $('[rel="tooltip"]').tooltip();
 
     // Code for the Validator
-    var $validator = $('.wizard-card form').validate({
-		  rules: {
-		    firstname: {
-		      required: true,
-		      minlength: 3
-		    },
-		    lastname: {
-		      required: true,
-		      minlength: 3
-		    },
-		    email: {
-		      required: true,
-		      minlength: 3,
-		    }
-        },
+ //    var $validator = $('.wizard-card form').validate({
+	// 	  rules: {
+	// 	    firstname: {
+	// 	      required: true,
+	// 	      minlength: 3
+	// 	    },
+	// 	    lastname: {
+	// 	      required: true,
+	// 	      minlength: 3
+	// 	    },
+	// 	    email: {
+	// 	      required: true,
+	// 	      minlength: 3,
+	// 	    }
+ //        },
 
-        errorPlacement: function(error, element) {
-            $(element).parent('div').addClass('has-error');
-         }
-	});
+ //        errorPlacement: function(error, element) {
+ //            $(element).parent('div').addClass('has-error');
+ //         }
+	// });
 
     // Wizard Initialization
   	$('.wizard-card').bootstrapWizard({
