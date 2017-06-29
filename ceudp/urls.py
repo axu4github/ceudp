@@ -42,4 +42,6 @@ urlpatterns = [
     url(r"^api/performance/", include("performance.apis.urls", namespace="performance_api")),
     # /management/
     url(r"^management/", include("management.urls", namespace="management")),
+    # /scraping/
+    url(r"^scraping/", include("scraping.urls", namespace="scraping")),
 ]

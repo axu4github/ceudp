@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "dashboard.apps.DashboardConfig",
     "performance.apps.PerformanceConfig",
     "management.apps.ManagementConfig",
+    "scraping.apps.ScrapingConfig",
 ]
 
 MIDDLEWARE = [

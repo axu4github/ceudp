@@ -3,4 +3,5 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render
 
-# Create your views here.
+def flat(request):
+    return render(request, "scraping/flat.html")
