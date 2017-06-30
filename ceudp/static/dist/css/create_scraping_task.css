@@ -1770,3 +1770,9 @@ fieldset[disabled] .checkbox, fieldset[disabled] .checkbox input[type=checkbox],
     min-width: 140px;
   }
 }
+
+div.header button.close-btn {
+  float: right;
+  margin-right: -20px;
+  margin-top: -30px;
+}
