@@ -27,7 +27,7 @@
                 <div class="card wizard-card" data-color="green" id="wizardProfile">
                     <form action="" method="">
                         <div class="header">
-                            <button type="button" class="btn btn-danger btn-fab btn-fab-mini btn-round close-btn">
+                            <button type="button" id="close-btn" class="btn btn-danger btn-fab btn-fab-mini btn-round close-btn">
                                 <i class="material-icons">clear</i>
                             </button>
                         </div>
@@ -192,4 +192,12 @@
 
     <!--  More information about jquery.validate here: http://jqueryvalidation.org/	 -->
     <script type="text/javascript" src="{% static 'plugins/material-bootstrap-wizard-v1.0.2/assets/js/jquery.validate.min.js' %}"></script>
+
+    <script type="text/javascript">
+        var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+        $("#close-btn").on("click", function(){ // 关闭按钮事件
+            parent.layer.close(index);
+        });
+    </script>
+
 </html>
