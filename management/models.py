@@ -35,8 +35,8 @@ class Menu(models.Model):
 
     name = models.CharField(verbose_name="菜单名称", max_length=20, blank=False)
     code = models.CharField(verbose_name="菜单代码", max_length=20, blank=False)
-    parent = models.ForeignKey(
-        "self", default=0, blank=False, related_name="child")
+    parent = models.ForeignKey("self", verbose_name="父菜单",
+                               default=0, blank=False, related_name="child")
     is_leaf = models.BooleanField(
         verbose_name="是否为子节点", default=False, blank=False)
     linkto = models.CharField(verbose_name="链接地址", max_length=50, default="#")
