@@ -56,3 +56,56 @@ class MenuTablesTest(TestCase):
 
         m4 = Menu.objects.create(name="m4", code="m4", parent=self.root)
         self.assertTrue(m4.is_leaf)
+
+    def test_delete_menu(self):
+        """测试删除菜单"""
+        m5 = Menu.objects.create(name="m5", code="m5")
+        self.user.menus.add(m5)
+        self.assertTrue(m5 in self.user.menus.all())
+
+        m5.delete()
+        self.assertTrue(m5 not in self.user.menus.all())
+
+    def test_update_menu(self):
+        """测试更改菜单"""
+        m6 = Menu.objects.create(name="m6", code="m6")
+        self.user.menus.add(m6)
+        self.assertEqual(
+            "m6", self.user.menus.filter(name__startswith="m6")[0].name)
+
+        m6.name = "m6_修改后"
+        m6.save()
+        self.assertEqual(
+            "m6_修改后", self.user.menus.filter(name__startswith="m6")[0].name)
+
+    def test_update_menu_list(self):
+        """测试修改菜单列"""
+        u = User.objects.create_user("u", "u@gmail.com", "u")
+        m7 = Menu.objects.create(name="m7", code="m7")
+        m8 = Menu.objects.create(name="m8", code="m8")
+        m9 = Menu.objects.create(name="m9", code="m9")
+        add_list = [m7, m8, m9]
+        # self.user.menus.add(m7, m8, m9)
+        for m in add_list:
+            u.menus.add(m)
+
+        u_menus = u.menus.all()
+        for m in add_list:
+            self.assertTrue(m in u_menus)
+
+        m9.name = "m9_修改后"
+        m9.save()
+        m10 = Menu.objects.create(name="m10", code="m10")
+        # 在这里因为原来的菜单列表为[m7, m8, m9]，所以需要添加的为"m10"，需要删除的为"m8"。
+        change_list = [m7, m9, m10]
+        u.menus.clear()  # 清除之前用户的所有菜单
+        for m in change_list:
+            u.menus.add(m)
+
+        u_menus = u.menus.all()
+        for m in change_list:
+            self.assertTrue(m in u_menus)
+
+        self.assertTrue(not m8 in u_menus)
+        self.assertEqual(
+            "m9_修改后", u_menus.filter(name__startswith="m9")[0].name)
