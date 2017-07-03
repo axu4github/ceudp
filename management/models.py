@@ -7,6 +7,9 @@ from django.core.exceptions import ObjectDoesNotExist
 """
 字段类型参考：
 https://docs.djangoproject.com/en/1.11/ref/models/fields/
+
+多对多模型参考:
+https://docs.djangoproject.com/en/1.11/topics/db/examples/many_to_many/
 """
 
 
@@ -42,8 +45,8 @@ class Menu(models.Model):
 
     def save(self, *args, **kwargs):
         try:
-            parent = self.parent
-        except ObjectDoesNotExist as e:
+            self.parent
+        except ObjectDoesNotExist:
             self.is_leaf = False
         else:
             self.is_leaf = True
