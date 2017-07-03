@@ -97,7 +97,7 @@ class MenuTablesTest(TestCase):
         m9.save()
         m10 = Menu.objects.create(name="m10", code="m10")
         # 在这里因为原来的菜单列表为[m7, m8, m9]，所以需要添加的为"m10"，需要删除的为"m8"。
-        change_list = [m7, m9, m10]
+        change_list = [m9, m7, m10]
         u.menus.clear()  # 清除之前用户的所有菜单
         for m in change_list:
             u.menus.add(m)
@@ -106,6 +106,7 @@ class MenuTablesTest(TestCase):
         for m in change_list:
             self.assertTrue(m in u_menus)
 
+        self.assertEqual(change_list.sort(), [item for item in u_menus].sort())
         self.assertTrue(not m8 in u_menus)
         self.assertEqual(
             "m9_修改后", u_menus.filter(name__startswith="m9")[0].name)
