@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import sqlparse
 from collections import OrderedDict
 from django.test import TestCase
 from performance.databases.backends.base.sqlparser import BaseSQLParser
 from performance.databases.backends.spark.spark_sqlparser import SparkSQLParser
-from performance.databases.backends.spark.sparksql import SparkSQL
 
 
 class BaseSQLParserTest(TestCase):
