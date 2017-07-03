@@ -107,6 +107,6 @@ class MenuTablesTest(TestCase):
             self.assertTrue(m in u_menus)
 
         self.assertEqual(change_list.sort(), [item for item in u_menus].sort())
-        self.assertTrue(not m8 in u_menus)
+        self.assertTrue(m8 not in u_menus)
         self.assertEqual(
             "m9_修改后", u_menus.filter(name__startswith="m9")[0].name)
