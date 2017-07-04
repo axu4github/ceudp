@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 from rest_framework import serializers
-from management.models import Menu
+from management.models import Menu, User
 
 """
 参考文档：
@@ -13,3 +13,10 @@ class MenuSerializer(serializers.ModelSerializer):
     class Meta:
         model = Menu
         fields = ["name", "code", "parent", "linkto", ]
+
+
+class LoginSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ["username", "password", ]

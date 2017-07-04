@@ -4,7 +4,7 @@ __author__ = "axu"
 
 from django.conf.urls import url, include
 from rest_framework.routers import DefaultRouter
-from views import MenuViewSet
+from views import MenuViewSet, LoginViewSet
 
 # 参考文档：http://www.django-rest-framework.org/api-guide/routers/
 # Example:
@@ -17,4 +17,5 @@ router.register(r"menus", MenuViewSet)
 
 urlpatterns = [
     url(r"^", include(router.urls)),
+    url(r"login/$", LoginViewSet.as_view(), name="login"),
 ]

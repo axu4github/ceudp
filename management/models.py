@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ObjectDoesNotExist
+from rest_framework.authtoken.models import Token
 
 """
 字段类型参考：
@@ -22,6 +23,15 @@ class User(AbstractUser):
     created = models.DateTimeField(verbose_name="创建时间", auto_now_add=True)
     modified = models.DateTimeField(verbose_name="修改时间", auto_now=True)
     menus = models.ManyToManyField("Menu", verbose_name="用户菜单")
+
+    def get_or_create_token(self):
+        """获取或者创建用户Token"""
+        try:
+            token = Token.objects.get(user=self)
+        except ObjectDoesNotExist:
+            token = Token.objects.create(user=self)
+
+        return token
 
     def __unicode__(self):
         return self.username

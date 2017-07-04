@@ -25,7 +25,8 @@ schema_view = get_swagger_view(title='统一数据平台 API')
 
 urlpatterns = [
     # /
-    url(r"^$", login_required(dashboard_views.index), name="index"),
+    # url(r"^$", login_required(dashboard_views.index), name="index"),
+    url(r"^$", dashboard_views.index, name="index"),
     # /apis
     url(r"^apis/$", login_required(schema_view), name="apis"),
     # /login
