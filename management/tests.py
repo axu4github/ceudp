@@ -114,7 +114,7 @@ class MenuTablesTest(TestCase):
             "m9_修改后", u_menus.filter(name__startswith="m9")[0].name)
 
 
-class RestFrameworkTokenAuthTest(TestCase):
+class RestFrameworkTokenAuthTest(LiveServerTestCase):
     """
     测试 django-rest-framework TokenAuthentication
     参考文档：
@@ -123,6 +123,7 @@ class RestFrameworkTokenAuthTest(TestCase):
     """
 
     def test_generate_token(self):
+        """测试创建Token"""
         u = User.objects.create_user(
             "token_user", "token_user@gmail.com", "token_user")
         # 生成用户 Token
@@ -134,6 +135,7 @@ class RestFrameworkTokenAuthTest(TestCase):
         self.assertEqual(token, t)
 
     def test_get_token(self):
+        """测试获取或者创建用户Token"""
         u = User.objects.create_user("t2", "t2@gmail.com", "t2")
         try:
             token = Token.objects.get(user=u)
@@ -141,6 +143,23 @@ class RestFrameworkTokenAuthTest(TestCase):
             token = Token.objects.create(user=u)
 
         self.assertEqual(token, Token.objects.get(user=u))
+
+    def test_user_get_or_create_token(self):
+        """测试使用User.get_or_create_token()方法获取用户Token"""
+        t3 = User.objects.create_user("t3", "t3@gmail.com", "t3")
+        t3_token = t3.get_or_create_token()
+
+        t4 = User.objects.create_user("t4", "t4@gmail.com", "t4")
+        t4_token = t4.get_or_create_token()
+
+        self.assertTrue(t3_token != t4_token)
+
+    def test_token_to_user(self):
+        """测试通过token返回用户信息"""
+        t5 = User.objects.create_user("t5", "t5@gmail.com", "t5")
+        token = t5.get_or_create_token()
+
+        self.assertEqual(t5, Token.objects.get(key=token).user)
 
 
 class MenuApisTest(LiveServerTestCase):
