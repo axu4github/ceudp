@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.test import TestCase
+from django.test import TestCase, LiveServerTestCase
 from management.models import User, Menu
 
 
@@ -110,3 +110,35 @@ class MenuTablesTest(TestCase):
         self.assertTrue(m8 not in u_menus)
         self.assertEqual(
             "m9_修改后", u_menus.filter(name__startswith="m9")[0].name)
+
+
+class MenuApisTest(LiveServerTestCase):
+    """菜单的API接口测试"""
+
+    def setUp(self):
+        """初始化某个菜单为之后测试使用"""
+        pass
+
+    def test_create(self):
+        """创建菜单，POST请求测试"""
+        pass
+
+    def test_list(self):
+        """获取菜单，GET请求测试"""
+        pass
+
+    def test_update(self):
+        """全部更新菜单，PUT请求测试"""
+        pass
+
+    def test_delete(self):
+        """删除菜单，DELETE请求测试"""
+        pass
+
+    def test_read_single(self):
+        """读取单个菜单，GET带id请求测试"""
+        pass
+
+    def test_part_of_update(self):
+        """部分更新菜单，PATCH请求测试"""
+        pass
