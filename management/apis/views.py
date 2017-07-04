@@ -3,8 +3,12 @@
 __author__ = "axu"
 
 from rest_framework import viewsets, views
-from serializers import MenuSerializer, LoginSerializer
+from serializers import MenuSerializer
+from rest_framework.authentication import TokenAuthentication, SessionAuthentication
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from management.models import Menu
+from rest_framework.response import Response
+
 """
 # 参考文档：
 - [Django REST Framswork](http://www.django-rest-framework.org/)
@@ -14,13 +18,13 @@ from management.models import Menu
 
 
 class LoginViewSet(views.APIView):
-    """docstring for LoginViewSet"""
-    serializers = LoginSerializer
+    authentication_classes = ()
+    permission_classes = (AllowAny, )
 
     def post(self, request):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)  # 校验请求参数
-        print serializer.validated_data
+        username = request.data.get("username", None)
+        password = request.data.get("password", None)
+        return Response([username, password])
 
 
 class MenuViewSet(viewsets.ModelViewSet):
@@ -28,6 +32,8 @@ class MenuViewSet(viewsets.ModelViewSet):
 
     serializer_class = MenuSerializer
     queryset = Menu.objects.all()
+    authentication_classes = (SessionAuthentication, TokenAuthentication, )
+    permission_classes = (IsAuthenticated, )
 
     def get_queryset(self):
         return self.request.user.menus.all()

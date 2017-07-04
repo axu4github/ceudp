@@ -142,15 +142,14 @@ LOGIN_URL = "/management/login"
 
 # REST_FRAMEWORK settings
 REST_FRAMEWORK = {
-    # Use Django's standard `django.contrib.auth` permissions,
-    # or allow read-only access for unauthenticated users.
+    # http://www.django-rest-framework.org/api-guide/permissions/
     "DEFAULT_PERMISSION_CLASSES": (
-        # "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
         "rest_framework.permissions.IsAuthenticated"
     ),
     # http://www.django-rest-framework.org/api-guide/authentication/#tokenauthentication
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework.authentication.TokenAuthentication"
+        "rest_framework.authentication.TokenAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
     ),
 }
 
