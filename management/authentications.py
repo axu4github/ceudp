@@ -23,4 +23,4 @@ class Authentication(object):
         if not user.is_active:
             raise UserIsDisableError()
 
-        return True
+        return user
