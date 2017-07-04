@@ -37,11 +37,16 @@ urlpatterns = [
     # /dashboard/
     url(r"^dashboard/", include("dashboard.urls")),
     # /performance/
-    url(r"^performance/", include("performance.urls", namespace="performance")),
+    url(r"^performance/",
+        include("performance.urls", namespace="performance")),
     # /api/performance/
-    url(r"^api/performance/", include("performance.apis.urls", namespace="performance_api")),
+    url(r"^api/performance/",
+        include("performance.apis.urls", namespace="performance_api")),
     # /management/
     url(r"^management/", include("management.urls", namespace="management")),
+    # /api/management/
+    url(r"^api/management/",
+        include("management.apis.urls", namespace="management_api")),
     # /scraping/
     url(r"^scraping/", include("scraping.urls", namespace="scraping")),
 ]
