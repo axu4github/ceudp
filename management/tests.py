@@ -271,7 +271,7 @@ class AuthenticationTest(TestCase):
         self.assertTrue(200, response.status_code)
 
 
-class MenuApisTest(LiveServerTestCase):
+class MenuApisTest(TestCase):
     """菜单的API接口测试"""
 
     def setUp(self):
@@ -279,6 +279,10 @@ class MenuApisTest(LiveServerTestCase):
         self.urls = {
             "create": "/api/management/menus/",  # 创建接口
             "list": "/api/management/menus/",  # 列表接口
+            "detail": "/api/management/menus/{id}/",  # 详细信息接口
+            "delete": "/api/management/menus/{id}/",  # 删除接口
+            "update": "/api/management/menus/{id}/",  # 全部更新接口
+            "part_of_update": "/api/management/menus/{id}/",  # 部分更新接口
         }
 
         self.user = User.objects.create_user(
@@ -292,8 +296,8 @@ class MenuApisTest(LiveServerTestCase):
             "menu_user_01", "menu_user_01@gmail.com", "menu_user_01")
         self.other_user_token = self.other_user.get_or_create_token().key
 
-    def test_create(self):
-        """创建菜单，POST请求测试"""
+    def test_create_menu(self):
+        """测试创建菜单，POST请求"""
         data = {
             "name": "ma1",
             "code": "ma1",
@@ -311,8 +315,8 @@ class MenuApisTest(LiveServerTestCase):
         self.assertEqual(response_content.get("parent"), data["parent"])
         self.assertEqual(response_content.get("linkto"), data["linkto"])
 
-    def test_list_has_menu_user_s_menu(self):
-        """测试获取一个有菜单用户的菜单，GET请求"""
+    def test_list_menu(self):
+        """测试获取菜单列表，GET请求"""
         response = self.client.get(
             self.urls["list"], HTTP_AUTHORIZATION="Token " + self.token)
         response_content = json.loads(response.content)
@@ -320,27 +324,68 @@ class MenuApisTest(LiveServerTestCase):
         self.assertEqual(200, response.status_code)
         self.assertTrue(len(response_content) > 0)
 
-    def test_list_none_menu_user_s_menu(self):
-        """测试获取一个没有菜单用户的菜单，GET请求"""
+    def test_detail_menu(self):
+        """测试获取菜单详细信息，GET请求"""
         response = self.client.get(
-            self.urls["list"], HTTP_AUTHORIZATION="Token " + self.other_user_token)
+            self.urls["detail"].format(id=self.ma.id), HTTP_AUTHORIZATION="Token " + self.token)
         response_content = json.loads(response.content)
 
         self.assertEqual(200, response.status_code)
-        self.assertTrue(0 == len(response_content))
+        self.assertEqual(response_content.get("name"), self.ma.name)
+        self.assertEqual(response_content.get("code"), self.ma.code)
+        self.assertEqual(response_content.get("parent"), 0)
+        self.assertEqual(response_content.get("linkto"), self.ma.linkto)
 
-    def test_update(self):
-        """全部更新菜单，PUT请求测试"""
-        pass
+    def test_update_menu(self):
+        """测试更新菜单全部内容，PUT请求"""
+        ma2 = Menu.objects.create(
+            name="ma2", code="ma2", parent=self.ma, linkto="/ma2")
 
-    def test_delete(self):
-        """删除菜单，DELETE请求测试"""
-        pass
+        # PUT请求的修改必须要填必填项
+        data = {
+            "name": "ma2_updated",
+            "code": "ma2_updated",
+            "linkto": "/m2_updated"
+        }
 
-    def test_read_single(self):
-        """读取单个菜单，GET带id请求测试"""
-        pass
+        json_data_str = json.dumps(data)
 
-    def test_part_of_update(self):
-        """部分更新菜单，PATCH请求测试"""
-        pass
+        # 注意：若content_type设置为application/json的话，data要传json字符串
+        response = self.client.put(
+            self.urls["update"].format(id=ma2.id), data=json_data_str,
+            content_type="application/json",
+            HTTP_AUTHORIZATION="Token " + self.token)
+        response_content = json.loads(response.content)
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response_content.get("name"), data["name"])
+        self.assertEqual(response_content.get("code"), data["code"])
+        self.assertEqual(response_content.get("linkto"), data["linkto"])
+
+    def test_part_of_update_menu(self):
+        """测试更新菜单部分内容，PATCH请求"""
+        m3 = Menu.objects.create(
+            name="m3", code="m3", parent=self.ma, linkto="/m3")
+
+        # PATCH请求的修改是不需要填必填项的
+        data = {"linkto": "/m3_updated"}
+        json_data_str = json.dumps(data)
+
+        # 注意：若content_type设置为application/json的话，data要传json字符串
+        response = self.client.patch(
+            self.urls["part_of_update"].format(id=m3.id), data=json_data_str,
+            content_type="application/json",
+            HTTP_AUTHORIZATION="Token " + self.token)
+        response_content = json.loads(response.content)
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response_content.get("linkto"), data["linkto"])
+
+    def test_delete_menu(self):
+        """测试删除菜单，DELETE请求"""
+        ma4 = Menu.objects.create(name="ma4", code="ma4")
+        response = self.client.delete(
+            self.urls["delete"].format(id=ma4.id), HTTP_AUTHORIZATION="Token " + self.token)
+
+        self.assertEqual(204, response.status_code)
+        self.assertEqual(0, len(Menu.objects.filter(name="ma4")))
