@@ -8,6 +8,8 @@ from performance.settings import settings
 from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 
+__author__ = "axu"
+
 """
 # 参考文档：
 - [Django REST Framswork](http://www.django-rest-framework.org/)

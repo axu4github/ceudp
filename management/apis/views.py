@@ -1,12 +1,14 @@
 # -*- coding: UTF-8 -*-
 from __future__ import unicode_literals
 
-from rest_framework import viewsets, views
+from rest_framework import viewsets, views, status
 from serializers import MenuSerializer
 from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from management.models import Menu
+from management.authentications import Authentication
 from rest_framework.response import Response
+from django.conf import settings
 
 __author__ = "axu"
 
@@ -25,9 +27,26 @@ class LoginViewSet(views.APIView):
     permission_classes = (AllowAny, )
 
     def post(self, request):
-        username = request.data.get("username", None)
-        password = request.data.get("password", None)
-        return Response([username, password])
+        try:
+            username = request.data.get("username", None)
+            password = request.data.get("password", None)
+            user = Authentication.authenticate(username, password)
+            token = user.get_or_create_token()  # 获得用户Token
+            response_context = {
+                "status": settings.SUCCESS,
+                "token": token.key,
+            }
+
+            response = Response(response_context, status.HTTP_200_OK)
+        except Exception as e:
+            response_context = {
+                "status": settings.FAILED,
+                "message": str(e),
+            }
+
+            response = Response(response_context, status.HTTP_400_BAD_REQUEST)
+
+        return response
 
 
 class MenuViewSet(viewsets.ModelViewSet):

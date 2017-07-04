@@ -8,6 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from errors import NoneUsernameOrPasswordError, UsernameOrPasswordIncorrectError, UserIsDisableError
 from management.settings import settings
 from management.authentications import Authentication
+import json
 
 __author__ = "axu"
 
@@ -166,6 +167,17 @@ class RestFrameworkTokenAuthTest(LiveServerTestCase):
 
         self.assertEqual(t5, Token.objects.get(key=token).user)
 
+    def test_get_token_api(self):
+        """测试通过API获取用户Token"""
+        t6 = User.objects.create_user("t6", "t6@gmail.com", "t6")
+        t6_token = t6.get_or_create_token().key
+
+        reponse = self.client.post(
+            "/api/management/login/", {"username": "t6", "password": "t6"})
+        token = json.loads(reponse.content).get("token", None)
+
+        self.assertEqual(t6_token, token)
+
 
 class ErrorsTest(TestCase):
     """自定义错误测试"""
@@ -216,8 +228,8 @@ class AuthenticationTest(TestCase):
 
     def test_correct_authenticate(self):
         """测试正确认证方法"""
-        self.assertTrue(
-            Authentication.authenticate("auth_user", "auth_user123"))
+        self.assertEqual(
+            Authentication.authenticate("auth_user", "auth_user123"), self.auth_user)
 
     def test_none_username_or_password_error_authenticate(self):
         """测试没有发现用户或者密码错误"""
