@@ -5,6 +5,8 @@ from django.test import TestCase, LiveServerTestCase
 from management.models import User, Menu
 from rest_framework.authtoken.models import Token
 from django.core.exceptions import ObjectDoesNotExist
+from errors import NoneUsernameOrPasswordError
+from django.conf import settings
 
 
 class MenuTablesTest(TestCase):
@@ -160,6 +162,21 @@ class RestFrameworkTokenAuthTest(LiveServerTestCase):
         token = t5.get_or_create_token()
 
         self.assertEqual(t5, Token.objects.get(key=token).user)
+
+
+class ErrorsTest(TestCase):
+
+    def test_none_username_or_password_error(self):
+        """测试没有发现用户或者密码错误"""
+        error_message = ""
+        try:
+            raise NoneUsernameOrPasswordError()
+        except NoneUsernameOrPasswordError as none_error:
+            error_message = str(none_error)
+
+        self.assertEqual(
+            settings.ERROR_MESSAGES["NoneUsernameOrPasswordError"],
+            error_message)
 
 
 class MenuApisTest(LiveServerTestCase):
