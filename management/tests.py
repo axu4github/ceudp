@@ -257,8 +257,8 @@ class AuthenticationTest(TestCase):
 
     def test_auth_403_error(self):
         """测试禁止访问"""
-        resposne = self.client.get("/api/management/menus/")
-        self.assertTrue(403, resposne.status_code)
+        response = self.client.get("/api/management/menus/")
+        self.assertTrue(403, response.status_code)
 
     def test_correct_token_auth_from_api(self):
         """通过API进行正确的Token验证"""
@@ -276,26 +276,58 @@ class MenuApisTest(LiveServerTestCase):
 
     def setUp(self):
         """初始化某个菜单为之后测试使用"""
-        # self.urls = {
-        #     "create": "/api/management/menus/",  # 创建接口
-        # }
+        self.urls = {
+            "create": "/api/management/menus/",  # 创建接口
+            "list": "/api/management/menus/",  # 列表接口
+        }
 
-        # data = {
-        #     "name": "api_m1",
-        #     "code": "api_m1",
-        # }
+        self.user = User.objects.create_user(
+            "menu_user", "menu_user@gmail.com", "menu_user")
+        self.token = self.user.get_or_create_token().key
+        self.ma = Menu.objects.create(name="ma", code="ma")
+        self.user.menus.add(self.ma)
+        self.user.save()
 
-        # reponse = self.client.post(self.urls["create"], data)
-        # print reponse
-        pass
+        self.other_user = User.objects.create_user(
+            "menu_user_01", "menu_user_01@gmail.com", "menu_user_01")
+        self.other_user_token = self.other_user.get_or_create_token().key
 
     def test_create(self):
         """创建菜单，POST请求测试"""
-        pass
+        data = {
+            "name": "ma1",
+            "code": "ma1",
+            "parent": self.ma.id,
+            "linkto": "/ma1"
+        }
 
-    def test_list(self):
-        """获取菜单，GET请求测试"""
-        pass
+        response = self.client.post(
+            self.urls["create"], data, HTTP_AUTHORIZATION="Token " + self.token)
+        response_content = json.loads(response.content)
+
+        self.assertTrue(201, response.status_code)
+        self.assertEqual(response_content.get("name"), data["name"])
+        self.assertEqual(response_content.get("code"), data["code"])
+        self.assertEqual(response_content.get("parent"), data["parent"])
+        self.assertEqual(response_content.get("linkto"), data["linkto"])
+
+    def test_list_has_menu_user_s_menu(self):
+        """测试获取一个有菜单用户的菜单，GET请求"""
+        response = self.client.get(
+            self.urls["list"], HTTP_AUTHORIZATION="Token " + self.token)
+        response_content = json.loads(response.content)
+
+        self.assertEqual(200, response.status_code)
+        self.assertTrue(len(response_content) > 0)
+
+    def test_list_none_menu_user_s_menu(self):
+        """测试获取一个没有菜单用户的菜单，GET请求"""
+        response = self.client.get(
+            self.urls["list"], HTTP_AUTHORIZATION="Token " + self.other_user_token)
+        response_content = json.loads(response.content)
+
+        self.assertEqual(200, response.status_code)
+        self.assertTrue(0 == len(response_content))
 
     def test_update(self):
         """全部更新菜单，PUT请求测试"""
