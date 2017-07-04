@@ -57,5 +57,5 @@ class MenuViewSet(viewsets.ModelViewSet):
     authentication_classes = (SessionAuthentication, TokenAuthentication, )
     permission_classes = (IsAuthenticated, )
 
-    def get_queryset(self):
-        return self.request.user.menus.all()
+    # def get_queryset(self):
+    #     return self.request.user.menus.all()
