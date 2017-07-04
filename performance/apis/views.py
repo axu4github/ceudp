@@ -5,6 +5,8 @@ from performance.models import Query
 from rest_framework.response import Response
 from ceudp.utilities.loggables import Loggable
 from performance.settings import settings
+from rest_framework.authentication import TokenAuthentication, SessionAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 """
 # 参考文档：
@@ -21,6 +23,8 @@ class QueryViewSet(mixins.CreateModelMixin,
 
     serializer_class = QuerySerializer
     queryset = Query.objects.all()
+    authentication_classes = (SessionAuthentication, TokenAuthentication, )
+    permission_classes = (IsAuthenticated, )
 
     def get_queryset(self):
         return Query.objects.filter(user=self.request.user)
