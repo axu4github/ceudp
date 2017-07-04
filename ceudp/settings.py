@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "rest_framework",
+    "rest_framework.authtoken",
     'rest_framework_swagger',
     "dashboard.apps.DashboardConfig",
     "performance.apps.PerformanceConfig",
@@ -141,11 +142,16 @@ LOGIN_URL = "/management/login"
 
 # REST_FRAMEWORK settings
 REST_FRAMEWORK = {
+    # http://www.django-rest-framework.org/api-guide/authentication/#tokenauthentication
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework.authentication.TokenAuthentication"
+    ),
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ]
+    "DEFAULT_PERMISSION_CLASSES": (
+        # "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
+        "rest_framework.permissions.IsAuthenticated",
+    )
 }
 
 # 日志配置

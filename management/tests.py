@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 
 from django.test import TestCase, LiveServerTestCase
 from management.models import User, Menu
+from rest_framework.authtoken.models import Token
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class MenuTablesTest(TestCase):
@@ -112,11 +114,51 @@ class MenuTablesTest(TestCase):
             "m9_修改后", u_menus.filter(name__startswith="m9")[0].name)
 
 
+class RestFrameworkTokenAuthTest(TestCase):
+    """
+    测试 django-rest-framework TokenAuthentication
+    参考文档：
+    - http://www.django-rest-framework.org/api-guide/authentication/#tokenauthentication
+    - http://blog.csdn.net/lablenet/article/details/54667308
+    """
+
+    def test_generate_token(self):
+        u = User.objects.create_user(
+            "token_user", "token_user@gmail.com", "token_user")
+        # 生成用户 Token
+        token = Token.objects.create(user=u)
+
+        # 获取用户 Token
+        t = Token.objects.get(user=u)
+
+        self.assertEqual(token, t)
+
+    def test_get_token(self):
+        u = User.objects.create_user("t2", "t2@gmail.com", "t2")
+        try:
+            token = Token.objects.get(user=u)
+        except ObjectDoesNotExist:
+            token = Token.objects.create(user=u)
+
+        self.assertEqual(token, Token.objects.get(user=u))
+
+
 class MenuApisTest(LiveServerTestCase):
     """菜单的API接口测试"""
 
     def setUp(self):
         """初始化某个菜单为之后测试使用"""
+        # self.urls = {
+        #     "create": "/api/management/menus/",  # 创建接口
+        # }
+
+        # data = {
+        #     "name": "api_m1",
+        #     "code": "api_m1",
+        # }
+
+        # reponse = self.client.post(self.urls["create"], data)
+        # print reponse
         pass
 
     def test_create(self):
