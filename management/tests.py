@@ -5,8 +5,8 @@ from django.test import TestCase, LiveServerTestCase
 from management.models import User, Menu
 from rest_framework.authtoken.models import Token
 from django.core.exceptions import ObjectDoesNotExist
-from errors import NoneUsernameOrPasswordError
-from django.conf import settings
+from errors import NoneUsernameOrPasswordError, UsernameOrPasswordIncorrectError, UserIsDisableError
+from management.settings import settings
 
 
 class MenuTablesTest(TestCase):
@@ -171,11 +171,35 @@ class ErrorsTest(TestCase):
         error_message = ""
         try:
             raise NoneUsernameOrPasswordError()
-        except NoneUsernameOrPasswordError as none_error:
-            error_message = str(none_error)
+        except NoneUsernameOrPasswordError as error:
+            error_message = str(error)
 
         self.assertEqual(
             settings.ERROR_MESSAGES["NoneUsernameOrPasswordError"],
+            error_message)
+
+    def test_username_or_password_incorrect_error(self):
+        """测试用户名或者密码错误"""
+        error_message = ""
+        try:
+            raise UsernameOrPasswordIncorrectError()
+        except UsernameOrPasswordIncorrectError as error:
+            error_message = str(error)
+
+        self.assertEqual(
+            settings.ERROR_MESSAGES["UsernameOrPasswordIncorrectError"],
+            error_message)
+
+    def test_user_is_disable_error(self):
+        """测试用户已经被禁用错误"""
+        error_message = ""
+        try:
+            raise UserIsDisableError()
+        except UserIsDisableError as error:
+            error_message = str(error)
+
+        self.assertEqual(
+            settings.ERROR_MESSAGES["UserIsDisableError"],
             error_message)
 
 
