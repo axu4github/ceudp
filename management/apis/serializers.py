@@ -12,4 +12,4 @@ class MenuSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Menu
-        fields = ["name", "code", "parent", "linkto", ]
+        fields = "__all__"
