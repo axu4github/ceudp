@@ -264,15 +264,11 @@ class AuthenticationTest(TestCase):
         """通过API进行正确的Token验证"""
         a = User.objects.create_user("auth_01", "auth_01@gmail.com", "auth_01")
         token = a.get_or_create_token().key
-        print token
-        resposne = self.client.get(
-            "/api/management/menus/", **{"Authorization":"Token {token}".format(token=token)})
 
-        # c = Client()
-        # c.options(Authorization="Token 8534e5fab9a1e50a4499ddf4bedac7119121e04f")
-        # resposne = c.get("/api/management/menus/")
+        response = self.client.get(
+            "/api/management/menus/", HTTP_AUTHORIZATION="Token {token}".format(token=token))
 
-        print resposne
+        self.assertTrue(200, response.status_code)
 
 
 class MenuApisTest(LiveServerTestCase):
