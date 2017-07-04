@@ -7,6 +7,9 @@ from rest_framework.authtoken.models import Token
 from django.core.exceptions import ObjectDoesNotExist
 from errors import NoneUsernameOrPasswordError, UsernameOrPasswordIncorrectError, UserIsDisableError
 from management.settings import settings
+from management.authentications import Authentication
+
+__author__ = "axu"
 
 
 class MenuTablesTest(TestCase):
@@ -165,6 +168,7 @@ class RestFrameworkTokenAuthTest(LiveServerTestCase):
 
 
 class ErrorsTest(TestCase):
+    """自定义错误测试"""
 
     def test_none_username_or_password_error(self):
         """测试没有发现用户或者密码错误"""
@@ -200,6 +204,43 @@ class ErrorsTest(TestCase):
 
         self.assertEqual(
             settings.ERROR_MESSAGES["UserIsDisableError"],
+            error_message)
+
+
+class AuthenticationTest(TestCase):
+    """自定义认证模块测试"""
+
+    def setUp(self):
+        self.auth_user = User.objects.create_user(
+            "auth_user", "auth_user@gmail.com", "auth_user123")
+
+    def test_correct_authenticate(self):
+        """测试正确认证方法"""
+        self.assertTrue(
+            Authentication.authenticate("auth_user", "auth_user123"))
+
+    def test_none_username_or_password_error_authenticate(self):
+        """测试没有发现用户或者密码错误"""
+        error_message = ""
+        try:
+            Authentication.authenticate()
+        except NoneUsernameOrPasswordError as error:
+            error_message = str(error)
+
+        self.assertEqual(
+            settings.ERROR_MESSAGES["NoneUsernameOrPasswordError"],
+            error_message)
+
+    def test_username_or_password_incorrect_error_authenticate(self):
+        """测试用户名或者密码错误"""
+        error_message = ""
+        try:
+            Authentication.authenticate("auth_user", "auth_user")
+        except UsernameOrPasswordIncorrectError as error:
+            error_message = str(error)
+
+        self.assertEqual(
+            settings.ERROR_MESSAGES["UsernameOrPasswordIncorrectError"],
             error_message)
 
 

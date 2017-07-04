@@ -1,6 +1,5 @@
 # -*- coding: UTF-8 -*-
-
-__author__ = "axu"
+from __future__ import unicode_literals
 
 from rest_framework import viewsets, views
 from serializers import MenuSerializer
@@ -8,6 +7,8 @@ from rest_framework.authentication import TokenAuthentication, SessionAuthentica
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from management.models import Menu
 from rest_framework.response import Response
+
+__author__ = "axu"
 
 """
 # 参考文档：
@@ -18,6 +19,8 @@ from rest_framework.response import Response
 
 
 class LoginViewSet(views.APIView):
+    """用户登录接口（获取用户Token）"""
+
     authentication_classes = ()
     permission_classes = (AllowAny, )
 

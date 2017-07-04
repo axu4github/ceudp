@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from django.conf import settings
 from appconf import AppConf
 
+__author__ = "axu"
 
 class ManagementConfigurtion(AppConf):
     """
@@ -16,6 +17,8 @@ class ManagementConfigurtion(AppConf):
 
     ERROR_MESSAGES = {
         "NoneUsernameOrPasswordError": "none username or passoword.",
+        "UsernameOrPasswordIncorrectError": "username or password were incorrect.",
+        "UserIsDisableError": "user has been disabled.",
     }
 
     class Meta:
