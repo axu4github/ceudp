@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.test import TestCase, LiveServerTestCase
+from django.test import TestCase, LiveServerTestCase, Client
 from management.models import User, Menu
 from rest_framework.authtoken.models import Token
 from django.core.exceptions import ObjectDoesNotExist
@@ -120,7 +120,7 @@ class MenuTablesTest(TestCase):
             "m9_修改后", u_menus.filter(name__startswith="m9")[0].name)
 
 
-class RestFrameworkTokenAuthTest(LiveServerTestCase):
+class RestFrameworkTokenAuthTest(TestCase):
     """
     测试 django-rest-framework TokenAuthentication
     参考文档：
@@ -254,6 +254,25 @@ class AuthenticationTest(TestCase):
         self.assertEqual(
             settings.ERROR_MESSAGES["UsernameOrPasswordIncorrectError"],
             error_message)
+
+    def test_auth_403_error(self):
+        """测试禁止访问"""
+        resposne = self.client.get("/api/management/menus/")
+        self.assertTrue(403, resposne.status_code)
+
+    def test_correct_token_auth_from_api(self):
+        """通过API进行正确的Token验证"""
+        a = User.objects.create_user("auth_01", "auth_01@gmail.com", "auth_01")
+        token = a.get_or_create_token().key
+        print token
+        resposne = self.client.get(
+            "/api/management/menus/", **{"Authorization":"Token {token}".format(token=token)})
+
+        # c = Client()
+        # c.options(Authorization="Token 8534e5fab9a1e50a4499ddf4bedac7119121e04f")
+        # resposne = c.get("/api/management/menus/")
+
+        print resposne
 
 
 class MenuApisTest(LiveServerTestCase):
