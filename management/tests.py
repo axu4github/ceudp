@@ -8,6 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from errors import NoneUsernameOrPasswordError, UsernameOrPasswordIncorrectError, UserIsDisableError
 from management.settings import settings
 from management.authentications import Authentication
+
 import json
 
 __author__ = "axu"
@@ -405,6 +406,8 @@ class UserApisTest(TestCase):
             "part_of_update": "/api/management/users/{id}/",  # 部分更新接口
             # 改密码接口
             "change_password": "/api/management/users/{id}/change_password/",
+            "enable": "/api/management/users/{id}/enable/",  # 启用接口
+            "disable": "/api/management/users/{id}/disable/",  # 禁用接口
         }
 
         self.uat = User.objects.create_user("uat", "uat@gmail.com", "uat")
@@ -496,11 +499,76 @@ class UserApisTest(TestCase):
         uat5 = User.objects.create_user("uat5", "uat5@gmail.com", "uat5")
         uat5_token = uat5.get_or_create_token().key
         raw_password = uat5.password
+        # 用户密码验证
+        uat5_authed = Authentication.authenticate("uat5", "uat5")
+        self.assertEqual(uat5, uat5_authed)
 
         data = {"password": "uat5_password_changed"}
-
         response = self.client.post(
             self.urls["change_password"].format(id=uat5.id), data, HTTP_AUTHORIZATION="Token " + uat5_token)
+        # 密码修改后再次验证
+        uat5_password_changed = User.objects.get(pk=uat5.id)
+        uat5_authed = Authentication.authenticate(
+            "uat5", "uat5_password_changed")
 
         self.assertEqual(200, response.status_code)
-        self.assertTrue(raw_password != User.objects.get(pk=uat5.id).password)
+        self.assertTrue(raw_password != uat5_password_changed.password)
+        self.assertEqual(uat5_password_changed, uat5_authed)
+
+    def test_post_created(self):
+        """
+        测试创建用户后调用方法
+
+        方法：通过修改已经创建完成的用户的is_active字段，证明创建用户后调用方法对修改动作是无效的。
+        """
+        self.uat.is_active = False
+        self.uat.save()
+
+        self.assertTrue(not self.uat.is_active)
+
+    def test_enable_user(self):
+        """测试启用用户"""
+
+        # 初次创建用户的时候is_active会被自动设置为True，所以不能直接在这里设置
+        uat6 = User.objects.create_user("uat6", "uat6@gmail.com", "uat6")
+        # 可以在这里修改用户属性
+        uat6.is_active = False
+        uat6.save()
+
+        try:
+            Authentication.authenticate("uat6", "uat6")
+        except Exception as e:
+            self.assertEqual(
+                str(e), settings.ERROR_MESSAGES["UsernameOrPasswordIncorrectError"])
+
+        # 不能自己启用自己，所以这里的Token不能是自己的Token
+        response = self.client.get(
+            self.urls["enable"].format(id=uat6.id), HTTP_AUTHORIZATION="Token " + self.uat_token)
+
+        self.assertEqual(200, response.status_code)
+
+        uat6_authed = Authentication.authenticate("uat6", "uat6")
+        self.assertTrue(uat6_authed.is_active)
+
+    def test_disable_user(self):
+        """测试禁用用户"""
+
+        uat7 = User.objects.create_user("uat7", "uat6@gmail.com", "uat7")
+        uat7_token = uat7.get_or_create_token().key
+
+        uat7_authed = Authentication.authenticate("uat7", "uat7")
+        self.assertEqual(uat7, uat7_authed)
+
+        # 不能自己启用自己，所以这里的Token不能是自己的Token
+        response = self.client.get(
+            self.urls["disable"].format(id=uat7.id), HTTP_AUTHORIZATION="Token " + uat7_token)
+
+        self.assertEqual(200, response.status_code)
+
+        try:
+            Authentication.authenticate("uat7", "uat7")
+        except Exception as e:
+            self.assertEqual(
+                str(e), settings.ERROR_MESSAGES["UsernameOrPasswordIncorrectError"])
+
+        self.assertTrue(not User.objects.get(pk=uat7.id).is_active)

@@ -44,6 +44,24 @@ class User(AbstractUser):
 
         self.save()
 
+    def enable(self):
+        """启用用户"""
+        if not self.is_active:
+            self.is_active = True
+
+        self.save()
+
+        return self
+
+    def disable(self):
+        """禁用用户"""
+        if self.is_active:
+            self.is_active = False
+
+        self.save()
+
+        return self
+
     def __unicode__(self):
         return self.username
 

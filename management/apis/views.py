@@ -80,10 +80,39 @@ class UserViewSet(mixins.CreateModelMixin,
 
     @detail_route(methods=['post'])
     def change_password(self, request, pk=None):
-        serializer = PasswordSerializer(data=request.data)
-        if serializer.is_valid():
-            self.request.user.set_password(serializer.data["password"])
-            self.request.user.save()
-            return Response({})
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        """修改密码"""
+        try:
+            serializer = PasswordSerializer(data=request.data)
+            if serializer.is_valid():
+                self.request.user.set_password(serializer.data["password"])
+                self.request.user.save()
+                response = Response({}, status=status.HTTP_200_OK)
+            else:
+                response = Response(
+                    serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            response = Response(str(e), status=status.HTTP_400_BAD_REQUEST)
+
+        return response
+
+    @detail_route()
+    def enable(self, request, pk=None):
+        """启用用户"""
+        try:
+            User.objects.get(pk=pk).enable()
+            response = Response({}, status=status.HTTP_200_OK)
+        except Exception as e:
+            response = Response(str(e), status=status.HTTP_400_BAD_REQUEST)
+
+        return response
+
+    @detail_route()
+    def disable(self, request, pk=None):
+        """禁用用户"""
+        try:
+            User.objects.get(pk=pk).disable()
+            response = Response({}, status=status.HTTP_200_OK)
+        except Exception as e:
+            response = Response(str(e), status=status.HTTP_400_BAD_REQUEST)
+
+        return response
