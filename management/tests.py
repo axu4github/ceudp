@@ -172,9 +172,10 @@ class RestFrameworkTokenAuthTest(TestCase):
         t6 = User.objects.create_user("t6", "t6@gmail.com", "t6")
         t6_token = t6.get_or_create_token().key
 
-        reponse = self.client.post(
+        response = self.client.post(
             "/api/management/login/", {"username": "t6", "password": "t6"})
-        token = json.loads(reponse.content).get("token", None)
+
+        token = json.loads(response.content).get("token", None)
 
         self.assertEqual(t6_token, token)
 
@@ -396,24 +397,89 @@ class UserApisTest(TestCase):
 
     def setUp(self):
         """测试数据准备"""
-        pass
+        self.urls = {
+            "create": "/api/management/users/",  # 创建接口
+            "list": "/api/management/users/",  # 列表接口
+            "detail": "/api/management/users/{id}/",  # 详细信息接口
+            "update": "/api/management/users/{id}/",  # 全部更新接口
+            "part_of_update": "/api/management/users/{id}/",  # 部分更新接口
+        }
+
+        self.uat = User.objects.create_user("uat", "uat@gmail.com", "uat")
+        self.uat_token = self.uat.get_or_create_token().key
 
     def test_create_user(self):
         """测试创建用户接口"""
-        pass
+        data = {
+            "username": "uat1",
+            "email": "uat1@gmail.com"
+        }
+
+        response = self.client.post(
+            self.urls["create"], data, HTTP_AUTHORIZATION="Token " + self.uat_token)
+        response_content = json.loads(response.content)
+
+        # print response
+        self.assertEqual(200, response.status_code)
 
     def test_list_user(self):
         """测试浏览用户接口"""
-        pass
+        response = self.client.get(
+            self.urls["list"], HTTP_AUTHORIZATION="Token " + self.uat_token)
+        response_content = json.loads(response.content)
+
+        self.assertEqual(200, response.status_code)
+        self.assertTrue(len(response_content) > 0)
 
     def test_detail_user(self):
         """测试浏览用户详情接口"""
-        pass
+        uat2 = User.objects.create_user("uat2", "uat2@gmail.com", "uat2")
+
+        response = self.client.get(
+            self.urls["detail"].format(id=uat2.id), HTTP_AUTHORIZATION="Token " + self.uat_token)
+        response_content = json.loads(response.content)
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual("uat2", response_content.get("username"))
+        self.assertEqual("uat2@gmail.com", response_content.get("email"))
 
     def test_update_user(self):
         """测试更新用户接口"""
-        pass
+        uat3 = User.objects.create_user("uat3", "uat3@gmail.com", "uat3")
+
+        data = {
+            "username": "uat3",
+            "email": "uat3_uploaded@gmail.com",
+        }
+
+        json_data_str = json.dumps(data)
+
+        # 注意：若content_type设置为application/json的话，data要传json字符串
+        response = self.client.put(
+            self.urls["update"].format(id=uat3.id), data=json_data_str,
+            content_type="application/json",
+            HTTP_AUTHORIZATION="Token " + self.uat_token)
+        response_content = json.loads(response.content)
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(data["email"], response_content.get("email"))
 
     def test_part_of_update_user(self):
         """测试更新用户部分内容接口"""
-        pass
+        uta4 = User.objects.create_user("uta4", "uta4@gmail.com", "uta4")
+
+        data = {
+            "email": "uta4_uploaded@gmail.com",
+        }
+
+        json_data_str = json.dumps(data)
+
+        # PATCH请求的修改是不需要填必填项的，比如若想要修改ma3的linkto，则只需要传入linkto参数就可以完成修改，其他原有项内容不变。
+        response = self.client.patch(
+            self.urls["update"].format(id=uta4.id), data=json_data_str,
+            content_type="application/json",
+            HTTP_AUTHORIZATION="Token " + self.uat_token)
+        response_content = json.loads(response.content)
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(data["email"], response_content.get("email"))
