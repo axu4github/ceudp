@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 from rest_framework import serializers
-from management.models import Menu
+from management.models import Menu, User
 
 """
 参考文档：
@@ -13,3 +13,11 @@ class MenuSerializer(serializers.ModelSerializer):
     class Meta:
         model = Menu
         fields = "__all__"
+
+
+class UserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ["id", "email", "username", "is_active",
+                  "last_login", "created", "modified", "menus", ]
