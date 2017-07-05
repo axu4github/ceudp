@@ -408,6 +408,7 @@ class UserApisTest(TestCase):
             "change_password": "/api/management/users/{id}/change_password/",
             "enable": "/api/management/users/{id}/enable/",  # 启用接口
             "disable": "/api/management/users/{id}/disable/",  # 禁用接口
+            "menus": "/api/management/users/{id}/menus/",  # 用户菜单接口
         }
 
         self.uat = User.objects.create_user("uat", "uat@gmail.com", "uat")
@@ -572,3 +573,88 @@ class UserApisTest(TestCase):
                 str(e), settings.ERROR_MESSAGES["UsernameOrPasswordIncorrectError"])
 
         self.assertTrue(not User.objects.get(pk=uat7.id).is_active)
+
+    def test_create_user_contain_menu(self):
+        """测试创建用户，其中包含菜单"""
+        uatm1 = Menu.objects.create(
+            name="uatm1", code="uatm1", linkto="/uatm1")
+
+        uatm2 = Menu.objects.create(
+            name="uatm2", code="uatm2", linkto="/uatm2")
+
+        data = {
+            "username": "uat8",
+            "menus": [uatm1.id, uatm2.id],
+        }
+
+        response = self.client.post(
+            self.urls["create"], data, HTTP_AUTHORIZATION="Token " + self.uat_token)
+        response_content = json.loads(response.content)
+
+        self.assertEqual(201, response.status_code)
+
+        uat8 = User.objects.get(pk=response_content.get("id"))
+        uat8_menus = uat8.menus.all()
+
+        self.assertEqual(
+            data["menus"].sort(), [m.id for m in uat8_menus].sort())
+
+    def test_update_user_contain_menu(self):
+        """测试修改用户，其中包含菜单（使用PUT接口或者PATCH接口均可）"""
+        uatm3 = Menu.objects.create(
+            name="uatm3", code="uatm3", linkto="/uatm3")
+
+        uat9 = User.objects.create_user("uat9", "uat9@gmail.com", "uat9")
+        uat9.menus.add(uatm3)
+        uat9.save()
+
+        self.assertEqual(1, len(uat9.menus.all()))
+        self.assertEqual(uatm3, uat9.menus.all()[0])
+
+        uat9_token = uat9.get_or_create_token().key
+        uatm4 = Menu.objects.create(
+            name="uatm4", code="uatm4", linkto="/uatm4")
+
+        data = {
+            "username": "uat9",
+            "menus": [uatm3.id, uatm4.id],
+        }
+
+        json_data_str = json.dumps(data)
+
+        # 注意：若content_type设置为application/json的话，data要传json字符串
+        response = self.client.put(
+            self.urls["update"].format(id=uat9.id), data=json_data_str,
+            content_type="application/json",
+            HTTP_AUTHORIZATION="Token " + uat9_token)
+        response_content = json.loads(response.content)
+
+        self.assertEqual(200, response.status_code)
+
+        uat9_updated = User.objects.get(pk=response_content.get("id"))
+        uat9_updated_menus = uat9_updated.menus.all()
+
+        self.assertEqual(
+            data["menus"].sort(), [m.id for m in uat9_updated_menus].sort())
+
+    def test_get_user_menus(self):
+        """测试获取用户菜单"""
+        uatm5 = Menu.objects.create(
+            name="uatm5", code="uatm5", linkto="/uatm5")
+
+        uatm6 = Menu.objects.create(
+            name="uatm6", code="uatm6", linkto="/uatm6")
+
+        uat10 = User.objects.create_user("uat10", "uat10@gmail.com", "uat10")
+        uat10.menus.add(uatm5, uatm6)
+        uat10.save()
+
+        uat10_token = uat10.get_or_create_token().key
+        response = self.client.get(
+            self.urls["menus"].format(id=uat10.id), HTTP_AUTHORIZATION="Token " + uat10_token)
+        response_content = json.loads(response.content)
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(uat10.id, int(response_content.get("user")))
+        self.assertEqual(
+            [uatm5.id, uatm6.id].sort(), [m.get("id") for m in response_content.get("menus")].sort())

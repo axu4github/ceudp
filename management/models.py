@@ -5,6 +5,9 @@ from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.authtoken.models import Token
 from management.settings import settings
+from django.forms.models import model_to_dict
+
+__author__ = "axu"
 
 """
 字段类型参考：
@@ -81,6 +84,15 @@ class Menu(models.Model):
     linkto = models.CharField(verbose_name="链接地址", max_length=50, default="#")
     created = models.DateTimeField(verbose_name="创建时间", auto_now_add=True)
     modified = models.DateTimeField(verbose_name="修改时间", auto_now=True)
+
+    def as_dict(self):
+        """模型转换成为Dict"""
+        # model_to_dict 方法无法转换 Editable=False 的字段
+        # 例如含有 auto_now_add=True 的字段
+        instance_dict = model_to_dict(self)
+        instance_dict["created"] = self.created
+        instance_dict["modified"] = self.modified
+        return instance_dict
 
     def save(self, *args, **kwargs):
         try:

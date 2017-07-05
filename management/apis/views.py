@@ -78,7 +78,7 @@ class UserViewSet(mixins.CreateModelMixin,
     authentication_classes = (SessionAuthentication, TokenAuthentication, )
     permission_classes = (IsAuthenticated, )
 
-    @detail_route(methods=['post'])
+    @detail_route(methods=["post"])
     def change_password(self, request, pk=None):
         """修改密码"""
         try:
@@ -112,6 +112,22 @@ class UserViewSet(mixins.CreateModelMixin,
         try:
             User.objects.get(pk=pk).disable()
             response = Response({}, status=status.HTTP_200_OK)
+        except Exception as e:
+            response = Response(str(e), status=status.HTTP_400_BAD_REQUEST)
+
+        return response
+
+    @detail_route()
+    def menus(self, request, pk=None):
+        """用户菜单"""
+        try:
+            user_menus = User.objects.get(pk=pk).menus.all()
+            response_context = {
+                "user": pk,
+                "menus": map(lambda m: m.as_dict(), user_menus)
+            }
+
+            response = Response(response_context, status=status.HTTP_200_OK)
         except Exception as e:
             response = Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 
