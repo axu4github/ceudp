@@ -389,3 +389,31 @@ class MenuApisTest(TestCase):
 
         self.assertEqual(204, response.status_code)
         self.assertEqual(0, len(Menu.objects.filter(name="ma4")))
+
+
+class UserApisTest(TestCase):
+    """用户接口测试"""
+
+    def setUp(self):
+        """测试数据准备"""
+        pass
+
+    def test_create_user(self):
+        """测试创建用户接口"""
+        pass
+
+    def test_list_user(self):
+        """测试浏览用户接口"""
+        pass
+
+    def test_detail_user(self):
+        """测试浏览用户详情接口"""
+        pass
+
+    def test_update_user(self):
+        """测试更新用户接口"""
+        pass
+
+    def test_part_of_update_user(self):
+        """测试更新用户部分内容接口"""
+        pass
