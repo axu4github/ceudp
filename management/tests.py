@@ -341,10 +341,10 @@ class MenuApisTest(TestCase):
         ma2 = Menu.objects.create(
             name="ma2", code="ma2", parent=self.ma, linkto="/ma2")
 
-        # PUT请求的修改必须要填必填项
+        # PUT请求的修改必须要填必填项，比如若想要修改ma2的linkto，则必须将name,code也一并传入，若只传入linkto则会报错。
         data = {
-            "name": "ma2_updated",
-            "code": "ma2_updated",
+            "name": "ma2",
+            "code": "ma2",
             "linkto": "/m2_updated"
         }
 
@@ -367,7 +367,7 @@ class MenuApisTest(TestCase):
         m3 = Menu.objects.create(
             name="m3", code="m3", parent=self.ma, linkto="/m3")
 
-        # PATCH请求的修改是不需要填必填项的
+        # PATCH请求的修改是不需要填必填项的，比如若想要修改ma3的linkto，则只需要传入linkto参数就可以完成修改，其他原有项内容不变。
         data = {"linkto": "/m3_updated"}
         json_data_str = json.dumps(data)
 
