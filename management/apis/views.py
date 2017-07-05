@@ -1,14 +1,15 @@
 # -*- coding: UTF-8 -*-
 from __future__ import unicode_literals
 
+from serializers import MenuSerializer, UserSerializer, PasswordSerializer
 from rest_framework import viewsets, views, status, mixins
-from serializers import MenuSerializer, UserSerializer
 from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.decorators import detail_route
+from rest_framework.response import Response
 from management.apis.permissions import CustomerAccessPermission
 from management.models import Menu, User
 from management.authentications import Authentication
-from rest_framework.response import Response
 from management.settings import settings
 
 __author__ = "axu"
@@ -76,3 +77,13 @@ class UserViewSet(mixins.CreateModelMixin,
     queryset = User.objects.all()
     authentication_classes = (SessionAuthentication, TokenAuthentication, )
     permission_classes = (IsAuthenticated, )
+
+    @detail_route(methods=['post'])
+    def change_password(self, request, pk=None):
+        serializer = PasswordSerializer(data=request.data)
+        if serializer.is_valid():
+            self.request.user.set_password(serializer.data["password"])
+            self.request.user.save()
+            return Response({})
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -403,6 +403,8 @@ class UserApisTest(TestCase):
             "detail": "/api/management/users/{id}/",  # 详细信息接口
             "update": "/api/management/users/{id}/",  # 全部更新接口
             "part_of_update": "/api/management/users/{id}/",  # 部分更新接口
+            # 改密码接口
+            "change_password": "/api/management/users/{id}/change_password/",
         }
 
         self.uat = User.objects.create_user("uat", "uat@gmail.com", "uat")
@@ -471,20 +473,34 @@ class UserApisTest(TestCase):
 
     def test_part_of_update_user(self):
         """测试更新用户部分内容接口"""
-        uta4 = User.objects.create_user("uta4", "uta4@gmail.com", "uta4")
+        uat4 = User.objects.create_user("uat4", "uat4@gmail.com", "uat4")
 
         data = {
-            "email": "uta4_uploaded@gmail.com",
+            "email": "uat4_uploaded@gmail.com",
         }
 
         json_data_str = json.dumps(data)
 
         # PATCH请求的修改是不需要填必填项的，比如若想要修改ma3的linkto，则只需要传入linkto参数就可以完成修改，其他原有项内容不变。
         response = self.client.patch(
-            self.urls["update"].format(id=uta4.id), data=json_data_str,
+            self.urls["update"].format(id=uat4.id), data=json_data_str,
             content_type="application/json",
             HTTP_AUTHORIZATION="Token " + self.uat_token)
         response_content = json.loads(response.content)
 
         self.assertEqual(200, response.status_code)
         self.assertEqual(data["email"], response_content.get("email"))
+
+    def test_user_change_password(self):
+        """测试用户更改密码接口"""
+        uat5 = User.objects.create_user("uat5", "uat5@gmail.com", "uat5")
+        uat5_token = uat5.get_or_create_token().key
+        raw_password = uat5.password
+
+        data = {"password": "uat5_password_changed"}
+
+        response = self.client.post(
+            self.urls["change_password"].format(id=uat5.id), data, HTTP_AUTHORIZATION="Token " + uat5_token)
+
+        self.assertEqual(200, response.status_code)
+        self.assertTrue(raw_password != User.objects.get(pk=uat5.id).password)

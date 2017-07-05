@@ -21,3 +21,10 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ["id", "email", "username", "is_active",
                   "last_login", "created", "modified", "menus", ]
+
+
+class PasswordSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ["password", ]
