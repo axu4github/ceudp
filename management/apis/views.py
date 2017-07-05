@@ -5,6 +5,7 @@ from rest_framework import viewsets, views, status, mixins
 from serializers import MenuSerializer, UserSerializer
 from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from management.apis.permissions import CustomerAccessPermission
 from management.models import Menu, User
 from management.authentications import Authentication
 from rest_framework.response import Response
@@ -55,7 +56,7 @@ class MenuViewSet(viewsets.ModelViewSet):
     serializer_class = MenuSerializer
     queryset = Menu.objects.all()
     authentication_classes = (SessionAuthentication, TokenAuthentication, )
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated, CustomerAccessPermission, )
 
 
 class UserViewSet(mixins.CreateModelMixin,
