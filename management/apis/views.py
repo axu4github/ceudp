@@ -9,7 +9,7 @@ from management.apis.permissions import CustomerAccessPermission
 from management.models import Menu, User
 from management.authentications import Authentication
 from rest_framework.response import Response
-from django.conf import settings
+from management.settings import settings
 
 __author__ = "axu"
 

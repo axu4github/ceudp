@@ -419,8 +419,13 @@ class UserApisTest(TestCase):
             self.urls["create"], data, HTTP_AUTHORIZATION="Token " + self.uat_token)
         response_content = json.loads(response.content)
 
-        # print response
-        self.assertEqual(200, response.status_code)
+        self.assertEqual(201, response.status_code)
+        self.assertEqual(True, response_content.get("is_active"))
+        self.assertEqual(data["username"], response_content.get("username"))
+        self.assertEqual(data["email"], response_content.get("email"))
+
+        password = User.objects.get(pk=response_content.get("id")).password
+        self.assertTrue(password is not None)
 
     def test_list_user(self):
         """测试浏览用户接口"""
