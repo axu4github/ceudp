@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.test import TestCase, LiveServerTestCase, Client
+from django.test import TestCase
 from management.models import User, Menu
 from rest_framework.authtoken.models import Token
 from django.core.exceptions import ObjectDoesNotExist
