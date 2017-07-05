@@ -4,6 +4,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.authtoken.models import Token
+from management.settings import settings
 
 """
 字段类型参考：
@@ -32,6 +33,16 @@ class User(AbstractUser):
             token = Token.objects.create(user=self)
 
         return token
+
+    def post_created(self):
+        """创建实例后调用方法，详见 management.signals.py 文件"""
+        if not self.is_active:
+            self.is_active = True
+
+        if 0 == len(self.password):
+            self.set_password(settings.USER_DEFAULT_PASSWORD)
+
+        self.save()
 
     def __unicode__(self):
         return self.username
