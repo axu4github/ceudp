@@ -12,6 +12,9 @@
 {% block customize-script %}
 <script>
     leaf_active("users"); // 激活左侧菜单栏图标效果
+    $.ajaxSetup({
+        data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
+    });
 
     var user_table = null;
     $(function(){
@@ -43,7 +46,7 @@
             "processing": true,
             "bLengthChange": false, // 是否启动可以改变单页数量
             "iDisplayLength" : 20, // 设置单页显示数量
-            "order": [[ 4, "desc" ]], // 默认 按第4列（从0开始）倒序排列
+            "order": [[ 0, "asc" ]], // 默认 按第4列（从0开始）倒序排列
             "ajax": {
                 "url": "{% url 'management_api:user-list' %}",
                 "method": "GET",
@@ -53,6 +56,12 @@
             "columns": [
                 { 
                     "data": "id", "title": "编号",
+                    "render": function(id){
+                        var html = "<a href='#' data-toggle='modal' data-target='#user-modified-modal' onclick=show_user_modify(" + id + ")>" + 
+                                id + 
+                            "</a>";
+                         return html;
+                    },
                 },
                 { 
                     "data": "username", "title": "用户名",
@@ -84,7 +93,7 @@
                 { 
                     "data": "is_active", "title": "是否启用",
                     "render": function(is_active){
-                        return is_active ? "启动" : "停用";
+                        return is_active ? "启用" : "停用";
                     },
                 },
             ],
@@ -95,13 +104,90 @@
         // 顶部按钮
         var top_toolbar = "<div>" +
             "<div class='btn-group pull-right'>" +
-                "<button type='button' class='btn btn-danger btn-sm' data-toggle='modal' data-target='#user-detail-modal'>" + 
+                "<button type='button' class='btn btn-danger btn-sm' data-toggle='modal' data-target='#user-create-modal'>" + 
                     "<i class='fa fa-user-plus'></i>" +
                 "</button>" +
             "</div>" +
         "</div>";
         $("#top-toolbar").html(top_toolbar);
     });
+
+    $("#create-btn").on("click", function(){
+        var username = $("#create-username").val();
+        var email = $("#create-email").val();
+        $.ajax({
+            type: "POST",
+            url: "{% url 'management_api:user-list' %}",
+            data: {
+                "username": username,
+                "email": email,
+            },
+            async: false,
+            success: function(response){
+                alert("success");
+                user_table.ajax.reload();
+            },
+            error: function(){
+                alert("error");
+            },
+        });
+
+        $("#create-close-btn").click();
+    });
+
+    
+    $("#modified-btn").on("click", function(){
+        var username = $("#modified-username").val();
+        var email = $("#modified-email").val();
+        // var is_active = $("#modified-active").is(":checked");
+        // console.info(is_active);
+        $.ajax({
+            type: "PATCH",
+            url: "/api/management/users/" + $("#modified-id").val() + "/",
+            data: {
+                "username": username,
+                "email": email,
+                // "is_active": is_active,
+            },
+            async: false,
+            success: function(response){
+                alert("success");
+                user_table.ajax.reload();
+            },
+            error: function(response){
+                console.info(response);
+                alert("error");
+            },
+        });
+
+        $("#modified-close-btn").click();
+    });
+
+    function show_user_modify(id) {
+        console.info(id);
+        $.ajax({
+            type: "GET",
+            url: "/api/management/users/" + id + "/",
+            async: false,
+            success: function(response){
+                console.info(response);
+                $("#modified-id").val(response.id);
+                $("#modified-username").val(response.username);
+                $("#modified-email").val(response.email);
+                // if (response.is_active) {
+                //     console.info("True");
+                //     $("#modified-active").attr("checked", 'true');
+                // } else {
+                //     console.info("False");
+                //     $("#modified-active").attr("checked", "false");
+                // }
+            },
+            error: function(){
+                alert("error");
+            },
+        });
+    }
+
 </script>
 {% endblock %}
 
@@ -142,7 +228,7 @@
         </div>
     </section>
 
-    <div class="modal fade" id="user-detail-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal fade" id="user-create-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -156,26 +242,68 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label">用户名</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="username" placeholder="用户名">
+                                <input type="text" class="form-control" id="create-username" placeholder="用户名">
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="inputEmail3" class="col-sm-2 control-label">邮箱</label>
                             <div class="col-sm-9">
-                                <input type="email" class="form-control" id="inputEmail3" placeholder="邮箱">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="inputEmail3" class="col-sm-2 control-label">权限</label>
-                            <div class="col-sm-9">
-                                <input type="email" class="form-control" id="inputEmail3" placeholder="权限">
+                                <input type="email" class="form-control" id="create-email" placeholder="邮箱">
                             </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger pull-left" data-dismiss="modal">关闭</button>
-                    <button type="button" class="btn btn-success">保存</button>
+                    <button type="button" class="btn btn-danger pull-left" data-dismiss="modal" id="create-close-btn">关闭</button>
+                    <button type="button" class="btn btn-success" id="create-btn">创建</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="user-modified-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title"><i class="fa fa-user"></i> 修改用户</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">用户编号</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="modified-id" placeholder="用户编号" disabled>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">用户名</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="modified-username" placeholder="用户名">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputEmail3" class="col-sm-2 control-label">邮箱</label>
+                            <div class="col-sm-9">
+                                <input type="email" class="form-control" id="modified-email" placeholder="邮箱">
+                            </div>
+                        </div>
+                       <!--  <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" id="modified-active" /> 启用
+                                    </label>
+                                </div>
+                            </div>
+                        </div> -->
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger pull-left" data-dismiss="modal" id="modified-close-btn">关闭</button>
+                    <button type="button" class="btn btn-success" id="modified-btn">修改</button>
                 </div>
             </div>
         </div>

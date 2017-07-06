@@ -105,6 +105,8 @@
                 <script type="text/javascript" src="{% static 'plugins/codemirror/addon/hint/sql-hint.js' %}"></script>
                 <!-- Select2 -->
                 <script src="{% static 'plugins/select2/select2.full.min.js' %}"></script>
+                <!-- 避免CSRF错误 -->
+                <script src="{% static 'dist/js/csrf.js' %}"></script>
                 {% block customize-script %}{% endblock %}
             {% endblock %}
         </body>
