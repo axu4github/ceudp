@@ -29,3 +29,8 @@ def login(request):
 def logout(request):
     auth_logout(request)  # 系统登出
     return HttpResponseRedirect(reverse("management:login"))
+
+
+def users(request):
+    """用户管理页面"""
+    return render(request, "management/users.html")
