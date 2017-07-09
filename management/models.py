@@ -69,7 +69,18 @@ class User(AbstractUser):
         return self.username
 
     class Meta:
-        ordering = ('-modified',)
+        ordering = ('-modified', )
+        default_permissions = ()  # 禁用默认权限
+        permissions = (
+            ("get:management_api:user-list", "用户创建"),
+            ("post:management_api:user-list", "用户列表查看"),
+            ("get:management_api:user-detail", "用户详情查看"),
+            ("get:management_api:user-enable", "用户启用"),
+            ("get:management_api:user-disable", "用户禁用"),
+            ("put:management_api:user-detail", "用户信息修改"),
+            ("patch:management_api:user-detail", "用户信息部分修改"),
+            ("post:management_api:user-change-password", "用户密码修改"),
+        )
 
 
 class Menu(models.Model):
