@@ -7,7 +7,7 @@ from rest_framework.authentication import TokenAuthentication, SessionAuthentica
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.decorators import detail_route
 from rest_framework.response import Response
-from management.apis.permissions import CustomerAccessPermission
+from management.apis.permissions import ApiAccessPermission
 from management.models import Menu, User
 from management.authentications import Authentication
 from management.settings import settings
@@ -57,7 +57,7 @@ class MenuViewSet(viewsets.ModelViewSet):
     serializer_class = MenuSerializer
     queryset = Menu.objects.all()
     authentication_classes = (SessionAuthentication, TokenAuthentication, )
-    permission_classes = (IsAuthenticated, CustomerAccessPermission, )
+    permission_classes = (IsAuthenticated, ApiAccessPermission, )
 
 
 class UserViewSet(mixins.CreateModelMixin,
@@ -76,7 +76,7 @@ class UserViewSet(mixins.CreateModelMixin,
     serializer_class = UserSerializer
     queryset = User.objects.all()
     authentication_classes = (SessionAuthentication, TokenAuthentication, )
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated, ApiAccessPermission, )
 
     @detail_route(methods=["post"])
     def change_password(self, request, pk=None):
