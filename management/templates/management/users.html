@@ -93,7 +93,11 @@
                 { 
                     "data": "is_active", "title": "是否启用",
                     "render": function(is_active){
-                        return is_active ? "启用" : "停用";
+                        if (is_active) {
+                            return "<span class='badge bg-green'><i class='fa fa-check'></i></span>";
+                        } else {
+                            return "<span class='badge bg-red'><i class='fa fa-close'></i></span>";
+                        }
                     },
                 },
             ],
@@ -134,13 +138,13 @@
 
         $("#create-close-btn").click();
     });
-
     
     $("#modified-btn").on("click", function(){
         var username = $("#modified-username").val();
         var email = $("#modified-email").val();
-        // var is_active = $("#modified-active").is(":checked");
-        // console.info(is_active);
+        // var is_active = $("input[name='modified_radios'][checked]").val();
+            // var is_active = $("input[name='modified_radios']:checked").val();
+            // console.info(is_active);
         $.ajax({
             type: "PATCH",
             url: "/api/management/users/" + $("#modified-id").val() + "/",
@@ -175,11 +179,9 @@
                 $("#modified-username").val(response.username);
                 $("#modified-email").val(response.email);
                 // if (response.is_active) {
-                //     console.info("True");
-                //     $("#modified-active").attr("checked", 'true');
+                //     $("#is_active").attr("checked", "true");
                 // } else {
-                //     console.info("False");
-                //     $("#modified-active").attr("checked", "false");
+                //     $("#is_not_active").attr("checked", "true");
                 // }
             },
             error: function(){
@@ -290,11 +292,17 @@
                                 <input type="email" class="form-control" id="modified-email" placeholder="邮箱">
                             </div>
                         </div>
-                       <!--  <div class="form-group">
-                            <div class="col-sm-offset-2 col-sm-10">
-                                <div class="checkbox">
+                        <!-- <div class="form-group">
+                            <label class="col-sm-2 control-label">是否启用</label>
+                            <div class="col-sm-9">
+                                <div class="radio col-sm-2">
                                     <label>
-                                        <input type="checkbox" id="modified-active" /> 启用
+                                        <input type="radio" name="modified_radios" id="is_active" value="true"> 是
+                                    </label>
+                                </div>
+                                <div class="radio col-sm-2">
+                                    <label>
+                                        <input type="radio" name="modified_radios" id="is_not_active" value="false"> 否
                                     </label>
                                 </div>
                             </div>
