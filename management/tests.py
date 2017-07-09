@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.test import TestCase
+from django.contrib.auth.models import Permission
 from management.models import User, Menu
 from rest_framework.authtoken.models import Token
 from django.core.exceptions import ObjectDoesNotExist
@@ -658,3 +659,21 @@ class UserApisTest(TestCase):
         self.assertEqual(uat10.id, int(response_content.get("user")))
         self.assertEqual(
             [uatm5.id, uatm6.id].sort(), [m.get("id") for m in response_content.get("menus")].sort())
+
+
+class PermissionTest(TestCase):
+    """用户权限测试"""
+
+    def test_add(self):
+        # permission = Permission.objects.create(codename="post:management_api:user-change-password", name="用户密码修改")
+        # print permission
+        pass
+
+    def test_list(self):
+        # user = User.objects.create_user("p1", "p1@gmail.com", "p1")
+        # print user.user_permissions.all()
+        # permissions = Permission.objects.all()
+        # for p in permissions:
+        #     print p.codename
+        #     print p.name
+        pass
