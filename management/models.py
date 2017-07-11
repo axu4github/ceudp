@@ -27,6 +27,8 @@ class User(AbstractUser):
     created = models.DateTimeField(verbose_name="创建时间", auto_now_add=True)
     modified = models.DateTimeField(verbose_name="修改时间", auto_now=True)
     menus = models.ManyToManyField("Menu", verbose_name="用户菜单", blank=True)
+    verbose_name = models.CharField(
+        verbose_name="显示名称", max_length=50, blank=False, default="")
 
     def get_or_create_token(self):
         """获取或者创建用户Token"""
@@ -72,8 +74,8 @@ class User(AbstractUser):
         ordering = ('-modified', )
         default_permissions = ()  # 禁用默认权限
         permissions = (
-            ("get:management_api:user-list", "用户创建"),
-            ("post:management_api:user-list", "用户列表查看"),
+            ("post:management_api:user-list", "用户创建"),
+            ("get:management_api:user-list", "用户列表查看"),
             ("get:management_api:user-detail", "用户详情查看"),
             ("get:management_api:user-enable", "用户启用"),
             ("get:management_api:user-disable", "用户禁用"),
