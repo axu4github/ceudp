@@ -664,6 +664,14 @@ class UserApisTest(TestCase):
 class PermissionTest(TestCase):
     """用户权限测试"""
 
+    def test_validate_user_permission(self):
+        p = Permission.objects.get(codename="post:management_api:user-list")
+        user = User.objects.create_user("p1", "p1@gmail.com", "p1")
+        user.user_permissions.add(p)
+
+        self.assertTrue(p in user.user_permissions.all())
+        self.assertTrue(user.has_perm(p))
+
     def test_add(self):
         # permission = Permission.objects.create(codename="post:management_api:user-change-password", name="用户密码修改")
         # print permission
