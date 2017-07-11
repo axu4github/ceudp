@@ -18,5 +18,5 @@ class ApiAccessPermission(permissions.BasePermission):
         return unique.lower()
 
     def has_permission(self, request, view):
-        # print self.api_unique(request)
-        return True
+        """判断用户是否有接口权限"""
+        return request.user.has_perm(self.api_unique(request))
