@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.db import models
-from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ObjectDoesNotExist
-from rest_framework.authtoken.models import Token
-from management.settings import settings
 from django.forms.models import model_to_dict
+from django.contrib.auth.models import AbstractUser
+from management.settings import settings
+
 
 __author__ = "axu"
 

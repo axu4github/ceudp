@@ -1,6 +1,7 @@
 # -*- coding: UTF-8 -*-
 from rest_framework import serializers
 from management.models import Menu, User
+from django.contrib.auth.models import Permission, Group
 
 """
 参考文档：
@@ -28,3 +29,17 @@ class PasswordSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["password", ]
+
+
+class GroupSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Group
+        fields = "__all__"
+
+
+class PermissionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Permission
+        fields = ["id", "codename", "name"]

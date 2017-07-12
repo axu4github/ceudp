@@ -1,12 +1,22 @@
 # -*- coding: UTF-8 -*-
 from __future__ import unicode_literals
 
-from serializers import MenuSerializer, UserSerializer, PasswordSerializer
+from django.contrib.auth.models import Permission, Group
+from serializers import (
+    MenuSerializer,
+    UserSerializer,
+    PasswordSerializer,
+    GroupSerializer,
+    PermissionSerializer
+)
 from rest_framework import viewsets, views, status, mixins
-from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.decorators import detail_route
 from rest_framework.response import Response
+from rest_framework.authentication import (
+    TokenAuthentication,
+    SessionAuthentication
+)
 from management.apis.permissions import ApiAccessPermission
 from management.models import Menu, User
 from management.authentications import Authentication
@@ -132,3 +142,19 @@ class UserViewSet(mixins.CreateModelMixin,
             response = Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 
         return response
+
+
+class GroupViewSet(viewsets.ModelViewSet):
+    """用户组接口"""
+    serializer_class = GroupSerializer
+    queryset = Group.objects.all()
+    authentication_classes = (SessionAuthentication, TokenAuthentication, )
+    permission_classes = (IsAuthenticated, ApiAccessPermission, )
+
+
+class PermissionViewSet(viewsets.ReadOnlyModelViewSet):
+    """权限接口"""
+    serializer_class = PermissionSerializer
+    queryset = Permission.objects.all()
+    authentication_classes = (SessionAuthentication, TokenAuthentication, )
+    permission_classes = (IsAuthenticated, ApiAccessPermission, )

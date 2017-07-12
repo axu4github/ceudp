@@ -3,7 +3,13 @@ from __future__ import unicode_literals
 
 from django.conf.urls import url, include
 from rest_framework.routers import DefaultRouter
-from views import MenuViewSet, LoginViewSet, UserViewSet
+from views import (
+    MenuViewSet,
+    LoginViewSet,
+    UserViewSet,
+    GroupViewSet,
+    PermissionViewSet
+)
 
 __author__ = "axu"
 
@@ -22,6 +28,8 @@ ClassBasedViews参考文档：http://www.django-rest-framework.org/api-guide/vie
 router = DefaultRouter()
 router.register(r"menus", MenuViewSet)
 router.register(r"users", UserViewSet)
+router.register(r"groups", GroupViewSet)
+router.register(r"permissions", PermissionViewSet)
 
 urlpatterns = [
     url(r"^", include(router.urls)),
