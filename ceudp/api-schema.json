@@ -8,52 +8,20 @@
                 "description": "获取用户认证信息（Token）\n",
                 "responses": {
                     "200": {
-                        "description": "OK",
-                        "schema": {
-                            "title": "User",
-                            "type": "object",
-                            "properties": {
-                                "username": {
-                                    "type": "string"
-                                },
-                                "email": {
-                                    "type": "string"
-                                }
-                            }
-                        }
+                        "description": "成功"
                     }
                 }
             }
         },
-
-        "v1/user/profile/": {
+        "/api/management/menus/{id}/": {
             "get": {
-                "tags": [
-                    "v1"
-                ],
-                "description": "用户profile\n",
+                "description": "获取用户认证信息（Token）\n",
                 "responses": {
                     "200": {
-                        "description": "OK",
-                        "schema": {
-                            "title": "User",
-                            "type": "object",
-                            "properties": {
-                                "username": {
-                                    "type": "string"
-                                },
-                                "email": {
-                                    "type": "string"
-                                },
-                                "phone_number": {
-                                    "type": "string"
-                                }
-                            }
-                        }
+                        "description": "成功"
                     }
                 }
             }
         }
-
     }
 }
