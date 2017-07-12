@@ -189,3 +189,12 @@ LOGGING = {
 
 # 默认应用名称
 DEFAULT_APPLICATION_NAME = "CEUDP"
+
+# API页面配置
+SWAGGER_SETTINGS = {
+    'JSON_EDITOR': True,
+    # 'LOGIN_URL': 'login',
+    # 'LOGOUT_URL': 'logout',
+}
+
+API_SCHEMA_PATH = os.path.join(BASE_DIR, "ceudp/api-schema.json")
