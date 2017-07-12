@@ -1,16 +1,20 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import json
 from django.test import TestCase
 from django.contrib.auth.models import Permission, Group
-from management.models import User, Menu
-from rest_framework.authtoken.models import Token
 from django.core.exceptions import ObjectDoesNotExist
-from errors import NoneUsernameOrPasswordError, UsernameOrPasswordIncorrectError, UserIsDisableError
+from rest_framework.authtoken.models import Token
+from management.models import User, Menu
 from management.settings import settings
 from management.authentications import Authentication
+from management.errors import (
+    NoneUsernameOrPasswordError,
+    UsernameOrPasswordIncorrectError,
+    UserIsDisableError
+)
 
-import json
 
 __author__ = "axu"
 
