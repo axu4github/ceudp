@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.test import TestCase
-from django.contrib.auth.models import Permission
+from django.contrib.auth.models import Permission, Group
 from management.models import User, Menu
 from rest_framework.authtoken.models import Token
 from django.core.exceptions import ObjectDoesNotExist
@@ -665,21 +665,35 @@ class PermissionTest(TestCase):
     """用户权限测试"""
 
     def test_validate_user_permission(self):
+        """测试用户权限验证"""
         p = Permission.objects.get(codename="post:management_api:user-list")
         user = User.objects.create_user("p1", "p1@gmail.com", "p1")
+
+        self.assertFalse(user.has_perm(
+            "management.post:management_api:user-list"))
+
         user.user_permissions.add(p)
+        user = User.objects.get(username="p1")
 
         self.assertTrue(p in user.user_permissions.all())
-        self.assertTrue(user.has_perm(p))
+        self.assertTrue(user.has_perm(
+            "management.post:management_api:user-list"))
 
-    def test_add(self):
-        # permission = Permission.objects.create(codename="post:management_api:user-change-password", name="用户密码修改")
-        # print permission
-        pass
+    def test_validate_user_group_permission(self):
+        """测试用户，用户组权限验证"""
+        p = Permission.objects.get(codename="get:management_api:user-list")
+        g = Group.objects.create(name="g1")
+        g.permissions.add(p)  # 为用户组设置权限
+
+        user = User.objects.create_user("p2", "p2@gmail.com", "p2")
+        user.groups.add(g)  # 将用户添加到有权限的用户组中
+
+        self.assertTrue(g in user.groups.all())
+        self.assertTrue(user.has_perm(
+            "management.get:management_api:user-list"))
 
     def test_list(self):
-        # user = User.objects.create_user("p1", "p1@gmail.com", "p1")
-        # print user.user_permissions.all()
+        """测试获取权限"""
         # permissions = Permission.objects.all()
         # for p in permissions:
         #     print p.codename
