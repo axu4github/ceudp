@@ -5,7 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.forms.models import model_to_dict
 from django.contrib.auth.models import AbstractUser
 from management.settings import settings
-
+from rest_framework.authtoken.models import Token
 
 __author__ = "axu"
 
