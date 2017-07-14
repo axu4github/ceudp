@@ -25,6 +25,8 @@
             <link rel="stylesheet" type="text/css" href="{% static 'plugins/codemirror/lib/codemirror.css' %}">
             <link rel="stylesheet" type="text/css" href="{% static 'plugins/codemirror/theme/monokai.css' %}">
             <link rel="stylesheet" type="text/css" href="{% static 'plugins/codemirror/addon/hint/show-hint.css' %}">
+            <!-- sweetalert -->
+            <link rel="stylesheet" type="text/css" href="{% static 'plugins/sweetalert/dist/sweetalert.css' %}">
             <!-- Theme style -->
             <link rel="stylesheet" type="text/css" href="{% static 'dist/css/AdminLTE.min.css' %}" />
             <!-- AdminLTE Skins. Choose a skin from the css/skins
@@ -107,6 +109,8 @@
                 <script src="{% static 'plugins/select2/select2.full.min.js' %}"></script>
                 <!-- 避免CSRF错误 -->
                 <script src="{% static 'dist/js/csrf.js' %}"></script>
+                <!-- sweetalert -->
+                <script src="{% static 'plugins/sweetalert/dist/sweetalert.min.js' %}"></script>
                 {% block customize-script %}{% endblock %}
             {% endblock %}
         </body>
