@@ -58,6 +58,26 @@ class PerformanceConfigurtion(AppConf):
     PER_PAGE_ROWS = 10  # 单页显示记录数
     # SQLParser -EOF-
 
+    # HDFS settings
+    HDFS_WEB_URL = "http://10.0.3.49:50070"  # HDFS WEB 访问地址
+    HDFS_ROOT_DIR = "/queryengine"  # 应用HDFS根目录
+    HDFS_UNSTRUCTURED_DATA_DIR = "{0}/{1}".format(
+        HDFS_ROOT_DIR, "unstructured_datas")
+
+    from hdfs.client import Client
+    HDFS_CLIENT = Client(HDFS_WEB_URL)
+
+    # Solr settings
+    SOLR_URL = "localhost:8983"
+    SOLR_COLLECTIONS = "collection1"
+    from solrcloudpy.connection import SolrConnection
+    SOLR_CONNECTION = SolrConnection(SOLR_URL)[SOLR_COLLECTIONS]
+
+    # 文件类型后缀
+    EXCEL_EXTENSIONS = ['.xlsx']
+    DOCX_EXTENSIONS = ['.docx']
+    PDF_EXTENSIONS = ['.pdf']
+
     class Meta:
         """如果设置了前缀那么，调用配置的时候也要加上前缀调用。"""
         prefix = ""
