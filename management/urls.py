@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 from django.conf.urls import url
-from views import login, logout, users
+from views import login, logout, users, groups
 
 urlpatterns = [
     # /management/login/
@@ -9,4 +9,6 @@ urlpatterns = [
     url(r"^logout/", logout, name="logout"),
     # /management/users/
     url(r"^users/", users, name="users"),
+    # /management/groups/
+    url(r"^groups/", groups, name="groups"),
 ]

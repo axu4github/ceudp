@@ -208,7 +208,7 @@
             async: false,
             contentType: "application/json",
             success: function(response){
-                sweetAlert("创建用户成功", "success");
+                sweetAlert("创建用户成功", "", "success");
                 user_table.ajax.reload();
             },
             error: function(response){
@@ -236,10 +236,6 @@
             modified_data["user_permissions"] = modified_user_permission_vals;
         }
 
-        // var is_active = $("input[name='modified_radios'][checked]").val();
-            // var is_active = $("input[name='modified_radios']:checked").val();
-            // console.info(is_active);
-
         $.ajax({
             type: "PATCH",
             url: "/api/management/users/" + $("#modified-id").val() + "/",
@@ -247,7 +243,7 @@
             contentType: "application/json",
             async: false,
             success: function(response){
-                sweetAlert("创建用户成功", "success");
+                sweetAlert("修改用户成功", "", "success");
                 user_table.ajax.reload();
             },
             error: function(response){
@@ -364,7 +360,7 @@
                             <label for="user-groups" class="col-sm-2 control-label">用户组</label>
                             <div class="col-sm-9">
                                 <select class="user-groups" multiple="multiple" style="width: 90%;"></select>
-                                <button type='button' class='btn btn-primary btn-sm pull-right'><i class='fa fa-plus'></i></button>
+                                <a href="{% url 'management:groups' %}" class="btn btn-primary btn-sm pull-right"><i class='fa fa-plus'></i></a>
                             </div>
                         </div>
                         <div class="form-group">
@@ -422,7 +418,7 @@
                             <label for="user-groups" class="col-sm-2 control-label">用户组</label>
                             <div class="col-sm-9">
                                 <select class="modified-user-groups" multiple="multiple" style="width: 90%;"></select>
-                                <button type='button' class='btn btn-primary btn-sm pull-right'><i class='fa fa-plus'></i></button>
+                                <a href="{% url 'management:groups' %}" class="btn btn-primary btn-sm pull-right"><i class='fa fa-plus'></i></a>
                             </div>
                         </div>
                         <div class="form-group">
@@ -431,21 +427,6 @@
                                 <select class="modified-user-permissions" multiple="multiple" style="width: 100%;"></select>
                             </div>
                         </div>
-                        <!-- <div class="form-group">
-                            <label class="col-sm-2 control-label">是否启用</label>
-                            <div class="col-sm-9">
-                                <div class="radio col-sm-2">
-                                    <label>
-                                        <input type="radio" name="modified_radios" id="is_active" value="true"> 是
-                                    </label>
-                                </div>
-                                <div class="radio col-sm-2">
-                                    <label>
-                                        <input type="radio" name="modified_radios" id="is_not_active" value="false"> 否
-                                    </label>
-                                </div>
-                            </div>
-                        </div> -->
                     </form>
                 </div>
                 <div class="modal-footer">

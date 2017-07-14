@@ -34,3 +34,8 @@ def logout(request):
 def users(request):
     """用户管理页面"""
     return render(request, "management/users.html")
+
+
+def groups(request):
+    """用户管理页面"""
+    return render(request, "management/groups.html")
