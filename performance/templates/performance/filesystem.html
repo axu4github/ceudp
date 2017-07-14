@@ -53,7 +53,7 @@
             "iDisplayLength" : 20, // 设置单页显示数量
             "order": [[ 4, "desc" ]], // 默认 按第4列（从0开始）倒序排列
             "ajax": {
-                "url": "" + current_dir,
+                "url": "{% url 'performance_api:unstructured_datas' %}" + "?hdfs_path=" + current_dir,
                 "method": "GET",
                 "timeout": 5000,
                 "dataSrc": function(response){
@@ -131,9 +131,9 @@
     function on_click_search_btn(search_text){
         var url = "";
         if (search_type == "browse") {
-            url = "" + "?hdfs_path=" + search_text;
+            url = "{% url 'performance_api:unstructured_datas' %}" + "?hdfs_path=" + search_text;
         } else {
-            url = "" + "?contents=" + search_text;
+            url = "{% url 'performance_api:unstructured_datas' %}" + "?contents=" + search_text;
         }
 
         console.info(url);
