@@ -17,6 +17,8 @@
     });
 
     var user_table = null;
+    var user_group_select = null;
+    var user_permission_select = null;
     $(function(){
         user_table = $('#user_table').DataTable({
             "language": {
@@ -52,6 +54,9 @@
                 "method": "GET",
                 "timeout": 5000,
                 "dataSrc": function(response){ return response },
+                "error": function(response){
+                    sweetAlert("错误", response.responseText, "error");
+                },
             },
             "columns": [
                 { 
@@ -114,9 +119,66 @@
             "</div>" +
         "</div>";
         $("#top-toolbar").html(top_toolbar);
+
+        var user_groups = null;
+        $.ajax({
+            type: "GET",
+            url: "{% url 'management_api:group-list' %}",
+            async: false,
+            success: function(response){
+                var data = [];
+                for (var i = 0; i < response.length; i++) {
+                    data[i] = {
+                        id: response[i].id,
+                        text: response[i].name,
+                    };
+                }
+
+                user_groups = data;
+            },
+            error: function(response){
+                sweetAlert("错误", response.responseText, "error");
+            },
+        });
+
+        user_group_select = $(".user-groups").select2({
+            data: user_groups,
+            placeholder:'请选择',//默认文字提示
+            language: "zh-CN",//汉化
+            allowClear: true//允许清空
+        });
+
+        var user_permissions = null;
+        $.ajax({
+            type: "GET",
+            url: "{% url 'management_api:permission-list' %}",
+            async: false,
+            success: function(response){
+                var data = [];
+                for (var i = 0; i < response.length; i++) {
+                    data[i] = {
+                        id: response[i].id,
+                        text: response[i].name,
+                    };
+                }
+
+                user_permissions = data;
+            },
+            error: function(response){
+                sweetAlert("错误", response.responseText, "error");
+            },
+        });
+
+        user_permission_select = $(".user-permissions").select2({
+            data: user_permissions,
+            placeholder:'请选择',//默认文字提示
+            language: "zh-CN",//汉化
+            allowClear: true//允许清空
+        });
     });
 
     $("#create-btn").on("click", function(){
+        console.info(user_group_select.val());
         var username = $("#create-username").val();
         var email = $("#create-email").val();
         $.ajax({
@@ -131,8 +193,8 @@
                 alert("success");
                 user_table.ajax.reload();
             },
-            error: function(){
-                alert("error");
+            error: function(response){
+                sweetAlert("错误", response.responseText, "error");
             },
         });
 
@@ -159,8 +221,7 @@
                 user_table.ajax.reload();
             },
             error: function(response){
-                console.info(response);
-                alert("error");
+                sweetAlert("错误", response.responseText, "error");
             },
         });
 
@@ -185,7 +246,7 @@
                 // }
             },
             error: function(){
-                alert("error");
+                sweetAlert("错误", response.responseText, "error");
             },
         });
     }
@@ -251,6 +312,19 @@
                             <label for="inputEmail3" class="col-sm-2 control-label">邮箱</label>
                             <div class="col-sm-9">
                                 <input type="email" class="form-control" id="create-email" placeholder="邮箱">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="user-groups" class="col-sm-2 control-label">用户组</label>
+                            <div class="col-sm-9">
+                                <select class="user-groups" multiple="multiple" style="width: 90%;"></select>
+                                <button type='button' class='btn btn-primary btn-sm pull-right'><i class='fa fa-plus'></i></button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="user-permissions" class="col-sm-2 control-label">权限</label>
+                            <div class="col-sm-9">
+                                <select class="user-permissions" multiple="multiple" style="width: 100%;"></select>
                             </div>
                         </div>
                     </form>
