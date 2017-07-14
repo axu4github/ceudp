@@ -43,3 +43,9 @@ class Query(models.Model):
 
     class Meta:
         ordering = ('-created',)
+        default_permissions = ()  # 禁用默认权限
+        permissions = (
+            ("post:performance_api:query-list", "查询"),
+            ("get:performance_api:query-list", "查询历史记录查看"),
+            ("get:performance_api:query-detail", "查询历史记录详情查看"),
+        )

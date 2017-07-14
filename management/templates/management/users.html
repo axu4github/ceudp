@@ -188,12 +188,7 @@
 
         var user_group_vals = user_group_select.val();
         if (user_group_vals != null) {
-            var tmp = [];
-            for (var i = 0; i < user_group_vals.length; i++) {
-                tmp[i] = parseInt(user_group_vals[i]);
-            }
-
-            create_data["groups"] = tmp;
+            create_data["groups"] = user_group_vals;
         }
 
         var user_permission_vals = user_permission_select.val();
@@ -229,11 +224,15 @@
         var modified_user_group_vals = modified_user_group_select.val();
         if (modified_user_group_vals != null) {
             modified_data["groups"] = modified_user_group_vals;
+        } else {
+            modified_data["groups"] = [];
         }
 
         var modified_user_permission_vals = modified_user_permission_select.val();
         if (modified_user_permission_vals != null) {
             modified_data["user_permissions"] = modified_user_permission_vals;
+        } else {
+            modified_data["user_permissions"] = [];
         }
 
         $.ajax({

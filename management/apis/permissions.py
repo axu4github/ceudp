@@ -3,11 +3,12 @@ from __future__ import unicode_literals
 
 from rest_framework import permissions
 from django.core.urlresolvers import resolve
+from ceudp.utilities.loggables import Loggable
 
 __author__ = "axu"
 
 
-class ApiAccessPermission(permissions.BasePermission):
+class ApiAccessPermission(permissions.BasePermission, Loggable):
     """自定义权限"""
 
     def api_unique(self, request):
@@ -20,5 +21,10 @@ class ApiAccessPermission(permissions.BasePermission):
 
     def has_permission(self, request, view):
         """判断用户是否有接口权限"""
-        # return request.user.has_perm(self.api_unique(request))
-        return True
+        user = request.user
+        permission_str = self.api_unique(request)
+        self.log_info("用户: {0}".format(user.username))
+        self.log_info("权限: {0}".format(permission_str))
+        self.log_info("用户已有权限: {0}".format(user.user_permissions.all()))
+        return user.has_perm(permission_str)
+        # return True

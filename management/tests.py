@@ -2,8 +2,10 @@
 from __future__ import unicode_literals
 
 import json
+from itertools import chain
 from django.test import TestCase
 from django.contrib.auth.models import Permission, Group
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.authtoken.models import Token
 from management.models import User, Menu
@@ -698,8 +700,12 @@ class PermissionTest(TestCase):
 
     def test_list(self):
         """测试获取权限"""
-        # permissions = Permission.objects.all()
-        # for p in permissions:
-        #     print p.codename
-        #     print p.name
+        content_types = ["user", "query"]
+        permissions = []
+        for content_type in content_types:
+            qs = Permission.objects.filter(
+                content_type=ContentType.objects.get(model=content_type))
+            permissions = chain(qs, permissions)
+
+        print permissions
         pass

@@ -1,7 +1,9 @@
 # -*- coding: UTF-8 -*-
 from __future__ import unicode_literals
 
+from itertools import chain
 from django.contrib.auth.models import Permission, Group
+from django.contrib.contenttypes.models import ContentType
 from serializers import (
     MenuSerializer,
     UserSerializer,
@@ -164,3 +166,13 @@ class PermissionViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Permission.objects.all()
     authentication_classes = (SessionAuthentication, TokenAuthentication, )
     permission_classes = (IsAuthenticated, ApiAccessPermission, )
+
+    def get_queryset(self):
+        content_types = ["user", "query", "group", "permission"]
+        permissions = []
+        for content_type in content_types:
+            qs = Permission.objects.filter(
+                content_type=ContentType.objects.get(model=content_type))
+            permissions = chain(qs, permissions)
+
+        return permissions

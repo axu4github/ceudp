@@ -66,8 +66,8 @@
                     "method": "GET",
                     "timeout": 5000,
                     "dataSrc": function(response){ return response },
-                    "error": function(data){
-                        alert(data.responseJSON.message);
+                    "error": function(response){
+                        sweetAlert("错误", response.responseText, "error");
                     }
                 },
                 "columns": [
@@ -262,8 +262,8 @@
                     console.info(columns, data, response_set);
                     bulid_query_result_table(columns, data, response_set);
                 },
-                error: function(){
-                    alert("error");
+                error: function(response){
+                    sweetAlert("错误", response.responseText, "error");
                 },
             });
             // 切换到查询结果

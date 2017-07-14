@@ -3,14 +3,15 @@
 import os
 import tempfile
 from django.http import StreamingHttpResponse
-from rest_framework import viewsets, mixins, status
 from serializers import QuerySerializer
+from ceudp.utilities.loggables import Loggable
+from management.apis.permissions import ApiAccessPermission
 from performance.models import Query
 from performance.hdfs_clients import HDFSClient
-from rest_framework.response import Response
-from ceudp.utilities.loggables import Loggable
 from performance.settings import settings
 from performance.utils import Utils
+from rest_framework import viewsets, mixins, status
+from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import (
     TokenAuthentication,
@@ -36,7 +37,7 @@ class QueryViewSet(mixins.CreateModelMixin,
     serializer_class = QuerySerializer
     queryset = Query.objects.all()
     authentication_classes = (SessionAuthentication, TokenAuthentication, )
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated, ApiAccessPermission)
 
     def get_queryset(self):
         return Query.objects.filter(user=self.request.user)
