@@ -16,12 +16,29 @@ class MenuSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class PermissionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Permission
+        fields = ["id", "codename", "name"]
+
+
+class GroupSerializer(serializers.ModelSerializer):
+    permissions = PermissionSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Group
+        fields = "__all__"
+
+
 class UserSerializer(serializers.ModelSerializer):
+    # groups = GroupSerializer(many=True, read_only=True)
+    # user_permissions = PermissionSerializer(many=True, read_only=True)
 
     class Meta:
         model = User
-        fields = ["id", "email", "username", "verbose_name", "is_active",
-                  "last_login", "created", "modified", "menus", ]
+        fields = ("id", "email", "username", "verbose_name", "is_active",
+                  "last_login", "created", "modified", "groups", "user_permissions")
 
 
 class PasswordSerializer(serializers.ModelSerializer):
@@ -29,17 +46,3 @@ class PasswordSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["password", ]
-
-
-class GroupSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Group
-        fields = "__all__"
-
-
-class PermissionSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Permission
-        fields = ["id", "codename", "name"]

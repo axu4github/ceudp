@@ -19,6 +19,50 @@
     var user_table = null;
     var user_group_select = null;
     var user_permission_select = null;
+    var modified_user_group_select = null;
+    var modified_user_permission_select = null;
+    var user_permissions = null;
+    $.ajax({
+        type: "GET",
+        url: "{% url 'management_api:permission-list' %}",
+        async: false,
+        success: function(response){
+            var data = [];
+            for (var i = 0; i < response.length; i++) {
+                data[i] = {
+                    id: response[i].id,
+                    text: response[i].name,
+                };
+            }
+
+            user_permissions = data;
+        },
+        error: function(response){
+            sweetAlert("错误", response.responseText, "error");
+        },
+    });
+
+    var user_groups = null;
+    $.ajax({
+        type: "GET",
+        url: "{% url 'management_api:group-list' %}",
+        async: false,
+        success: function(response){
+            var data = [];
+            for (var i = 0; i < response.length; i++) {
+                data[i] = {
+                    id: response[i].id,
+                    text: response[i].name,
+                };
+            }
+
+            user_groups = data;
+        },
+        error: function(response){
+            sweetAlert("错误", response.responseText, "error");
+        },
+    });
+
     $(function(){
         user_table = $('#user_table').DataTable({
             "language": {
@@ -120,77 +164,51 @@
         "</div>";
         $("#top-toolbar").html(top_toolbar);
 
-        var user_groups = null;
-        $.ajax({
-            type: "GET",
-            url: "{% url 'management_api:group-list' %}",
-            async: false,
-            success: function(response){
-                var data = [];
-                for (var i = 0; i < response.length; i++) {
-                    data[i] = {
-                        id: response[i].id,
-                        text: response[i].name,
-                    };
-                }
-
-                user_groups = data;
-            },
-            error: function(response){
-                sweetAlert("错误", response.responseText, "error");
-            },
-        });
-
         user_group_select = $(".user-groups").select2({
             data: user_groups,
-            placeholder:'请选择',//默认文字提示
+            placeholder:"  请选择",//默认文字提示
             language: "zh-CN",//汉化
             allowClear: true//允许清空
         });
 
-        var user_permissions = null;
-        $.ajax({
-            type: "GET",
-            url: "{% url 'management_api:permission-list' %}",
-            async: false,
-            success: function(response){
-                var data = [];
-                for (var i = 0; i < response.length; i++) {
-                    data[i] = {
-                        id: response[i].id,
-                        text: response[i].name,
-                    };
-                }
-
-                user_permissions = data;
-            },
-            error: function(response){
-                sweetAlert("错误", response.responseText, "error");
-            },
-        });
-
         user_permission_select = $(".user-permissions").select2({
             data: user_permissions,
-            placeholder:'请选择',//默认文字提示
+            placeholder:"  请选择",//默认文字提示
             language: "zh-CN",//汉化
             allowClear: true//允许清空
         });
     });
 
     $("#create-btn").on("click", function(){
-        console.info(user_group_select.val());
-        var username = $("#create-username").val();
-        var email = $("#create-email").val();
+        var create_data = {
+            "username": $("#create-username").val(),
+            "verbose_name": $("#create-verbose-name").val(),
+            "email": $("#create-email").val(), 
+        }
+
+        var user_group_vals = user_group_select.val();
+        if (user_group_vals != null) {
+            var tmp = [];
+            for (var i = 0; i < user_group_vals.length; i++) {
+                tmp[i] = parseInt(user_group_vals[i]);
+            }
+
+            create_data["groups"] = tmp;
+        }
+
+        var user_permission_vals = user_permission_select.val();
+        if (user_permission_vals != null) {
+            create_data["user_permissions"] = user_permission_vals;
+        }
+
         $.ajax({
             type: "POST",
             url: "{% url 'management_api:user-list' %}",
-            data: {
-                "username": username,
-                "email": email,
-            },
+            data: JSON.stringify(create_data),
             async: false,
+            contentType: "application/json",
             success: function(response){
-                alert("success");
+                sweetAlert("创建用户成功", "success");
                 user_table.ajax.reload();
             },
             error: function(response){
@@ -202,22 +220,34 @@
     });
     
     $("#modified-btn").on("click", function(){
-        var username = $("#modified-username").val();
-        var email = $("#modified-email").val();
+        var modified_data = {
+            "username": $("#modified-username").val(),
+            "verbose_name": $("#modified-verbose-name").val(),
+            "email": $("#modified-email").val(), 
+        }
+
+        var modified_user_group_vals = modified_user_group_select.val();
+        if (modified_user_group_vals != null) {
+            modified_data["groups"] = modified_user_group_vals;
+        }
+
+        var modified_user_permission_vals = modified_user_permission_select.val();
+        if (modified_user_permission_vals != null) {
+            modified_data["user_permissions"] = modified_user_permission_vals;
+        }
+
         // var is_active = $("input[name='modified_radios'][checked]").val();
             // var is_active = $("input[name='modified_radios']:checked").val();
             // console.info(is_active);
+
         $.ajax({
             type: "PATCH",
             url: "/api/management/users/" + $("#modified-id").val() + "/",
-            data: {
-                "username": username,
-                "email": email,
-                // "is_active": is_active,
-            },
+            data: JSON.stringify(modified_data),
+            contentType: "application/json",
             async: false,
             success: function(response){
-                alert("success");
+                sweetAlert("创建用户成功", "success");
                 user_table.ajax.reload();
             },
             error: function(response){
@@ -229,21 +259,31 @@
     });
 
     function show_user_modify(id) {
-        console.info(id);
+        modified_user_group_select = $(".modified-user-groups").select2({
+            data: user_groups,
+            placeholder:"  请选择",//默认文字提示
+            language: "zh-CN",//汉化
+            allowClear: true//允许清空
+        });
+
+        modified_user_permission_select = $(".modified-user-permissions").select2({
+            data: user_permissions,
+            placeholder:"  请选择",//默认文字提示
+            language: "zh-CN",//汉化
+            allowClear: true//允许清空
+        });
+
         $.ajax({
             type: "GET",
             url: "/api/management/users/" + id + "/",
             async: false,
             success: function(response){
-                console.info(response);
                 $("#modified-id").val(response.id);
                 $("#modified-username").val(response.username);
+                $("#modified-verbose-name").val(response.verbose_name);
                 $("#modified-email").val(response.email);
-                // if (response.is_active) {
-                //     $("#is_active").attr("checked", "true");
-                // } else {
-                //     $("#is_not_active").attr("checked", "true");
-                // }
+                modified_user_group_select.val(response.groups).trigger("change");
+                modified_user_permission_select.val(response.user_permissions).trigger("change");
             },
             error: function(){
                 sweetAlert("错误", response.responseText, "error");
@@ -309,6 +349,12 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="col-sm-2 control-label">显示名称</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="create-verbose-name" placeholder="显示中文名称">
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label for="inputEmail3" class="col-sm-2 control-label">邮箱</label>
                             <div class="col-sm-9">
                                 <input type="email" class="form-control" id="create-email" placeholder="邮箱">
@@ -361,9 +407,28 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="col-sm-2 control-label">显示名称</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="modified-verbose-name" placeholder="显示中文名称">
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label for="inputEmail3" class="col-sm-2 control-label">邮箱</label>
                             <div class="col-sm-9">
                                 <input type="email" class="form-control" id="modified-email" placeholder="邮箱">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="user-groups" class="col-sm-2 control-label">用户组</label>
+                            <div class="col-sm-9">
+                                <select class="modified-user-groups" multiple="multiple" style="width: 90%;"></select>
+                                <button type='button' class='btn btn-primary btn-sm pull-right'><i class='fa fa-plus'></i></button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="user-permissions" class="col-sm-2 control-label">权限</label>
+                            <div class="col-sm-9">
+                                <select class="modified-user-permissions" multiple="multiple" style="width: 100%;"></select>
                             </div>
                         </div>
                         <!-- <div class="form-group">

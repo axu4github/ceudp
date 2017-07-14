@@ -88,6 +88,12 @@ class UserViewSet(mixins.CreateModelMixin,
     authentication_classes = (SessionAuthentication, TokenAuthentication, )
     permission_classes = (IsAuthenticated, ApiAccessPermission, )
 
+    # def list(self, request):
+    #     """用户列表"""
+    #     queryset = User.objects.all()
+    #     serializer = UserSerializer(queryset, many=True)
+    #     return Response(serializer.data)
+
     @detail_route(methods=["post"])
     def change_password(self, request, pk=None):
         """修改密码"""
