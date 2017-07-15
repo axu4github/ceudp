@@ -1,7 +1,6 @@
 # -*- coding: UTF-8 -*-
 from __future__ import unicode_literals
 
-from itertools import chain
 from django.contrib.auth.models import Permission, Group
 from django.contrib.contenttypes.models import ContentType
 from serializers import (
@@ -23,6 +22,7 @@ from management.apis.permissions import ApiAccessPermission
 from management.models import Menu, User
 from management.authentications import Authentication
 from management.settings import settings
+from security.models import AuditLog, ACTION
 
 __author__ = "axu"
 
@@ -46,6 +46,13 @@ class LoginViewSet(views.APIView):
             password = request.data.get("password", None)
             user = Authentication.authenticate(username, password)
             token = user.get_or_create_token()  # 获得用户Token
+
+            AuditLog.objects.create(
+                user=user,
+                content_type=ContentType.objects.get(model="user"),
+                action=ACTION.API_LOGIN
+            )
+
             response_context = {
                 "status": settings.SUCCESS,
                 "token": token.key,
@@ -90,11 +97,27 @@ class UserViewSet(mixins.CreateModelMixin,
     authentication_classes = (SessionAuthentication, TokenAuthentication, )
     permission_classes = (IsAuthenticated, ApiAccessPermission, )
 
-    # def list(self, request):
-    #     """用户列表"""
-    #     queryset = User.objects.all()
-    #     serializer = UserSerializer(queryset, many=True)
-    #     return Response(serializer.data)
+    def perform_create(self, serializer):
+        # 创建
+        super(UserViewSet, self).perform_create(serializer)
+        # 记录审计日志
+        AuditLog.objects.create(
+            user=self.request.user,
+            content_type=ContentType.objects.get(model="user"),
+            action=ACTION.CREATE,
+            content=serializer.data
+        )
+
+    def perform_update(self, serializer):
+        # 更新
+        super(UserViewSet, self).perform_update(serializer)
+        # 记录审计日志
+        AuditLog.objects.create(
+            user=self.request.user,
+            content_type=ContentType.objects.get(model="user"),
+            action=ACTION.UPDATE,
+            content=serializer.data
+        )
 
     @detail_route(methods=["post"])
     def change_password(self, request, pk=None):
@@ -158,6 +181,28 @@ class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     authentication_classes = (SessionAuthentication, TokenAuthentication, )
     permission_classes = (IsAuthenticated, ApiAccessPermission, )
+
+    def perform_create(self, serializer):
+        # 创建
+        super(UserViewSet, self).perform_create(serializer)
+        # 记录审计日志
+        AuditLog.objects.create(
+            user=self.request.user,
+            content_type=ContentType.objects.get(model="group"),
+            action=ACTION.CREATE,
+            content=serializer.data
+        )
+
+    def perform_update(self, serializer):
+        # 更新
+        super(UserViewSet, self).perform_update(serializer)
+        # 记录审计日志
+        AuditLog.objects.create(
+            user=self.request.user,
+            content_type=ContentType.objects.get(model="group"),
+            action=ACTION.UPDATE,
+            content=serializer.data
+        )
 
 
 class PermissionViewSet(viewsets.ReadOnlyModelViewSet):
