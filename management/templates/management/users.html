@@ -280,7 +280,8 @@
                 modified_user_group_select.val(response.groups).trigger("change");
                 modified_user_permission_select.val(response.user_permissions).trigger("change");
             },
-            error: function(){
+            error: function(response){
+                $("#modified-close-btn").click();
                 sweetAlert("错误", response.responseText, "error");
             },
         });

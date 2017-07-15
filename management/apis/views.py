@@ -168,11 +168,5 @@ class PermissionViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = (IsAuthenticated, ApiAccessPermission, )
 
     def get_queryset(self):
-        content_types = ["user", "query", "group", "permission"]
-        permissions = []
-        for content_type in content_types:
-            qs = Permission.objects.filter(
-                content_type=ContentType.objects.get(model=content_type))
-            permissions = chain(qs, permissions)
-
-        return permissions
+        custompermissions = ContentType.objects.get(model="custompermissions")
+        return Permission.objects.filter(content_type=custompermissions)

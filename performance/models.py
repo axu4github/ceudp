@@ -20,8 +20,10 @@ class Query(models.Model):
     created = models.DateTimeField(verbose_name="创建时间", auto_now_add=True)
     duration = models.FloatField(verbose_name="执行时长", default=0.0)
     rows = models.IntegerField(verbose_name="查询结果数量", default=0)
-    status = models.CharField(verbose_name="查询状态", max_length=2, choices=settings.QUERY_STATUS_CHOICES, default=settings.FAILED)
-    error_messages = models.TextField(verbose_name="查询错误", blank=True, default="")
+    status = models.CharField(verbose_name="查询状态", max_length=2,
+                              choices=settings.QUERY_STATUS_CHOICES, default=settings.FAILED)
+    error_messages = models.TextField(
+        verbose_name="查询错误", blank=True, default="")
     user = models.ForeignKey(User, verbose_name="执行人")
 
     def execute(self):
@@ -43,9 +45,3 @@ class Query(models.Model):
 
     class Meta:
         ordering = ('-created',)
-        default_permissions = ()  # 禁用默认权限
-        permissions = (
-            ("post:performance_api:query-list", "查询"),
-            ("get:performance_api:query-list", "查询历史记录查看"),
-            ("get:performance_api:query-detail", "查询历史记录详情查看"),
-        )

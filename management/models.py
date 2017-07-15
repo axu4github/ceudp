@@ -72,17 +72,6 @@ class User(AbstractUser):
 
     class Meta:
         ordering = ('-modified', )
-        default_permissions = ()  # 禁用默认权限
-        permissions = (
-            ("post:management_api:user-list", "用户创建"),
-            ("get:management_api:user-list", "用户列表查看"),
-            ("get:management_api:user-detail", "用户详情查看"),
-            ("get:management_api:user-enable", "用户启用"),
-            ("get:management_api:user-disable", "用户禁用"),
-            ("put:management_api:user-detail", "用户信息修改"),
-            ("patch:management_api:user-detail", "用户信息部分修改"),
-            ("post:management_api:user-change-password", "用户密码修改"),
-        )
 
 
 class Menu(models.Model):
@@ -119,3 +108,25 @@ class Menu(models.Model):
 
     def __unicode__(self):
         return self.name
+
+
+class CustomPermissions(models.Model):
+    """自定义权限表"""
+
+    class Meta:
+        default_permissions = ()  # 禁用默认权限
+        permissions = (
+            ("post:management_api:user-list", "用户创建"),
+            ("get:management_api:user-list", "用户列表查看"),
+            ("get:management_api:user-detail", "用户详情查看"),
+            ("get:management_api:user-enable", "用户启用"),
+            ("get:management_api:user-disable", "用户禁用"),
+            ("put:management_api:user-detail", "用户信息修改"),
+            ("patch:management_api:user-detail", "用户信息部分修改"),
+            ("post:management_api:user-change-password", "用户密码修改"),
+            ("post:performance_api:query-list", "查询"),
+            ("get:performance_api:query-list", "查询历史记录查看"),
+            ("get:performance_api:query-detail", "查询历史记录详情查看"),
+            ("get:management_api:group-list", "用户组列表查看"),
+            ("get:management_api:permission-list", "权限列表查看")
+        )
