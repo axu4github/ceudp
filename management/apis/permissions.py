@@ -23,8 +23,6 @@ class ApiAccessPermission(permissions.BasePermission, Loggable):
         """判断用户是否有接口权限"""
         user = request.user
         permission_str = self.api_unique(request)
-        self.log_info("用户: {0}".format(user.username))
-        self.log_info("权限: {0}".format(permission_str))
-        self.log_info("用户已有权限: {0}".format(user.user_permissions.all()))
+        # self.log_info("用户: {0}".format(user.username))
+        # self.log_info("权限: {0}".format(permission_str))
         return user.has_perm(permission_str)
-        # return True

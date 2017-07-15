@@ -69,7 +69,7 @@ class MenuViewSet(viewsets.ModelViewSet):
     serializer_class = MenuSerializer
     queryset = Menu.objects.all()
     authentication_classes = (SessionAuthentication, TokenAuthentication, )
-    permission_classes = (IsAuthenticated, ApiAccessPermission, )
+    permission_classes = (IsAuthenticated, )
 
 
 class UserViewSet(mixins.CreateModelMixin,

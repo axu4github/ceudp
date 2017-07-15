@@ -419,6 +419,31 @@ class UserApisTest(TestCase):
         }
 
         self.uat = User.objects.create_user("uat", "uat@gmail.com", "uat")
+        # 设置权限
+        put_permission = Permission.objects.get(
+            codename="put:management_api:user-detail")
+        patch_permission = Permission.objects.get(
+            codename="patch:management_api:user-detail")
+        list_permission = Permission.objects.get(
+            codename="get:management_api:user-list")
+        create_permission = Permission.objects.get(
+            codename="post:management_api:user-list")
+        detail_permission = Permission.objects.get(
+            codename="get:management_api:user-detail")
+        user_enable_permission = Permission.objects.get(
+            codename="get:management_api:user-enable")
+        user_disable_permission = Permission.objects.get(
+            codename="get:management_api:user-disable")
+
+        self.uat.user_permissions.add(
+            put_permission,
+            patch_permission,
+            list_permission,
+            user_enable_permission,
+            user_disable_permission,
+            create_permission,
+            detail_permission
+        )
         self.uat_token = self.uat.get_or_create_token().key
 
     def test_create_user(self):
@@ -505,6 +530,10 @@ class UserApisTest(TestCase):
     def test_user_change_password(self):
         """测试用户更改密码接口"""
         uat5 = User.objects.create_user("uat5", "uat5@gmail.com", "uat5")
+        user_change_password_permission = Permission.objects.get(
+            codename="post:management_api:user-change-password")
+        uat5.user_permissions.add(user_change_password_permission)
+
         uat5_token = uat5.get_or_create_token().key
         raw_password = uat5.password
         # 用户密码验证
@@ -562,6 +591,9 @@ class UserApisTest(TestCase):
         """测试禁用用户"""
 
         uat7 = User.objects.create_user("uat7", "uat6@gmail.com", "uat7")
+        user_disable_permission = Permission.objects.get(
+            codename="get:management_api:user-disable")
+        uat7.user_permissions.add(user_disable_permission)
         uat7_token = uat7.get_or_create_token().key
 
         uat7_authed = Authentication.authenticate("uat7", "uat7")
@@ -612,6 +644,10 @@ class UserApisTest(TestCase):
             name="uatm3", code="uatm3", linkto="/uatm3")
 
         uat9 = User.objects.create_user("uat9", "uat9@gmail.com", "uat9")
+        # 设置权限
+        put_permission = Permission.objects.get(
+            codename="put:management_api:user-detail")
+        uat9.user_permissions.add(put_permission)
         uat9.menus.add(uatm3)
         uat9.save()
 
@@ -653,6 +689,9 @@ class UserApisTest(TestCase):
             name="uatm6", code="uatm6", linkto="/uatm6")
 
         uat10 = User.objects.create_user("uat10", "uat10@gmail.com", "uat10")
+        user_menus_permission = Permission.objects.get(
+            codename="get:management_api:user-menus")
+        uat10.user_permissions.add(user_menus_permission)
         uat10.menus.add(uatm5, uatm6)
         uat10.save()
 
@@ -700,12 +739,4 @@ class PermissionTest(TestCase):
 
     def test_list(self):
         """测试获取权限"""
-        content_types = ["user", "query"]
-        permissions = []
-        for content_type in content_types:
-            qs = Permission.objects.filter(
-                content_type=ContentType.objects.get(model=content_type))
-            permissions = chain(qs, permissions)
-
-        print permissions
         pass

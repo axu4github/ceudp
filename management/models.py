@@ -119,6 +119,7 @@ class CustomPermissions(models.Model):
             ("post:management_api:user-list", "用户创建"),
             ("get:management_api:user-list", "用户列表查看"),
             ("get:management_api:user-detail", "用户详情查看"),
+            ("get:management_api:user-menus", "用户菜单查看"),
             ("get:management_api:user-enable", "用户启用"),
             ("get:management_api:user-disable", "用户禁用"),
             ("put:management_api:user-detail", "用户信息修改"),
