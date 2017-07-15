@@ -52,4 +52,9 @@ urlpatterns = [
         include("management.apis.urls", namespace="management_api")),
     # /scraping/
     url(r"^scraping/", include("scraping.urls", namespace="scraping")),
+    # /security/
+    # url(r"^security/", include("security.urls", namespace="security")),
+    # /api/security/
+    url(r"^api/security/",
+        include("security.apis.urls", namespace="security_api"))
 ]

@@ -35,14 +35,9 @@ class AuditLogAPITest(TestCase):
         self.urls = {
             "create": "/api/management/users/",  # 创建接口
             "list": "/api/management/users/",  # 列表接口
-            "detail": "/api/management/users/{id}/",  # 详细信息接口
             "update": "/api/management/users/{id}/",  # 全部更新接口
             "part_of_update": "/api/management/users/{id}/",  # 部分更新接口
-            # 改密码接口
-            "change_password": "/api/management/users/{id}/change_password/",
-            "enable": "/api/management/users/{id}/enable/",  # 启用接口
-            "disable": "/api/management/users/{id}/disable/",  # 禁用接口
-            "menus": "/api/management/users/{id}/menus/",  # 用户菜单接口
+            "list_auditlog": "/api/security/auditlogs/",  # 审计日志列表接口
         }
 
         self.ala = User.objects.create_user("ala", "ala@gmail.com", "ala")
@@ -52,10 +47,13 @@ class AuditLogAPITest(TestCase):
             codename="patch:management_api:user-detail")
         create_permission = Permission.objects.get(
             codename="post:management_api:user-list")
+        list_auditlog_permission = Permission.objects.get(
+            codename="get:security_api:auditlog-list")
         self.ala.user_permissions.add(
             put_permission,
             patch_permission,
-            create_permission
+            create_permission,
+            list_auditlog_permission
         )
         self.ala_token = self.ala.get_or_create_token().key
 
@@ -103,10 +101,26 @@ class AuditLogAPITest(TestCase):
 
         # 注意：若content_type设置为application/json的话，data要传json字符串
         self.client.patch(
-            self.urls["update"].format(id=ala03.id), data=json_data_str,
+            self.urls["part_of_update"].format(id=ala03.id), data=json_data_str,
             content_type="application/json",
             HTTP_AUTHORIZATION="Token " + self.ala_token)
 
         als = AuditLog.objects.filter(action=ACTION.UPDATE)
 
         self.assertEqual(als[0].user, self.ala)
+
+    def test_list_from_api(self):
+        data = {
+            "username": "ala04",
+            "email": "ala04@gmail.com"
+        }
+
+        self.client.post(
+            self.urls["create"], data, HTTP_AUTHORIZATION="Token " + self.ala_token)
+
+        response = self.client.get(
+            self.urls["list_auditlog"], HTTP_AUTHORIZATION="Token " + self.ala_token)
+        response_content = json.loads(response.content)
+
+        self.assertEqual(200, response.status_code)
+        self.assertTrue(len(response_content) > 0)

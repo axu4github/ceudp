@@ -130,5 +130,6 @@ class CustomPermissions(models.Model):
             ("get:performance_api:query-detail", "查询历史记录详情查看"),
             ("get:management_api:group-list", "用户组列表查看"),
             ("get:management_api:group-detail", "用户组详情查看"),
-            ("get:management_api:permission-list", "权限列表查看")
+            ("get:management_api:permission-list", "权限列表查看"),
+            ("get:security_api:auditlog-list", "审计日志列表查看")
         )

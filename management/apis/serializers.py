@@ -3,6 +3,8 @@ from rest_framework import serializers
 from management.models import Menu, User
 from django.contrib.auth.models import Permission, Group
 
+__author__ = "axu"
+
 """
 参考文档：
 - [ModelSerializer](http://www.django-rest-framework.org/api-guide/serializers/#modelserializer)
