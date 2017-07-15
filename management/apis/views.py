@@ -184,7 +184,7 @@ class GroupViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         # 创建
-        super(UserViewSet, self).perform_create(serializer)
+        super(GroupViewSet, self).perform_create(serializer)
         # 记录审计日志
         AuditLog.objects.create(
             user=self.request.user,
@@ -195,7 +195,7 @@ class GroupViewSet(viewsets.ModelViewSet):
 
     def perform_update(self, serializer):
         # 更新
-        super(UserViewSet, self).perform_update(serializer)
+        super(GroupViewSet, self).perform_update(serializer)
         # 记录审计日志
         AuditLog.objects.create(
             user=self.request.user,
