@@ -2,6 +2,8 @@
 from django.conf.urls import url
 from views import login, logout, users, groups
 
+__author__ = "axu"
+
 urlpatterns = [
     # /management/login/
     url(r"^login/", login, name="login"),

@@ -118,12 +118,13 @@
     $("#create-btn").on("click", function(){
         var create_data = {
             "name": $("#create-group").val(),
+            "permissions": [],
         }
 
         var permission_vals = permission_select.val();
         if (permission_vals != null) {
             create_data["permissions"] = permission_vals;
-        }
+        } 
 
         $.ajax({
             type: "POST",

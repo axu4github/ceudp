@@ -736,5 +736,15 @@ class PermissionTest(TestCase):
             "management.get:management_api:user-list"))
 
     def test_list(self):
-        """测试获取权限"""
+        """测试获取权限（需要补充）"""
         pass
+
+
+class GroupTableTest(TestCase):
+    """用户组表测试（需要补充）"""
+    pass
+
+
+class GroupAPITest(TestCase):
+    """用户组API测试（需要补充）"""
+    pass
