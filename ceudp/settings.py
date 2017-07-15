@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "performance.apps.PerformanceConfig",
     "management.apps.ManagementConfig",
     "scraping.apps.ScrapingConfig",
+    "security.apps.SecurityConfig",
 ]
 
 MIDDLEWARE = [
