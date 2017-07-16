@@ -38,4 +38,23 @@ class ScrapeJob(models.Model):
         verbose_name="状态", max_length=50, blank=False, default="NO_RUN")
 
     class Meta:
-        ordering = ('-modified', )
+        ordering = ("-modified", )
+
+
+class ScrapeJobDetail(models.Model):
+    """采集任务详情表"""
+    scrape_job = models.ForeignKey(
+        ScrapeJob, verbose_name="采集任务", blank=False)
+    created = models.DateTimeField(
+        verbose_name="创建时间", auto_now_add=True)
+    execute_time = models.CharField(
+        verbose_name="执行时间", max_length=50, default="")
+    content = models.CharField(
+        verbose_name="采集内容", max_length=200, default="")
+    rows = models.IntegerField(
+        verbose_name="采集数量", blank=False)
+    error_messages = models.TextField(
+        verbose_name="查询内容", default="")
+
+    class Meta:
+        ordering = ("-created", )
