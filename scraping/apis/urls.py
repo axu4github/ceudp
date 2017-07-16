@@ -4,7 +4,8 @@ from __future__ import unicode_literals
 from django.conf.urls import url, include
 from rest_framework.routers import DefaultRouter
 from views import (
-    ScrapeJobViewSet
+    ScrapeJobViewSet,
+    ScrapeJobDetailViewSet
 )
 
 __author__ = "axu"
@@ -23,6 +24,7 @@ ClassBasedViews参考文档：http://www.django-rest-framework.org/api-guide/vie
 
 router = DefaultRouter()
 router.register(r"scrapejobs", ScrapeJobViewSet)
+router.register(r"scrapejobdetails", ScrapeJobDetailViewSet)
 
 urlpatterns = [
     url(r"^", include(router.urls)),

@@ -5,7 +5,8 @@ from datetime import datetime, timedelta
 from django.contrib.contenttypes.models import ContentType
 from serializers import (
     ScrapeJobSerializer,
-    ScrapeJobListSerializer
+    ScrapeJobListSerializer,
+    ScrapeJobDetailListSerializer
 )
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
@@ -64,3 +65,12 @@ class ScrapeJobViewSet(viewsets.ModelViewSet):
             action=ACTION.UPDATE,
             content=serializer.data
         )
+
+
+class ScrapeJobDetailViewSet(viewsets.ReadOnlyModelViewSet):
+    """数据采集任务详情接口"""
+
+    serializer_class = ScrapeJobDetailListSerializer
+    queryset = ScrapeJob.objects.all()
+    authentication_classes = (SessionAuthentication, TokenAuthentication, )
+    permission_classes = (IsAuthenticated, ApiAccessPermission, )

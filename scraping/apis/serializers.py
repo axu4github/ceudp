@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 from rest_framework import serializers
-from scraping.models import ScrapeJob
+from scraping.models import ScrapeJob, ScrapeJobDetail
 
 __author__ = "axu"
 
@@ -22,4 +22,11 @@ class ScrapeJobListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ScrapeJob
+        fields = "__all__"
+
+
+class ScrapeJobDetailListSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ScrapeJobDetail
         fields = "__all__"
