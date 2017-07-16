@@ -196,7 +196,8 @@ DEFAULT_APPLICATION_NAME = "CEUDP"
 
 # API页面配置
 SWAGGER_SETTINGS = {
-    'JSON_EDITOR': True,
+    "JSON_EDITOR": True,
+    "SHOW_REQUEST_HEADERS": True,
     # 'LOGIN_URL': 'login',
     # 'LOGOUT_URL': 'logout',
 }
