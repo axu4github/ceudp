@@ -1,24 +1,139 @@
 {% extends "ceudp/base.html" %}
 {% load staticfiles %}
-
 {% block customize-script %}
-<!-- layer -->
-<script type="text/javascript" src="{% static 'plugins/layer-v3.0.3/layer/layer.js' %}"></script>
-
 <script>
     leaf_active("flat_files"); // 激活左侧菜单栏图标效果
-    $("#create_btn").on("click", function(){
-        layer.open({
-            type: 2,
-            title: false,
-            closeBtn: 0,
-            area: ['100%', '100%'],
-            content: ["{% url 'scraping:create_scraping_task' %}", "no"],
+    $.ajaxSetup({
+        data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
+    });
+
+    var scrape_job_table = null;
+    $(function(){
+        scrape_job_table = $('#scrape_job_table').DataTable({
+            "language": {
+                "sProcessing": "处理中...",
+                "sLengthMenu": "显示 _MENU_ 项结果",
+                "sZeroRecords": "没有匹配结果",
+                "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
+                "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                "sInfoPostFix": "",
+                "sSearch": "搜索:",
+                "sUrl": "",
+                "sEmptyTable": "表中数据为空",
+                "sLoadingRecords": "载入中...",
+                "sInfoThousands": ",",
+                "paginate": {
+                    "first": "第一页",
+                    "previous": "上一页",
+                    "next": "下一页",
+                    "last": "最后一页",
+                },
+            },
+            "info": true,
+            "paging": true,
+            // "searching": false,
+            "autoWidth": false,
+            "processing": true,
+            "bLengthChange": false, // 是否启动可以改变单页数量
+            "iDisplayLength" : 20, // 设置单页显示数量
+            "order": [[ 0, "asc" ]], // 默认 按第4列（从0开始）倒序排列
+            "ajax": {
+                "url": "{% url 'scraping_api:scrapejob-list' %}",
+                "method": "GET",
+                "timeout": 5000,
+                "dataSrc": function(response){ return response },
+                "error": function(response){
+                    sweetAlert("错误", response.responseText, "error");
+                },
+            },
+            "columns": [
+                { 
+                    "data": "id", "title": "编号",
+                    "render": function(id){
+                        var html = "<a href='#' data-toggle='modal' data-target='#user-modified-modal' onclick=show_user_modify(" + id + ")>" + 
+                                id + 
+                            "</a>";
+                         return id;
+                    },
+                },
+                { 
+                    "data": "job_name", "title": "任务名称",
+                },
+                { 
+                    "data": "data_source", "title": "数据源",
+                },
+                { 
+                    "data": "destination", "title": "导入位置",
+                },
+                { 
+                    "data": "created", "title": "创建时间",
+                    "render": function(created){
+                        var date = new Date(created);
+                        return date.toLocaleDateString() + " " + date.toLocaleTimeString();
+                    },
+                },
+                { 
+                    "data": "next_time", "title": "下一次采集时间",
+                    "render": function(created){
+                        var date = new Date(created);
+                        return date.toLocaleDateString() + " " + date.toLocaleTimeString();
+                    },
+                },
+                { 
+                    "data": "pid", "title": "采集进程号",
+                },
+                { 
+                    "data": "status", "title": "任务状态",
+                },
+                { 
+                    "data": null, "title": "操作",
+
+                },
+            ],
+            "dom": "<'#top-search.pull-left' f> <'#top-toolbar'>rtip",
+
+        });
+
+        // 顶部按钮
+        var top_toolbar = "<div>" +
+            "<div class='btn-group pull-right'>" +
+                "<button type='button' class='btn btn-danger btn-sm' data-toggle='modal' data-target='#job-create-modal'>" + 
+                    "<i class='fa fa-plus'></i>" +
+                "</button>" +
+            "</div>" +
+        "</div>";
+        $("#top-toolbar").html(top_toolbar);
+
+        $("#create-btn").on("click", function(){
+            var create_data = {
+                "job_name": $("#create-job-name").val(),
+                "job_type": "FILE",
+                "data_source": $("#create-data-source").val(),
+                "destination": $("#create-destination").val(),
+                "interval": $("#create-interval").val(),
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "{% url 'scraping_api:scrapejob-list' %}",
+                data: JSON.stringify(create_data),
+                async: false,
+                contentType: "application/json",
+                success: function(response){
+                    sweetAlert("创建成功", "", "success");
+                    scrape_job_table.ajax.reload();
+                },
+                error: function(response){
+                    sweetAlert("错误", response.responseText, "error");
+                },
+            });
+
+            $("#create-close-btn").click();
         });
     });
 </script>
 {% endblock %}
-
 {% block content %}
 <div class="content-wrapper">
     <section class="content-header">
@@ -32,17 +147,75 @@
     <section class="content">
         <div class="row">
             <div class="col-xs-12">
-                <div class="box box-primary">
+                <div class="box box-danger">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">采集任务</h3>
+                    </div>
                     <div class="box-body">
-                        <div class="input-group col-xs-12">
-                            <div class="input-group-btn">
-                                <button id="create_btn" type="button" class="btn btn-info btn-flat">创建</button>
-                            </div>
-                        </div>
+                        <table id="scrape_job_table" class="table">
+                            <thead>
+                                <tr>
+                                    <th>id</th>
+                                    <th>name</th>
+                                    <th>from</th>
+                                    <th>to</th>
+                                    <th>created</th>
+                                    <th>next_time</th>
+                                    <th>pid</th>
+                                    <th>status</th>
+                                    <th>action</th>
+                                </tr>
+                            </thead>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+</div>
+<div class="modal fade" id="job-create-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title"><i class="fa fa-plus"></i> 采集任务创建</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">任务名称</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="create-job-name" placeholder="任务名称">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">数据源</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="create-data-source" placeholder="数据源">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputEmail3" class="col-sm-2 control-label">导入表</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="create-destination" placeholder="导入表">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="user-groups" class="col-sm-2 control-label">采集间隔</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="create-interval" placeholder="采集间隔">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger pull-left" data-dismiss="modal" id="create-close-btn">关闭</button>
+                <button type="button" class="btn btn-success" id="create-btn">创建</button>
+                <button type="button" class="btn btn-primary" id="create-and-run-btn">创建并执行</button>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

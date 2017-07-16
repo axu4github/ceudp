@@ -86,13 +86,16 @@
                     },
                 },
                 { 
-                    "data": "action", "title": "动作", "width": "30px",
+                    "data": "action", "title": "动作", "width": "50px",
                     "render": function(action){
                         var action_str = "";
                         switch(action)
                         {
                             case "LOGIN":
                                 action_str = "登陆";
+                                break;
+                            case "API_LOGIN":
+                                action_str = "接口登陆";
                                 break;
                             case "CREATE":
                                 action_str = "创建";

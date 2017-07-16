@@ -1,0 +1,48 @@
+{% extends "ceudp/base.html" %}
+{% load staticfiles %}
+
+{% block customize-script %}
+<!-- layer -->
+<script type="text/javascript" src="{% static 'plugins/layer-v3.0.3/layer/layer.js' %}"></script>
+
+<script>
+    leaf_active("flat_files"); // 激活左侧菜单栏图标效果
+    $("#create_btn").on("click", function(){
+        layer.open({
+            type: 2,
+            title: false,
+            closeBtn: 0,
+            area: ['100%', '100%'],
+            content: ["{% url 'scraping:create_scraping_task' %}", "no"],
+        });
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+    <section class="content-header">
+        <h1><i class="fa fa-folder-open"></i> 平面文件<small>Flat Files</small></h1>
+        <ol class="breadcrumb">
+            <li><a href="{% url 'dashboard:index' %}"><i class="fa fa-dashboard"></i> 仪表盘 <small>[Dashboard]</small> </a></li>
+            <li><a href="#"><i class="fa fa-area-chart"></i>数据采集 <small>[Scraping]</small></a></li>
+            <li class="active"><i class="fa fa-folder-open"></i> 平面文件 <small>[Flat Files]</small></li>
+        </ol>
+    </section>
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box box-primary">
+                    <div class="box-body">
+                        <div class="input-group col-xs-12">
+                            <div class="input-group-btn">
+                                <button id="create_btn" type="button" class="btn btn-info btn-flat">创建</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

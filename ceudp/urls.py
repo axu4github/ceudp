@@ -22,6 +22,9 @@ from management.views import login, logout
 from django.contrib.auth.decorators import login_required
 from rest_framework_swagger.views import get_swagger_view
 from ceudp.apis import SwaggerSchemaView
+
+__author__ = "axu"
+
 schema_view = get_swagger_view(title='统一数据平台 API')
 
 urlpatterns = [
@@ -52,6 +55,9 @@ urlpatterns = [
         include("management.apis.urls", namespace="management_api")),
     # /scraping/
     url(r"^scraping/", include("scraping.urls", namespace="scraping")),
+    # /api/scraping/
+    url(r"^api/scraping/",
+        include("scraping.apis.urls", namespace="scraping_api")),
     # /security/
     url(r"^security/", include("security.urls", namespace="security")),
     # /api/security/
