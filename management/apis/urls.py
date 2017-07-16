@@ -8,7 +8,9 @@ from views import (
     LoginViewSet,
     UserViewSet,
     GroupViewSet,
-    PermissionViewSet
+    PermissionViewSet,
+    ColumnTypeViewSet,
+    DatabaseViewSet
 )
 
 __author__ = "axu"
@@ -30,6 +32,8 @@ router.register(r"menus", MenuViewSet)
 router.register(r"users", UserViewSet)
 router.register(r"groups", GroupViewSet)
 router.register(r"permissions", PermissionViewSet)
+router.register(r"columntypes", ColumnTypeViewSet)
+router.register(r"databases", DatabaseViewSet)
 
 urlpatterns = [
     url(r"^", include(router.urls)),

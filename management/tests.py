@@ -748,3 +748,23 @@ class GroupTableTest(TestCase):
 class GroupAPITest(TestCase):
     """用户组API测试（需要补充）"""
     pass
+
+
+class DatabaseTableTest(TestCase):
+    """数据库表测试（需要补充）"""
+    pass
+
+
+class DatabaseAPITest(TestCase):
+    """数据库API测试（需要补充）"""
+    pass
+
+
+class ColumnTypeTableTest(TestCase):
+    """字段类型表测试（需要补充）"""
+    pass
+
+
+class ColumnTypeAPITest(TestCase):
+    """字段类型API测试（需要补充）"""
+    pass

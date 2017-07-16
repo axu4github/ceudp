@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 from rest_framework import serializers
-from management.models import Menu, User
+from management.models import Menu, User, Database, ColumnType
 from django.contrib.auth.models import Permission, Group
 
 __author__ = "axu"
@@ -36,8 +36,10 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ("id", "email", "username", "verbose_name", "is_active",
-                  "last_login", "created", "modified", "groups", "user_permissions")
+        fields = (
+            "id", "email", "username", "verbose_name",
+            "is_active", "last_login", "created", "modified",
+            "groups", "user_permissions")
 
 
 class PasswordSerializer(serializers.ModelSerializer):
@@ -45,3 +47,17 @@ class PasswordSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["password", ]
+
+
+class ColumnTypeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ColumnType
+        fields = "__all__"
+
+
+class DatabaseSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Database
+        fields = "__all__"

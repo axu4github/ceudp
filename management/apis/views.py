@@ -8,7 +8,9 @@ from serializers import (
     UserSerializer,
     PasswordSerializer,
     GroupSerializer,
-    PermissionSerializer
+    PermissionSerializer,
+    DatabaseSerializer,
+    ColumnTypeSerializer
 )
 from rest_framework import viewsets, views, status, mixins
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -19,7 +21,7 @@ from rest_framework.authentication import (
     SessionAuthentication
 )
 from management.apis.permissions import ApiAccessPermission
-from management.models import Menu, User
+from management.models import Menu, User, Database, ColumnType
 from management.authentications import Authentication
 from management.settings import settings
 from security.models import AuditLog, ACTION
@@ -215,3 +217,19 @@ class PermissionViewSet(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         custompermissions = ContentType.objects.get(model="custompermissions")
         return Permission.objects.filter(content_type=custompermissions)
+
+
+class ColumnTypeViewSet(viewsets.ModelViewSet):
+    """字段类型接口"""
+    serializer_class = ColumnTypeSerializer
+    queryset = ColumnType.objects.all()
+    authentication_classes = (SessionAuthentication, TokenAuthentication, )
+    permission_classes = (IsAuthenticated, ApiAccessPermission, )
+
+
+class DatabaseViewSet(viewsets.ModelViewSet):
+    """数据库接口"""
+    serializer_class = DatabaseSerializer
+    queryset = Database.objects.all()
+    authentication_classes = (SessionAuthentication, TokenAuthentication, )
+    permission_classes = (IsAuthenticated, ApiAccessPermission, )
