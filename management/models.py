@@ -110,6 +110,51 @@ class Menu(models.Model):
         return self.name
 
 
+class Database(models.Model):
+    """数据库表"""
+
+    name = models.CharField(verbose_name="数据库名称", max_length=50, blank=False)
+    created = models.DateTimeField(verbose_name="创建时间", auto_now_add=True)
+
+
+class Table(models.Model):
+    """表"""
+    name = models.CharField(verbose_name="表名称", max_length=50, blank=False)
+    verbose_name = models.CharField(
+        verbose_name="表显示名称", max_length=50, blank=False)
+    field_separator = models.CharField(
+        verbose_name="列分隔符", max_length=20, default=",")
+    record_separator = models.CharField(
+        verbose_name="行分隔符", max_length=20, default="\\n")
+    quote_character = models.CharField(
+        verbose_name="括起内容字符", max_length=20, default="\"")
+    location = models.CharField(
+        verbose_name="表内容文件存储位置", max_length=200, default="")
+    created = models.DateTimeField(verbose_name="创建时间", auto_now_add=True)
+
+
+class ColumnType(models.Model):
+    """字段类型表"""
+    name = models.CharField(
+        verbose_name="字段类型", max_length=50, blank=False)
+    verbose_name = models.CharField(
+        verbose_name="字段类型显示名称", max_length=50, blank=False)
+
+
+class Column(models.Model):
+    """字段表"""
+    table = models.ForeignKey(Table, verbose_name="表", blank=False)
+    name = models.CharField(
+        verbose_name="字段名称", max_length=50, blank=False)
+    column_type = models.ForeignKey(
+        ColumnType, verbose_name="字段类型", blank=False)
+    verbose_name = models.CharField(
+        verbose_name="字段显示名称", max_length=50, blank=False)
+    ordered = models.IntegerField(verbose_name="顺序")
+    is_pk = models.BooleanField(
+        verbose_name="是否是主键", blank=False, default=False)
+
+
 class CustomPermissions(models.Model):
     """自定义权限表"""
 
