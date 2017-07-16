@@ -309,8 +309,8 @@
         </section>
         <section class="content">
             <div class="row">
-                <div class="col-md-4">
-                    <!-- 数据库&表 -->
+                <!-- 数据库&表 -->
+                <!-- <div class="col-md-4">
                     <div class="box box-danger">
                         <div class="box-header with-border">
                             <h3 class="box-title">数据库 & 表 <small> [Databases & Tables]</small> </h3>
@@ -356,8 +356,7 @@
                             </div>
                         </div>
                     </div>
-                    <!-- 数据库&表 -EOF- -->
-                    <!-- 表结构说明 -->
+                    
                     <div class="box box-warning">
                         <div class="box-header with-border">
                             <h3 class="box-title">表结构 <small> [Table Columns]</small></h3>
@@ -371,10 +370,9 @@
 
                         </div>
                     </div>
-                    <!-- 表结构说明 -EOF- -->
-                </div>
+                </div> -->
 
-                <div class="col-md-8">
+                <div class="col-md-12">
                     <!-- SQL编辑器 -->
                     <div class="box box-info" id="sql-editer-box">
                         <div class="box-header with-border">
@@ -407,19 +405,19 @@
                     <div class="box box-solid" id="query-results-box">
                         <div class="nav-tabs-custom">
                             <ul class="nav nav-tabs">
-                                <li class="active" id="preview-tab">
+                                <!-- <li class="active" id="preview-tab">
                                     <a href="#preview-pane" data-toggle="tab">
                                         <i class="icon fa fa-search"></i>
                                         预览 <small>[Preview]</small>
                                     </a>
-                                </li>
+                                </li> -->
                                 <li id="query-results-tab">
                                     <a href="#query-results-pane" data-toggle="tab">
                                         <i class="icon fa fa-table"></i>
                                         查询结果 <small>[Results]</small>
                                     </a>
                                 </li>
-                                <li id="query-history-tab">
+                                <li class="active" id="query-history-tab">
                                     <a href="#query-history-pane" data-toggle="tab">
                                         <i class="icon fa fa-history"></i>
                                         历史查询 <small>[History]</small>
@@ -427,13 +425,13 @@
                                 </li>
                             </ul>
                             <div class="tab-content">
-                                <div class="tab-pane active" id="preview-pane">
+                                <!-- <div class="tab-pane active" id="preview-pane">
                                     <table id="query-preview-table" class="table table-striped table-bordered">无数据</table>
-                                </div>
+                                </div> -->
                                 <div class="tab-pane" id="query-results-pane">
                                     <table id="query-result-table" class="table table-striped table-bordered query-result-table"></table>
                                 </div>
-                                <div class="tab-pane" id="query-history-pane">
+                                <div class="tab-pane active" id="query-history-pane">
                                     <table id="query-history-table" class="table table-striped table-bordered">
                                         <thead>
                                             <tr>
