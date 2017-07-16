@@ -37,6 +37,14 @@ class ScrapeJob(models.Model):
     status = models.CharField(
         verbose_name="状态", max_length=50, blank=False, default="NO_RUN")
 
+    def run(self):
+        """任务执行"""
+        pass
+
+    def shutdown(self):
+        """任务停止"""
+        pass
+
     class Meta:
         ordering = ("-modified", )
 
