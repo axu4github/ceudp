@@ -9,11 +9,6 @@ from coreapi.compat import force_bytes
 from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
-# from rest_framework.schemas import SchemaGenerator
-from rest_framework.permissions import AllowAny
-from rest_framework.authentication import (
-    TokenAuthentication
-)
 from rest_framework_swagger.renderers import (
     SwaggerUIRenderer,
     OpenAPIRenderer
@@ -45,25 +40,28 @@ schema = Document(
             ),
         },
         "用户管理": {
-            # "post:management_api:user-list": Link(
-            #     url="/api/management/users/",
-            #     action="POST",
-            #     fields=[
-            #         Field(
-            #             name="username",
-            #             required=True,
-            #             location="form",
-            #             description="用户名"
-            #         ),
-            #         Field(
-            #             name="groups",
-            #             required=True,
-            #             location="form",
-            #             description="用户组"
-            #         ),
-            #     ],
-            #     description="用户创建",
-            # ),
+            "post:management_api:user-list": {
+                "contents": Link(
+                    url="/api/management/users/",
+                    action="POST",
+                    fields=[
+                        Field(
+                            name="username",
+                            required=True,
+                            location="form",
+                            description="用户名"
+                        ),
+                        Field(
+                            name="groups",
+                            required=True,
+                            location="form",
+                            type="array",
+                            description="用户组"
+                        ),
+                    ],
+                    description="用户创建",
+                ),
+            },
             "get:management_api:user-list": Link(
                 url="/api/management/users/",
                 action="GET",
