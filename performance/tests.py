@@ -191,6 +191,24 @@ class SparkSQLRunEnvTest(TestCase):
     pass
 
 
+class SQLComplexTest(TestCase):
+    """SQL复杂性测试"""
+
+    def test_sum(self):
+        sql = "select 2+3 as result;"
+        sqlparser = SparkSQLParser(sql)
+        execute = sqlparser.generate_execute_sql()
+
+        self.assertEqual("SELECT 2+3 AS RESULT LIMIT 10", execute)
+
+    def test_abs(self):
+        sql = "select abs(-5.0) as result;"
+        sqlparser = SparkSQLParser(sql)
+        execute = sqlparser.generate_execute_sql()
+
+        self.assertEquals("SELECT abs(-5.0) AS RESULT LIMIT 10", execute)
+
+
 class SparkSQLClassTest(TestCase):
 
     def test_sql_func(self):
@@ -214,7 +232,7 @@ class SparkSQLClassTest(TestCase):
 #             dest, os.path.basename(self.uploaded_file))
 #         # 判断文件存在
 #         self.assertTrue(
-#             self.hdfs_client.status(dest_full_path, strict=False) is not None)
+# self.hdfs_client.status(dest_full_path, strict=False) is not None)
 
 #         # 删除已上传文件
 #         self.hdfs_client.delete(dest_full_path)
@@ -229,7 +247,7 @@ class SparkSQLClassTest(TestCase):
 #             dest_full_path, self.uploaded_file, overwrite=True)
 #         # 判断文件存在
 #         self.assertTrue(
-#             self.hdfs_client.status(dest_full_path, strict=False) is not None)
+# self.hdfs_client.status(dest_full_path, strict=False) is not None)
 
 #         # 删除已上传文件
 #         self.hdfs_client.delete(dest_full_path)
@@ -245,7 +263,7 @@ class SparkSQLClassTest(TestCase):
 #         self.hdfs_client.upload(
 #             dest_full_path, self.uploaded_file, overwrite=True)
 #         self.assertTrue(
-#             self.hdfs_client.status(dest_full_path, strict=False) is not None)
+# self.hdfs_client.status(dest_full_path, strict=False) is not None)
 
 #         # 查看该文件并对比文件大小是否相同
 #         file_info = self.hdfs_client.list(dest_full_path)
@@ -309,7 +327,8 @@ class SparkSQLClassTest(TestCase):
 #         hdfs_path = "/test_search/"
 #         self.hdfs_client.upload(hdfs_path, local_path, overwrite=True)
 #         self.assertTrue(
-#             self.hdfs_client.status(hdfs_path + "people.txt", strict=False) is not None)
+# self.hdfs_client.status(hdfs_path + "people.txt", strict=False) is not
+# None)
 
 #         result = self.hdfs_client.search("Michael", limit=1)
 #         file_name = os.path.basename(local_path)
@@ -322,7 +341,7 @@ class SparkSQLClassTest(TestCase):
 
 #         self.hdfs_client.delete(hdfs_path + "people.txt")
 #         self.assertTrue(
-#             self.hdfs_client.status(hdfs_path + "people.txt", strict=False) is None)
+# self.hdfs_client.status(hdfs_path + "people.txt", strict=False) is None)
 
 #         result = self.hdfs_client.search("Michael", limit=1)
 #         self.assertEqual(result['numFound'], 0, result)
