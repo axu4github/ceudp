@@ -121,7 +121,7 @@ class StreamingFileResponse(StreamingHttpResponse):
 
 
 class ResponseContext(object):
-    ''' 响应内容类 '''
+    """响应内容类"""
 
     def __init__(self, status=status.HTTP_200_OK,
                  message='', request_set=None, response_set=None):
