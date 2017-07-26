@@ -5,7 +5,6 @@ import os
 import signal
 from django.db import models
 from multiprocessing import Process
-from job_process import JobProcess
 
 __author__ = "axu"
 
@@ -43,25 +42,10 @@ class ScrapeJob(models.Model):
 
     def run(self):
         """任务执行"""
-
-        p = Process(target=JobProcess.start, args=(self, ))
-        p.start()
-
-        self.status = "RUN"
-        self.pid = p.pid
-        self.save()
-
         return True
 
     def shutdown(self):
         """任务停止"""
-
-        os.kill(self.pid, signal.SIGKILL)
-
-        self.status = "STOP"
-        self.pid = "-"
-        self.save()
-
         return True
 
     class Meta:
