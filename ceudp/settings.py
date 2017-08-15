@@ -208,4 +208,4 @@ SWAGGER_SETTINGS = {
     },
 }
 
-DOCS_CONFIGURATION = "http://localhost:8000/static/dist/js/docs_configuration.json"
+DOCS_CONFIGURATION = "http://localhost:8000/static/dist/js/docs_configuration.yaml"
