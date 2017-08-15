@@ -208,4 +208,4 @@ SWAGGER_SETTINGS = {
     },
 }
 
-API_SCHEMA_PATH = os.path.join(BASE_DIR, "ceudp/api-schema.json")
+DOCS_CONFIGURATION = "http://localhost:8000/static/dist/js/docs_configuration.json"
