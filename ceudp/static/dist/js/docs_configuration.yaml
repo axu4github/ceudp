@@ -51,3 +51,13 @@ paths:
       responses:
         200:
           description: "获取用户列表成功"
+        400:
+          description: "获取用户列表失败"
+        404:
+          description: "页面没有找到"
+
+securityDefinitions:
+  api_key:
+    type: "apiKey"
+    name: "api_key"
+    in: "header"
