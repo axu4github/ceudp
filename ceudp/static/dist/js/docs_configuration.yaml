@@ -11,9 +11,11 @@ basePath: "/"
 tags:
   - name: "用户认证"
   - name: "用户管理"
-    description: "用户的相关接口"
+  - name: "用户组管理"
+  - name: "权限管理"
 
 paths:
+  # 用户认证
   /api/management/login/:
     post:
       tags:
@@ -25,16 +27,16 @@ paths:
         - "application/json"
       parameters:
         - name: "username"
-          in: "formData"
+          in: formData
           description: "用户账号"
           required: true
-          type: "string"
+          type: string
         - name: "password"
-          in: "formData"
+          in: formData
           format: "password"
           description: "用户密码"
           required: true
-          type: "string"
+          type: string
       responses:
         200:
           description: "用户获取Token成功"
@@ -48,12 +50,11 @@ paths:
           $ref: "#/responses/Standard500ErrorResponse"
 
   /api/management/users/:
+    # 用户列表
     get: 
       tags:
         - "用户管理"
       summary: "获取用户列表"
-      parameters:
-        - $ref: "#/parameters/userToken"
       responses:
         200:
           description: "获取用户列表成功"
@@ -69,6 +70,7 @@ paths:
           $ref: "#/responses/Standard500ErrorResponse"
       security:
         - userToken: []
+    # 创建用户
     post:
       tags:
         - "用户管理"
@@ -76,40 +78,33 @@ paths:
       consumes:
         - "application/x-www-form-urlencoded"
       parameters:
-        - $ref: "#/parameters/userToken"
         - name: "username"
-          in: "formData"
+          in: formData
           description: "用户账号"
           required: true
-          type: "string"
-        - name: "password"
-          in: "formData"
-          format: "password"
-          description: "用户密码"
-          required: true
-          type: "string"
+          type: string
         - name: "email"
-          in: "formData"
+          in: formData
           description: "邮箱"
-          type: "string"
+          type: string
         - name: "verbose_name"
-          in: "formData"
+          in: formData
           description: "显示名称"
           required: true
-          type: "string"
+          type: string
         - name: "is_active"
-          in: "formData"
+          in: formData
           description: "启用"
           type: boolean
           default: true
         - name: "groups"
-          in: "formData"
+          in: formData
           description: "用户组（[user_group_ids]）"
           type: array
           items:
             type: integer
         - name: "user_permissions"
-          in: "formData"
+          in: formData
           description: "用户权限（[user_permissions_ids]）"
           type: array
           items:
@@ -123,6 +118,175 @@ paths:
           description: "获取用户列表失败"
         404:
           description: "用户没有找到"
+        403:
+          $ref: "#/responses/Standard403ErrorResponse"
+        500:
+          $ref: "#/responses/Standard500ErrorResponse"
+      security:
+        - userToken: []
+
+  /api/management/users/{id}:
+    # 获取某个用户
+    get: 
+      tags:
+        - "用户管理"
+      summary: "获取某个用户"
+      parameters:
+        - name: "id"
+          in: path
+          description: "用户ID"
+          required: true
+          type: integer
+      responses:
+        200:
+          description: "获取用户列表成功"
+          schema:
+              $ref: "#/definitions/User"
+        400:
+          description: "获取用户列表失败"
+        404:
+          description: "用户没有找到"
+        403:
+          $ref: "#/responses/Standard403ErrorResponse"
+        500:
+          $ref: "#/responses/Standard500ErrorResponse"
+      security:
+        - userToken: []
+
+  /api/management/users/{id}/change_password/:
+    # 修改密码
+    post:
+      tags:
+        - "用户管理"
+      summary: "修改密码"
+      consumes:
+        - "application/x-www-form-urlencoded"
+      parameters:
+        - name: "id"
+          in: path
+          description: "用户ID"
+          required: true
+          type: integer
+        - name: "password"
+          in: formData
+          format: "password"
+          description: "用户密码"
+          required: true
+          type: string
+      responses:
+        200:
+          description: "修改密码成功"
+        400:
+          description: "修改密码失败"
+        404:
+          description: "用户没有找到"
+        403:
+          $ref: "#/responses/Standard403ErrorResponse"
+        500:
+          $ref: "#/responses/Standard500ErrorResponse"
+      security:
+        - userToken: []
+
+  # /api/management/users/{id}/:
+  #   # 修改用户
+  #   put:
+  #     tags:
+  #       - "用户管理"
+  #     summary: "修改用户"
+  #     consumes:
+  #       - "application/x-www-form-urlencoded"
+  #     parameters:
+
+  #       - name: "id"
+  #         in: path
+  #         description: "用户ID"
+  #         required: true
+  #         type: integer
+  #       - name: "username"
+  #         in: formData
+  #         description: "用户账号"
+  #         required: true
+  #         type: string
+  #       - name: "email"
+  #         in: formData
+  #         description: "邮箱"
+  #         type: string
+  #       - name: "verbose_name"
+  #         in: formData
+  #         description: "显示名称"
+  #         required: true
+  #         type: string
+  #       - name: "groups"
+  #         in: formData
+  #         description: "用户组（[user_group_ids]）"
+  #         type: array
+  #         items:
+  #           type: integer
+  #       - name: "user_permissions"
+  #         in: formData
+  #         description: "用户权限（[user_permissions_ids]）"
+  #         type: array
+  #         items:
+  #           type: integer
+  #     responses:
+  #       201:
+  #         description: "创建用户成功"
+  #         schema:
+  #             $ref: "#/definitions/User"
+  #       400:
+  #         description: "获取用户列表失败"
+  #       404:
+  #         description: "用户没有找到"
+  #       403:
+  #         $ref: "#/responses/Standard403ErrorResponse"
+  #       500:
+  #         $ref: "#/responses/Standard500ErrorResponse"
+  #     security:
+  #       - userToken: []
+
+  /api/management/groups/:
+    # 获取用户组列表
+    get: 
+      tags:
+        - "用户组管理"
+      summary: "获取用户组列表"
+      responses:
+        200:
+          description: "获取用户组列表成功"
+          schema:
+              $ref: "#/definitions/UserGroup"
+        400:
+          description: "获取用户组列表失败"
+        404:
+          description: "用户组没有找到"
+        403:
+          $ref: "#/responses/Standard403ErrorResponse"
+        500:
+          $ref: "#/responses/Standard500ErrorResponse"
+      security:
+        - userToken: []
+
+  /api/management/groups/{id}:
+    # 获取某个用户组
+    get: 
+      tags:
+        - "用户组管理"
+      summary: "获取某个用户组"
+      parameters:
+        - name: "id"
+          in: path
+          description: "用户组ID"
+          required: true
+          type: integer
+      responses:
+        200:
+          description: "获取用户组列表成功"
+          schema:
+              $ref: "#/definitions/UserGroup"
+        400:
+          description: "获取用户组列表失败"
+        404:
+          description: "用户组没有找到"
         403:
           $ref: "#/responses/Standard403ErrorResponse"
         500:
@@ -167,17 +331,28 @@ definitions:
           items:
             type: integer
 
+  UserGroup:
+    properties:
+      id: 
+        type: integer
+      name:
+        type: string
+      permissions:
+        type: array
+        items:
+          type: integer
+
 responses:
   Standard403ErrorResponse:
-    description: "没有用户认证或者用户认证失败"
+    description: "用户认证失败或没有该操作权限"
   Standard500ErrorResponse:
     description: "发生错误"
 
-parameters:
-  userToken:
-    name: "Authorization"
-    type: "string"
-    description: "用户认证信息（Token）"
-    in: "header"
-    default: "Token "
-    # required: true
+# parameters:
+#   userToken:
+#     name: "Authorization"
+#     type: string
+#     description: "用户认证信息（Token）"
+#     in: "header"
+#     default: "Token "
+#     required: true
