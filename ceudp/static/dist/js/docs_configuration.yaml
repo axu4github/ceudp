@@ -53,6 +53,8 @@ paths:
         - "用户管理"
       summary: "获取用户列表"
       description: ""
+      parameters:
+        - $ref: "#/parameters/userToken"
       responses:
         200:
           description: "获取用户列表成功"
@@ -112,9 +114,11 @@ responses:
   Standard500ErrorResponse:
     description: "发生错误"
 
-# parameters:
-#   userToken:
-#     name: "Authorization"
-#     type: "string"
-#     in: "header"
-#     required: true
+parameters:
+  userToken:
+    name: "Authorization"
+    type: "string"
+    description: "用户认证信息（Token）"
+    in: "header"
+    default: "Token "
+    # required: true
