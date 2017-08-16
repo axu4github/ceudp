@@ -1,6 +1,7 @@
 # -*- coding: UTF-8 -*-
 from __future__ import unicode_literals
 
+import json
 from django.contrib.auth.models import Permission, Group
 from django.contrib.contenttypes.models import ContentType
 from serializers import (
@@ -194,6 +195,16 @@ class GroupViewSet(viewsets.ModelViewSet):
             action=ACTION.CREATE,
             content=serializer.data
         )
+
+    # def create(self, request, *args, **kwargs):
+    #     # print "=-=" * 20
+    #     # print request.data.getlist("permissions")[0]
+    #     # print "=-=" * 20
+    #     # if "permissions" in request.data:
+    #     #     group_permissions = request.data.get("permissions")
+    #     #     print len(group_permissions)
+
+    #     super(GroupViewSet, self).create(request, *args, **kwargs)
 
     def perform_update(self, serializer):
         # 更新

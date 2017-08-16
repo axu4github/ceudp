@@ -747,8 +747,50 @@ class GroupTableTest(TestCase):
 
 class GroupAPITest(TestCase):
     """用户组API测试（需要补充）"""
-    pass
 
+    def setUp(self):
+        """测试数据准备"""
+        self.urls = {
+            "create": "/api/management/groups/",  # 创建接口
+        }
+
+        self.gat = User.objects.create_user("gat", "gat@gmail.com", "gat")
+        # 设置权限
+        post_permission = Permission.objects.get(
+            codename="post:management_api:group-list")
+
+        self.gat.user_permissions.add(
+            post_permission,
+        )
+        self.gat_token = self.gat.get_or_create_token().key
+
+    def test_create_group(self):
+        data = {
+            "name": "gat1",
+            "email": "gat1@gmail.com",
+            "permissions": [
+                {
+                    "id": 52,
+                    "codename": "post:management_api:group-list",
+                    "name": "用户组创建"
+                },
+                {
+                    "id": 44,
+                    "codename": "get:management_api:user-enable",
+                    "name": "用户启用"
+                }
+            ]
+        }
+
+        data = {
+            "name": "gat1",
+            "email": "gat1@gmail.com",
+            "permissions": [52, 44]
+        }
+
+        response = self.client.post(
+            self.urls["create"], data, HTTP_AUTHORIZATION="Token " + self.gat_token)
+        print response
 
 class DatabaseTableTest(TestCase):
     """数据库表测试（需要补充）"""
