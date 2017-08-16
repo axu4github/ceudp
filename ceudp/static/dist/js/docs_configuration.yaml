@@ -1,39 +1,40 @@
 swagger: "2.0"
 info:
-  description: "统一数据平台接口文档"
   version: "1.0.0"
-  title: "统一数据平台"
-  contact:
-    email: "anxu@centrin.com.cn"
+  title: "统一数据平台接口文档"
+
+schemes:
+  - "http"
 host: "localhost:8000"
 basePath: "/"
+
 tags:
-- name: "用户认证"
-- name: "用户管理"
-  description: "用户的相关接口"
-schemes:
-- "http"
+  - name: "用户认证"
+  - name: "用户管理"
+    description: "用户的相关接口"
+
 paths:
   /api/management/login/:
     post:
       tags:
-      - "用户认证"
-      summary: "获取用户Token信息"
+        - "用户认证"
+      summary: "获取用户认证信息（Token）"
       consumes:
-      - "application/x-www-form-urlencoded"
+        - "application/x-www-form-urlencoded"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - name: "username"
-        in: "formData"
-        description: "用户账号"
-        required: true
-        type: "string"
-      - name: "password"
-        in: "formData"
-        description: "用户密码"
-        required: true
-        type: "string"
+        - name: "username"
+          in: "formData"
+          description: "用户账号"
+          required: true
+          type: "string"
+        - name: "password"
+          in: "formData"
+          format: "password"
+          description: "用户密码"
+          required: true
+          type: "string"
       responses:
         200:
           description: "用户获取Token成功"
@@ -41,23 +42,79 @@ paths:
           description: "用户获取Token失败"
         404:
           description: "页面没有找到"
+        403:
+          $ref: "#/responses/Standard403ErrorResponse"
+        500:
+          $ref: "#/responses/Standard500ErrorResponse"
 
   /api/management/users/:
     get: 
       tags:
-      - "用户管理"
+        - "用户管理"
       summary: "获取用户列表"
       description: ""
       responses:
         200:
           description: "获取用户列表成功"
+          schema:
+              $ref: "#/definitions/User"
         400:
           description: "获取用户列表失败"
         404:
-          description: "页面没有找到"
+          description: "用户没有找到"
+        403:
+          $ref: "#/responses/Standard403ErrorResponse"
+        500:
+          $ref: "#/responses/Standard500ErrorResponse"
+      security:
+        - userToken: []
 
 securityDefinitions:
-  api_key:
+  userToken:
     type: "apiKey"
-    name: "api_key"
+    name: "Authorization"
     in: "header"
+
+definitions:
+  User:
+    properties:
+      id: 
+        type: integer
+      email:
+        type: string
+      username:
+        type: string
+      verbose_name:
+        type: string
+      is_active: 
+        type: boolean
+      last_login:
+        type: string
+        format: date-time
+      created: 
+        type: string
+        format: date-time
+      modified:
+        type: string
+        format: date-time
+      groups:
+        type: array
+        items:
+          type: integer
+      user_permissions:
+          type: array
+          items:
+            type: integer
+
+responses:
+  Standard403ErrorResponse:
+    description: "没有用户认证或者用户认证失败"
+  Standard500ErrorResponse:
+    description: "发生错误"
+
+# parameters:
+#   userToken:
+#     name: "Authorization"
+#     type: "string"
+#     in: "header"
+#     required: true
