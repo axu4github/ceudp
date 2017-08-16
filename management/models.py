@@ -170,11 +170,16 @@ class CustomPermissions(models.Model):
             ("put:management_api:user-detail", "用户信息修改"),
             ("patch:management_api:user-detail", "用户信息部分修改"),
             ("post:management_api:user-change-password", "用户密码修改"),
+
             ("post:performance_api:query-list", "查询"),
             ("get:performance_api:query-list", "查询历史记录查看"),
             ("get:performance_api:query-detail", "查询历史记录详情查看"),
+
+            ("post:management_api:group-list", "用户组创建"),
             ("get:management_api:group-list", "用户组列表查看"),
             ("get:management_api:group-detail", "用户组详情查看"),
+
             ("get:management_api:permission-list", "权限列表查看"),
+
             ("get:security_api:auditlog-list", "审计日志列表查看")
         )
