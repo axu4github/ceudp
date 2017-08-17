@@ -765,22 +765,22 @@ class GroupAPITest(TestCase):
         self.gat_token = self.gat.get_or_create_token().key
 
     def test_create_group(self):
-        data = {
-            "name": "gat1",
-            "email": "gat1@gmail.com",
-            "permissions": [
-                {
-                    "id": 52,
-                    "codename": "post:management_api:group-list",
-                    "name": "用户组创建"
-                },
-                {
-                    "id": 44,
-                    "codename": "get:management_api:user-enable",
-                    "name": "用户启用"
-                }
-            ]
-        }
+        # data = {
+        #     "name": "gat1",
+        #     "email": "gat1@gmail.com",
+        #     "permissions": [
+        #         {
+        #             "id": 52,
+        #             "codename": "post:management_api:group-list",
+        #             "name": "用户组创建"
+        #         },
+        #         {
+        #             "id": 44,
+        #             "codename": "get:management_api:user-enable",
+        #             "name": "用户启用"
+        #         }
+        #     ]
+        # }
 
         data = {
             "name": "gat1",
@@ -790,7 +790,8 @@ class GroupAPITest(TestCase):
 
         response = self.client.post(
             self.urls["create"], data, HTTP_AUTHORIZATION="Token " + self.gat_token)
-        print response
+        # print response
+        pass
 
 class DatabaseTableTest(TestCase):
     """数据库表测试（需要补充）"""
