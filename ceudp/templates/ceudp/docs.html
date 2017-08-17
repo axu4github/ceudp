@@ -70,9 +70,9 @@
 
 <script src="{% static 'plugins/swagger-ui/swagger-ui-bundle.js' %}"> </script>
 <script src="{% static 'plugins/swagger-ui/swagger-ui-standalone-preset.js' %}"> </script>
+
 <script>
 window.onload = function() {
-  
   // Build a system
   const ui = SwaggerUIBundle({
     url: "{{ configuration }}" ,
