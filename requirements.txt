@@ -9,7 +9,7 @@ Django==1.11.2
 django-appconf==1.0.2
 django-filter==1.0.4
 django-rest-swagger==2.1.2
-djangorestframework==3.6.3
+djangorestframework==3.9.1
 docopt==0.6.2
 enum34==1.1.6
 hdfs==2.0.16
