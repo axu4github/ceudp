@@ -41,6 +41,6 @@ solrcloudpy==2.4.1
 sqlparse==0.2.3
 traitlets==4.3.2
 uritemplate==3.0.0
-urllib3==1.21.1
+urllib3==1.26.5
 wcwidth==0.1.7
 xlrd==1.0.0
